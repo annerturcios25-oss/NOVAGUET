@@ -1,0 +1,685 @@
+* {
+
+  margin: 0;
+
+  padding: 0;
+
+  box-sizing: border-box;
+
+}
+
+body {
+
+  font-family: Arial, sans-serif;
+
+  background: #f5f7f8;
+
+  color: #111;
+
+}
+
+/* ENCABEZADO */
+
+header {
+
+  background: #050505;
+
+  color: white;
+
+}
+
+.navbar {
+
+  max-width: 1200px;
+
+  margin: auto;
+
+  min-height: 95px;
+
+  padding: 15px 30px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 25px;
+
+}
+
+.logo img {
+
+  width: 110px;
+
+  height: auto;
+
+  display: block;
+
+}
+
+nav {
+
+  display: flex;
+
+  gap: 30px;
+
+}
+
+nav a {
+
+  color: white;
+
+  text-decoration: none;
+
+  font-size: 14px;
+
+  font-weight: bold;
+
+}
+
+nav a:hover {
+
+  color: #f5c400;
+
+}
+
+.icons {
+
+  display: flex;
+
+  gap: 15px;
+
+  font-size: 22px;
+
+}
+
+.color-line {
+
+  display: flex;
+
+  height: 6px;
+
+}
+
+.color-line .blue {
+
+  background: #35bce5;
+
+  width: 40%;
+
+}
+
+.color-line .yellow {
+
+  background: #f5c400;
+
+  width: 20%;
+
+}
+
+.color-line .black {
+
+  background: #111;
+
+  width: 40%;
+
+}
+
+/* SECCIÓN PRINCIPAL */
+
+.hero {
+
+  text-align: center;
+
+  padding: 70px 20px 90px;
+  background-image: linear-gradient(
+
+    rgba(245, 247, 248, 0.88),
+
+    rgba(245, 247, 248, 0.88)
+
+  ), url("guacamaya.png.jpeg");
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+
+}
+
+.hero h1 {
+
+  font-size: 60px;
+
+  letter-spacing: 5px;
+
+  margin-bottom: 20px;
+
+}
+
+.nova {
+
+  color: #35bce5;
+
+}
+
+.guet {
+
+  color: #f5c400;
+
+}
+
+.coming-soon {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 15px;
+
+  margin-bottom: 55px;
+
+}
+
+.coming-soon span {
+
+  width: 70px;
+
+  height: 2px;
+
+  background: #f5c400;
+
+}
+
+.coming-soon p {
+
+  font-weight: bold;
+
+  letter-spacing: 4px;
+
+  color: #555;
+
+}
+
+/* HONDURAS Y USA */
+
+.countries {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 55px;
+
+  margin-bottom: 50px;
+
+}
+
+.flag {
+
+  font-size: 90px;
+
+  margin-bottom: 10px;
+
+}
+
+.country h2 {
+
+  font-size: 16px;
+
+  letter-spacing: 2px;
+
+}
+
+.connection {
+
+  font-size: 45px;
+
+}
+
+/* MENSAJE */
+
+.message .soon {
+
+  color: #35bce5;
+
+  font-weight: bold;
+
+  letter-spacing: 3px;
+
+  margin-bottom: 20px;
+
+}
+
+.message h2 {
+
+  font-size: 28px;
+
+  margin-bottom: 15px;
+
+}
+
+.description {
+
+  color: #666;
+
+  font-size: 18px;
+
+  margin-bottom: 30px;
+
+}
+
+.message button {
+
+  background: #050505;
+
+  color: white;
+
+  border: 2px solid #f5c400;
+
+  padding: 16px 25px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  border-radius: 5px;
+
+}
+
+.message button:hover {
+
+  transform: scale(1.05);
+
+}
+
+/* PIE DE PÁGINA */
+
+footer {
+
+  background: #050505;
+
+  color: white;
+
+  padding: 45px 30px;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 30px;
+
+}
+
+.footer-item {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 15px;
+
+}
+
+.footer-item > span {
+
+  font-size: 30px;
+
+}
+
+.footer-item h3 {
+
+  font-size: 13px;
+
+  margin-bottom: 8px;
+
+}
+
+.footer-item p {
+
+  color: #aaa;
+
+  font-size: 13px;
+
+}
+
+/* CELULAR */
+
+@media (max-width: 768px) {
+
+  .navbar {
+
+    flex-direction: column;
+
+    text-align: center;
+
+  }
+
+  nav {
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 15px;
+
+  }
+
+  .hero h1 {
+
+    font-size: 42px;
+
+  }
+
+  .countries {
+
+    gap: 20px;
+
+  }
+
+  .flag {
+
+    font-size: 55px;
+
+  }
+
+  .connection {
+
+    font-size: 30px;
+
+  }
+
+  .country h2 {
+
+    font-size: 11px;
+
+  }
+
+  footer {
+
+    grid-template-columns: 1fr;
+  }
+
+}
+<section id="categorias" class="info-section">
+
+  <h2>CATEGORÍAS</h2>
+
+  <p>Descubre próximamente nuestra colección.</p>
+
+  <div class="category-list">
+
+    <div>👕 ROPA</div>
+
+    <div>👟 CALZADO</div>
+
+    <div>🧢 ACCESORIOS</div>
+
+  </div>
+
+</section>
+
+<section id="nosotros" class="info-section">
+
+  <h2>SOBRE NOVAGUET</h2>
+
+  <p>
+
+    NOVAGUET es una marca que conecta estilos, cultura y moda
+
+    entre Honduras y Estados Unidos.
+
+  </p>
+
+</section>
+/* SECCIONES DE INFORMACIÓN */
+
+.info-section {
+
+  text-align: center;
+
+  padding: 80px 20px;
+
+  background: white;
+
+  border-top: 3px solid #35bce5;
+
+}
+
+.info-section h2 {
+
+  font-size: 32px;
+
+  margin-bottom: 15px;
+
+  color: #111;
+
+}
+
+.info-section p {
+
+  color: #666;
+
+  font-size: 18px;
+
+  margin-bottom: 30px;
+
+}
+
+.category-list {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 20px;
+
+  flex-wrap: wrap;
+
+}
+
+.category-list div {
+
+  background: #050505;
+
+  color: white;
+
+  padding: 25px 35px;
+
+  border: 2px solid #f5c400;
+
+  border-radius: 8px;
+
+  font-weight: bold;
+
+  min-width: 160px;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+
+}
+
+.category-list div:hover {
+
+  transform: translateY(-5px);
+
+}
+/* BUSCADOR */
+
+.icon-button {
+
+  background: transparent;
+
+  border: none;
+
+  color: white;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+}
+
+.search-box {
+
+  display: none;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  padding: 15px 20px;
+
+  background: #050505;
+
+}
+
+.search-box.active {
+
+  display: flex;
+
+}
+
+.search-box input {
+
+  width: 300px;
+
+  max-width: 80%;
+
+  padding: 12px;
+
+  border: 2px solid #35bce5;
+
+  border-radius: 5px;
+
+  font-size: 16px;
+
+}
+
+.search-box button {
+
+  background: #f5c400;
+
+  border: none;
+
+  padding: 12px 15px;
+
+  cursor: pointer;
+
+  border-radius: 5px;
+
+  font-weight: bold;
+
+}/* CARRITO */
+
+.cart-box {
+
+  position: fixed;
+
+  top: 0;
+
+  right: -400px;
+
+  width: 350px;
+
+  max-width: 90%;
+
+  height: 100vh;
+
+  background: white;
+
+  color: #111;
+
+  z-index: 1000;
+
+  padding: 25px;
+
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+
+  transition: right 0.4s ease;
+
+}
+
+.cart-box.active {
+
+  right: 0;
+
+}
+
+.cart-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  border-bottom: 3px solid #35bce5;
+
+  padding-bottom: 15px;
+
+}
+
+.cart-header h2 {
+
+  font-size: 20px;
+
+}
+
+.cart-header button {
+
+  background: #f5c400;
+
+  border: none;
+
+  padding: 10px 14px;
+
+  border-radius: 5px;
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+}
+
+.cart-empty {
+
+  text-align: center;
+
+  padding-top: 100px;
+
+}
+
+.cart-empty span {
+
+  font-size: 65px;
+
+}
+
+.cart-empty h3 {
+
+  margin-top: 20px;
+
+  font-size: 20px;
+
+}
+
+.cart-empty p {
+
+  margin-top: 10px;
+
+  color: #666;
+
+  line-height: 1.5;
+
+}

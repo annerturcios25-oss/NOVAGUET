@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>NOVAGUET | Próximamente</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+  <!-- ENCABEZADO -->
+
+  <header>
+
+    <div class="navbar">
+
+      <div class="logo">
+
+        <img src="NOVAGUET.PNG.png" alt="Logo NOVAGUET">
+
+      </div>
+
+      <nav>
+        <div class="language-selector">
+
+    <button onclick="changeLanguage('es')">🇪🇸 Español</button>
+
+    <button onclick="changeLanguage('en')">🇺🇸 English</button>
+
+</div>
+
+ <a href="#inicio" data-es="INICIO" data-en="HOME">INICIO</a>       
+
+        <a href="#categorias">CATEGORÍAS</a>
+
+        <a href="#nosotros">NOSOTROS</a>
+
+        <a href="#contacto">CONTACTO</a>
+
+      </nav>
+</div>
+<div class="icons">
+
+  <button id="searchButton" class="icon-button">🔍</button>
+
+  <span>♙</span>
+
+ <button id="cartButton" class="icon-button">🛒</button>
+</div>
+
+<div id="searchBox" class="search-box">
+
+  <input
+
+    type="text"
+
+    id="searchInput"
+
+    placeholder="¿Qué estás buscando?"
+
+  >
+
+  <button id="closeSearch">✕</button>
+
+</div>
+<!-- CARRITO -->
+
+<div id="cartBox" class="cart-box">
+
+  <div class="cart-header">
+
+    <h2>🛒 TU CARRITO</h2>
+
+    <button id="closeCart">✕</button>
+
+  </div>
+
+  <div class="cart-empty">
+
+    <span>🛒</span>
+
+    <h3>Tu carrito está vacío</h3>
+
+    <p>Explora nuestros productos y agrega tus favoritos.</p>
+
+  </div>
+
+</div>
+
+    <div class="color-line">
+
+      <div class="blue"></div>
+
+      <div class="yellow"></div>
+
+      <div class="black"></div>
+
+    </div>
+
+  </header>
+
+  <!-- SECCIÓN PRINCIPAL -->
+
+  <main id="inicio">
+
+    <section class="hero">
+
+      <h1>
+
+        <span class="nova">NOVA</span><span class="guet">GUET</span>
+
+      </h1>
+
+      <div class="coming-soon">
+
+        <span></span>
+
+        <p>PRÓXIMAMENTE</p>
+
+        <span></span>
+
+      </div>
+
+      <!-- HONDURAS Y USA -->
+
+      <div class="countries">
+
+        <div class="country">
+
+          <div class="flag">🇭🇳</div>
+
+          <h2>HONDURAS</h2>
+
+        </div>
+
+        <div class="connection">
+
+          🤝
+
+        </div>
+
+        <div class="country">
+
+          <div class="flag">🇺🇸</div>
+
+          <h2>ESTADOS UNIDOS</h2>
+
+        </div>
+
+      </div>
+
+      <div class="message">
+
+        <p class="soon">✦ ✦ MUY PRONTO ✦ ✦</p>
+
+        <h2>ALGO INCREÍBLE ESTÁ POR LLEGAR</h2>
+
+        <p class="description">
+
+          Conectando estilos entre Honduras y Estados Unidos
+
+        </p>
+
+        <button>
+
+          🔔 SÍGUENOS PARA MÁS NOVEDADES ♡
+
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- SECCIONES FUTURAS -->
+
+    <section id="categorias" class="info-section">
+
+  <h2>CATEGORÍAS</h2>
+
+  <p>Descubre próximamente nuestra colección.</p>
+
+  <div class="category-list">
+
+    <div>👕 ROPA</div>
+
+    <div>👟 CALZADO</div>
+
+    <div>🧢 ACCESORIOS</div>
+
+  </div>
+
+</section>
+
+<section id="nosotros" class="info-section">
+
+  <h2>SOBRE NOVAGUET</h2>
+
+  <p>
+
+    NOVAGUET es una marca que conecta estilos, cultura y moda
+
+    entre Honduras y Estados Unidos.
+
+  </p>
+
+</section>
+  </main>
+
+  <!-- PIE DE PÁGINA -->
+
+  <footer id="contacto">
+
+    <div class="footer-item">
+
+      <span>🛡️</span>
+
+      <div>
+
+        <h3>CALIDAD PREMIUM</h3>
+
+        <p>Productos seleccionados con el mejor estándar</p>
+
+      </div>
+
+    </div>
+
+    <div class="footer-item">
+
+      <span>🚚</span>
+
+      <div>
+
+        <h3>ENVÍOS NACIONALES</h3>
+
+        <p>A todo Honduras</p>
+
+      </div>
+
+    </div>
+
+    <div class="footer-item">
+
+      <span>🔒</span>
+
+      <div>
+
+        <h3>PAGO SEGURO</h3>
+
+        <p>Compra con confianza</p>
+
+      </div>
+
+    </div>
+
+    <div class="footer-item">
+
+      <span>🎧</span>
+
+      <div>
+
+        <h3>ATENCIÓN AL CLIENTE</h3>
+
+        <p>Estamos para ayudarte</p>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+  <script src="app.js"></script>
+
+</body>
+
+</html>
