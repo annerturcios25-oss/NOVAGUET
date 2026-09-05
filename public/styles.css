@@ -350,17 +350,17 @@ footer {
 
 }
 
-/* CELULAR */
+/* ADAPTACIÓN PARA TELÉFONOS */
 
 @media (max-width: 768px) {
 
-  .navbar {
+  footer {
 
-    flex-direction: column;
-
-    text-align: center;
+    grid-template-columns: 1fr;
 
   }
+
+}
 
   nav {
 
