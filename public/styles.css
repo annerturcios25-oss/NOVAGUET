@@ -458,6 +458,8 @@ footer {
 }
 
 .info-section h2 {
+  
+text-align: center;
 
   font-size: 32px;
 
@@ -468,6 +470,8 @@ footer {
 }
 
 .info-section p {
+
+text-align: center;
 
   color: #666;
 
