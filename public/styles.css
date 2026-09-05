@@ -458,14 +458,20 @@ footer {
 }
 
 .info-section h2 {
-  
-text-align: center;
+
+  text-align: center;
 
   font-size: 32px;
 
   margin-bottom: 15px;
 
   color: #111;
+
+}
+
+#categorias h2 {
+
+  color: #D4AF37;
 
 }
 
