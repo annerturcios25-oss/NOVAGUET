@@ -697,3 +697,75 @@ text-align: center;
   line-height: 1.5;
 
 }
+/* =========================================
+
+   MAPA / CONEXIÓN HONDURAS - USA
+
+   ========================================= */
+
+.about-map {
+
+    position: relative;
+
+    margin-top: 30px;
+
+    padding: 25px;
+
+    border-radius: 20px;
+
+    background: #fafafa;
+
+}
+
+.location-points {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+}
+
+.location {
+
+    text-align: center;
+
+}
+
+.location-icon {
+
+    width: 60px;
+
+    height: 60px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #fff;
+
+    border: 3px solid #D4AF37;
+
+    border-radius: 50%;
+
+    font-size: 28px;
+
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+
+}
+
+.location span {
+
+    display: block;
+
+    margin-top: 8px;
+
+    font-weight: 700;
+
+    color: #222;
+    }
