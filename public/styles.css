@@ -699,7 +699,7 @@ text-align: center;
 }
 
     :root {
-      --gold-color: #cbb06d;
+      --gold-color: #ece8de;
       --text-dark: #1f1f1f;
       --text-muted: #4a4a4a;
       --bg-card: #fcfbf9;
@@ -717,18 +717,17 @@ text-align: center;
     }
 
     /* Fondo de mapa abstracto punteado */
-    .world-map-bg {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 65%;
-      height: 100%;
-      opacity: 0.15;
-      background-image: radial-gradient(#888 1.5px, transparent 1.5px);
-      background-size: 12px 12px;
-      mask-image: linear-gradient(to right, transparent, black 30%);
-      -webkit-mask-image: linear-gradient(to right, transparent, black 30%);
-      pointer-events: none;
+ .world-map-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 100%;
+  opacity: 0.08;
+  background-image: radial-gradient(#888 1.5px, transparent 1.5px);
+  background-size: 12px 12px;
+  pointer-events: none;
+  z-index: 1; 
     }
 
     .content {
@@ -803,7 +802,7 @@ text-align: center;
       border-radius: 50%;
       transform: rotate(45deg);
       object-fit: cover;
-      border: 1.5px solid #fff;
+      border: 1.5px solid lab(97.14% 2.67 0.94);
     }
 
     .pin-honduras {
