@@ -697,95 +697,131 @@ text-align: center;
   line-height: 1.5;
 
 }
-/* =========================================
 
-   MAPA / CONEXIÓN HONDURAS - USA
-
-   ========================================= */
-
-.about-map {
-
-    position: relative;
-
-    margin-top: 30px;
-
-    padding: 25px;
-
-    border-radius: 20px;
-
-    background: #fafafa;
-
-}
-
-.location-points {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-}
-
-.location {
-
-    text-align: center;
-
-}
-
-.location-icon {
-
-    width: 60px;
-
-    height: 60px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background: #fff;
-
-    border: 3px solid #D4AF37;
-
-    border-radius: 50%;
-
-    font-size: 28px;
-
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
-
-}
-
-.location span {
-
-    display: block;
-
-    margin-top: 8px;
-
-    font-weight: 700;
-
-    color: #222;
+    :root {
+      --gold-color: #cbb06d;
+      --text-dark: #1f1f1f;
+      --text-muted: #4a4a4a;
+      --bg-card: #fcfbf9;
     }
 
-#nosotros {
-  background: #f0f0f0;
-  padding: 45px 20px;
-}
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      background-color: var(--bg-card);
+      border-radius: 20px;
+      padding: 40px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
 
-#nosotros h2 {
-  font-size: 26px;
-  margin-bottom: 10px;
-}
+    /* Fondo de mapa abstracto punteado */
+    .world-map-bg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 65%;
+      height: 100%;
+      opacity: 0.15;
+      background-image: radial-gradient(#888 1.5px, transparent 1.5px);
+      background-size: 12px 12px;
+      mask-image: linear-gradient(to right, transparent, black 30%);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 30%);
+      pointer-events: none;
+    }
 
-#nosotros p {
-  font-size: 15px;
-  margin-bottom: 15px;
-}
+    .content {
+      position: relative;
+      z-index: 2;
+      max-width: 380px;
+    }
 
-#nosotros .about-map {
-  margin-top: 15px;
-  padding: 15px;
-}
+    .title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .title span {
+      color: var(--gold-color);
+    }
+
+    .divider {
+      width: 50px;
+      height: 3px;
+      background-color: var(--gold-color);
+      margin-bottom: 24px;
+      border-radius: 2px;
+    }
+
+    .description {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Gráfico de la ruta y pines */
+    .route-container {
+      position: absolute;
+      right: 40px;
+      bottom: 40px;
+      width: 320px;
+      height: 180px;
+      z-index: 2;
+    }
+
+    /* Línea punteada curva usando SVG */
+    .flight-path {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    .pin {
+      position: absolute;
+      width: 44px;
+      height: 56px;
+      background-color: var(--gold-color);
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .pin-flag {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      transform: rotate(45deg);
+      object-fit: cover;
+      border: 1.5px solid #fff;
+    }
+
+    .pin-honduras {
+      left: 30px;
+      bottom: 40px;
+    }
+
+    .pin-usa {
+      right: 30px;
+      top: 20px;
+    }
+
+    .plane-icon {
+      position: absolute;
+      left: 50%;
+      top: 45%;
+      transform: translate(-50%, -50%) rotate(15deg);
+      color: var(--gold-color);
+      width: 28px;
+      height: 28px;
+    }
