@@ -424,12 +424,10 @@ footer {
 }
 
 /* NOSOTROS */
-
 .nosotros-menu {
   position: relative;
   display: inline-block;
 }
-
 .nosotros-cloud {
   display: none;
   position: absolute;
@@ -439,60 +437,55 @@ footer {
   width: 330px;
   z-index: 9999;
 }
-
 .nosotros-cloud.active,
 .nosotros-cloud.show {
   display: block;
 }
-
+/* NUBE NEGRA */
 .cloud-content {
   position: relative;
-  padding: 28px 25px;
-  background: #f8fdff;
-  border: 2px solid #35bce5;
+  padding: 30px 26px;
+  background: #050505;
+  border: 2px solid #050505;
   border-radius: 35px;
   text-align: center;
-  box-shadow: 0 8px 25px rgba(0, 191, 255, 0.20);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.30);
 }
-
+/* BURBUJAS DE LA NUBE */
 .cloud-content::before,
 .cloud-content::after {
   content: "";
   position: absolute;
-  background: #f8fdff;
-  border: 2px solid #35bce5;
+  background: #050505;
+  border: 2px solid #050505;
   border-radius: 50%;
 }
-
 .cloud-content::before {
-  width: 45px;
-  height: 45px;
-  top: -22px;
+  width: 48px;
+  height: 48px;
+  top: -24px;
   left: 45px;
 }
-
 .cloud-content::after {
-  width: 30px;
-  height: 30px;
-  top: -15px;
+  width: 32px;
+  height: 32px;
+  top: -16px;
   right: 50px;
 }
-
+/* TEXTO */
 .cloud-content h2,
 .cloud-content p {
   position: relative;
   z-index: 2;
 }
-
 .cloud-content h2 {
   margin: 0 0 15px;
-  color: #d4af37;
+  color: #ffffff;
   font-size: 20px;
 }
-
 .cloud-content p {
   margin: 8px 0;
-  color: #222;
+  color: #ffffff;
   font-size: 14px;
   line-height: 1.6;
 }
@@ -1733,4 +1726,72 @@ footer {
     box-sizing: border-box;
   }
 
+}
+/* ===== NOSOTROS - NUBE NEGRA ===== */
+
+.nosotros-cloud {
+  display: none !important;
+  position: absolute !important;
+  top: 42px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 330px !important;
+  z-index: 99999 !important;
+}
+
+.nosotros-cloud.active,
+.nosotros-cloud.show {
+  display: block !important;
+}
+
+.nosotros-cloud .cloud-content {
+  position: relative !important;
+  background: #000000 !important;
+  border: 2px solid #000000 !important;
+  border-radius: 35px !important;
+  padding: 30px 26px !important;
+  text-align: center !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,.30) !important;
+}
+
+.nosotros-cloud .cloud-content::before,
+.nosotros-cloud .cloud-content::after {
+  content: "" !important;
+  position: absolute !important;
+  background: #000000 !important;
+  border: 2px solid #000000 !important;
+  border-radius: 50% !important;
+}
+
+.nosotros-cloud .cloud-content::before {
+  width: 48px !important;
+  height: 48px !important;
+  top: -24px !important;
+  left: 45px !important;
+}
+
+.nosotros-cloud .cloud-content::after {
+  width: 32px !important;
+  height: 32px !important;
+  top: -16px !important;
+  right: 50px !important;
+}
+
+.nosotros-cloud .cloud-content h2 {
+  color: #ffffff !important;
+  margin: 0 0 15px !important;
+  font-size: 20px !important;
+}
+
+.nosotros-cloud .cloud-content p {
+  color: #ffffff !important;
+  margin: 8px 0 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+@media (max-width: 480px) {
+  .nosotros-cloud {
+    width: 290px !important;
+  }
 }
