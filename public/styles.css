@@ -1795,3 +1795,36 @@ footer {
     width: 290px !important;
   }
 }
+/* =====================================================
+   CONTADOR DEL CARRITO
+===================================================== */
+
+.cart-button {
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+
+  min-width: 19px;
+  height: 19px;
+
+  padding: 0 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #FFD700;
+  color: #000000;
+
+  border-radius: 50%;
+
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1;
+
+  box-sizing: border-box;
+}

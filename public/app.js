@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartButton =
     document.getElementById("cartButton");
 
+    const cartCount =
+  document.getElementById("cartCount");
+
   const cartBox =
     document.getElementById("cartBox");
 
@@ -30,9 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const cartItems =
     document.getElementById("cartItems");
-
-  const cartCount =
-    document.getElementById("cartCount");
 
   const cartSubtotal =
     document.getElementById("cartSubtotal");
@@ -2546,6 +2546,23 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
   }
+  /* =====================================================
+     CERRAR NOSOTROS AL TOCAR OTRA PARTE
+  ===================================================== */
+
+  document.addEventListener("click", event => {
+
+    if (
+      nosotrosCloud &&
+      nosotrosCloud.classList.contains("show") &&
+      !event.target.closest(".nosotros-menu")
+    ) {
+
+      nosotrosCloud.classList.remove("show");
+
+    }
+
+  });
 
 
   /* =====================================================
