@@ -1,859 +1,1622 @@
 * {
-
   margin: 0;
-
   padding: 0;
-
   box-sizing: border-box;
-
 }
 
 body {
-
   font-family: Arial, sans-serif;
-
   background: #f5f7f8;
-
   color: #111;
-
+  overflow-x: hidden;
 }
 
 /* ENCABEZADO */
 
 header {
-
   background: #050505;
-
   color: white;
-
 }
 
 .navbar {
-
   max-width: 1200px;
-
   margin: auto;
-
   min-height: 95px;
-
   padding: 15px 30px;
-
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
   gap: 25px;
-
 }
 
 .logo img {
-
-  width: 110px;
-
+  width: 120px;
   height: auto;
-
   display: block;
-
 }
 
 nav {
-
   display: flex;
-
   gap: 30px;
-
+  align-items: center;
 }
 
 nav a {
-
   color: white;
-
   text-decoration: none;
-
   font-size: 14px;
-
   font-weight: bold;
-
 }
 
 nav a:hover {
-
   color: #f5c400;
-
 }
 
 .icons {
-
   display: flex;
-
   gap: 15px;
-
+  align-items: center;
   font-size: 22px;
+}
 
+.icon-button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
 }
 
 .color-line {
-
   display: flex;
-
   height: 6px;
-
 }
 
 .color-line .blue {
-
   background: #35bce5;
-
   width: 40%;
-
 }
 
 .color-line .yellow {
-
   background: #f5c400;
-
   width: 20%;
-
 }
 
 .color-line .black {
-
   background: #111;
-
   width: 40%;
-
 }
 
 /* SECCIÓN PRINCIPAL */
 
 .hero {
-
   text-align: center;
-
   padding: 70px 20px 90px;
-  background-image: linear-gradient(
-
-    rgba(245, 247, 248, 0.88),
-
-    rgba(245, 247, 248, 0.88)
-
-  ), url("guacamaya.png.jpeg");
-
+  background-image:
+    linear-gradient(
+      rgba(245, 247, 248, 0.88),
+      rgba(245, 247, 248, 0.88)
+    ),
+    url("guacamaya.png.jpeg");
   background-size: cover;
-
   background-position: center;
-
   background-repeat: no-repeat;
-
-
 }
 
 .hero h1 {
-
-  font-size: 60px;
-
+  font-size: 68px;
   letter-spacing: 5px;
-
   margin-bottom: 20px;
-
 }
 
 .nova {
-
   color: #35bce5;
-
 }
 
 .guet {
-
   color: #f5c400;
-
 }
 
 .coming-soon {
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 15px;
-
   margin-bottom: 55px;
-
 }
 
 .coming-soon span {
-
   width: 70px;
-
   height: 2px;
-
   background: #f5c400;
-
 }
 
 .coming-soon p {
-
   font-weight: bold;
-
   letter-spacing: 4px;
-
   color: #555;
-
 }
 
 /* HONDURAS Y USA */
 
 .countries {
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 55px;
-
   margin-bottom: 50px;
-
 }
 
 .flag {
-
   font-size: 90px;
-
   margin-bottom: 10px;
-
 }
 
 .country h2 {
-
   font-size: 16px;
-
   letter-spacing: 2px;
-
 }
 
 .connection {
-
   font-size: 45px;
-
 }
 
 /* MENSAJE */
 
 .message .soon {
-
   color: #35bce5;
-
   font-weight: bold;
-
   letter-spacing: 3px;
-
   margin-bottom: 20px;
-
 }
 
 .message h2 {
-
   font-size: 28px;
-
   margin-bottom: 15px;
-
 }
 
 .description {
-
   color: #666;
-
   font-size: 18px;
-
   margin-bottom: 30px;
-
 }
 
 .message button {
-
-  background: #050505;
-
+  background: #c01717;
   color: white;
-
   border: 2px solid #f5c400;
-
   padding: 16px 25px;
-
   font-weight: bold;
-
   cursor: pointer;
-
   border-radius: 5px;
-
 }
 
 .message button:hover {
-
   transform: scale(1.05);
-
 }
 
 /* PIE DE PÁGINA */
 
 footer {
-
   background: #050505;
-
   color: white;
-
   padding: 45px 30px;
-
   display: grid;
-
   grid-template-columns: repeat(4, 1fr);
-
   gap: 30px;
-
 }
 
 .footer-item {
-
   display: flex;
-
   align-items: flex-start;
-
   gap: 15px;
-
 }
 
 .footer-item > span {
-
   font-size: 30px;
-
 }
 
 .footer-item h3 {
-
   font-size: 13px;
-
   margin-bottom: 8px;
-
 }
 
 .footer-item p {
-
   color: #aaa;
-
   font-size: 13px;
-
 }
 
 /* ADAPTACIÓN PARA TELÉFONOS */
 
 @media (max-width: 768px) {
 
-  body {
-    overflow-x: hidden;
-  }
-
-  footer {
-
-    grid-template-columns: 1fr;
-
-  }
-
-}
-
   nav {
-
     flex-wrap: wrap;
-
     justify-content: center;
-
     gap: 15px;
+  }
 
+  .navbar {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .hero h1 {
-
     font-size: 42px;
-
   }
 
   .countries {
-
     gap: 20px;
-
   }
 
   .flag {
-
     font-size: 55px;
-
   }
 
   .connection {
-
     font-size: 30px;
-
   }
 
   .country h2 {
-
     font-size: 11px;
-
   }
 
   footer {
-
     grid-template-columns: 1fr;
   }
 
 }
-<section id="categorias" class="info-section">
 
-  <h2>CATEGORÍAS</h2>
-
-  <p>Descubre próximamente nuestra colección.</p>
-
-  <div class="category-list">
-
-    <div>👕 ROPA</div>
-
-    <div>👟 CALZADO</div>
-
-    <div>🧢 ACCESORIOS</div>
-
-  </div>
-
-</section>
-
-<section id="nosotros" class="info-section">
-
-  <h2>SOBRE NOVAGUET</h2>
-
-  <p>
-
-    NOVAGUET es una marca que conecta estilos, cultura y moda
-
-    entre Honduras y Estados Unidos.
-
-  </p>
-
-</section>
 /* SECCIONES DE INFORMACIÓN */
 
 .info-section {
-
   text-align: center;
-
   padding: 80px 20px;
-
   background: white;
-
   border-top: 3px solid #35bce5;
-
 }
 
 .info-section h2 {
-
   text-align: center;
-
   font-size: 32px;
-
   margin-bottom: 15px;
-
   color: #111;
-
 }
 
 #categorias h2 {
-
   color: #D4AF37;
-
 }
 
 .info-section p {
-
-text-align: center;
-
+  text-align: center;
   color: #666;
-
   font-size: 18px;
-
   margin-bottom: 30px;
-
 }
 
 .category-list {
-
   display: flex;
-
   justify-content: center;
-
   gap: 20px;
-
   flex-wrap: wrap;
+}
 
+.category-list .category-button {
+  width: auto;
+  height: auto;
+  min-height: auto;
+  padding: 14px 28px;
+  display: inline-block;
+  box-sizing: border-box;
+  cursor: pointer;
 }
 
 .category-list div {
-
   background: #050505;
-
   color: white;
-
   padding: 25px 35px;
-
   border: 2px solid #f5c400;
-
   border-radius: 8px;
-
   font-weight: bold;
-
   min-width: 160px;
-
   cursor: pointer;
-
   transition: 0.3s;
-
 }
 
 .category-list div:hover {
-
   transform: translateY(-5px);
-
 }
+
 /* BUSCADOR */
 
-.icon-button {
-
-  background: transparent;
-
-  border: none;
-
-  color: white;
-
-  font-size: 22px;
-
-  cursor: pointer;
-
-}
-
 .search-box {
-
   display: none;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 10px;
-
   padding: 15px 20px;
-
   background: #050505;
-
 }
 
 .search-box.active {
-
   display: flex;
-
 }
 
 .search-box input {
-
   width: 300px;
-
   max-width: 80%;
-
   padding: 12px;
-
   border: 2px solid #35bce5;
-
   border-radius: 5px;
-
   font-size: 16px;
-
 }
 
 .search-box button {
-
   background: #f5c400;
-
   border: none;
-
   padding: 12px 15px;
-
   cursor: pointer;
-
   border-radius: 5px;
-
   font-weight: bold;
+}
 
-}/* CARRITO */
+/* CARRITO */
 
 .cart-box {
-
   position: fixed;
-
   top: 0;
-
   right: -400px;
-
   width: 350px;
-
   max-width: 90%;
-
   height: 100vh;
-
   background: white;
-
   color: #111;
-
   z-index: 1000;
-
   padding: 25px;
-
   box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
-
   transition: right 0.4s ease;
-
+  overflow-y: auto;
 }
 
 .cart-box.active {
-
   right: 0;
-
 }
 
 .cart-header {
-
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
-
   border-bottom: 3px solid #35bce5;
-
   padding-bottom: 15px;
-
 }
 
 .cart-header h2 {
-
   font-size: 20px;
-
 }
 
 .cart-header button {
-
   background: #f5c400;
-
   border: none;
-
   padding: 10px 14px;
-
   border-radius: 5px;
-
   cursor: pointer;
-
   font-size: 18px;
-
 }
 
 .cart-empty {
-
   text-align: center;
-
   padding-top: 100px;
-
 }
 
 .cart-empty span {
-
   font-size: 65px;
-
 }
 
 .cart-empty h3 {
-
   margin-top: 20px;
-
   font-size: 20px;
-
 }
 
 .cart-empty p {
-
   margin-top: 10px;
-
   color: #666;
-
   line-height: 1.5;
-
 }
 
-    :root {
-      --gold-color: #ece8de;
-      --text-dark: #1f1f1f;
-      --text-muted: #4a4a4a;
-      --bg-card: #fcfbf9;
-    }
+/* NOSOTROS */
 
-    .card {
-      position: relative;
-      width: 100%;
-      max-width: 800px;
-      background-color: var(--bg-card);
-      border-radius: 20px;
-      padding: 40px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
+.nosotros-menu {
+  position: relative;
+  display: inline-block;
+}
 
-    /* Fondo de mapa abstracto punteado */
- .world-map-bg {
+.nosotros-cloud {
+  display: none;
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 55%;
-  height: 100%;
-  opacity: 0.07;
-  background-image: radial-gradient(#888 1px, transparent 1px);
-  background-size: 14px 14px;
-  pointer-events: none;
-  z-index: 1; 
-    }
+  top: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 330px;
+  z-index: 9999;
+}
 
-    .content {
-      position: relative;
-      z-index: 2;
-      max-width: 380px;
-    }
+.nosotros-cloud.active,
+.nosotros-cloud.show {
+  display: block;
+}
 
-    .title {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--text-dark);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .title span {
-      color: var(--gold-color);
-    }
-
-    .divider {
-      width: 50px;
-      height: 3px;
-      background-color: var(--gold-color);
-      margin-bottom: 24px;
-      border-radius: 2px;
-    }
-
-    .description {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      color: var(--text-muted);
-      font-weight: 400;
-    }
-
-    /* Gráfico de la ruta y pines */
-    .route-container {
-      position: absolute;
-      right: 40px;
-      bottom: 40px;
-      width: 320px;
-      height: 180px;
-      z-index: 2;
-    }
-
-    /* Línea punteada curva usando SVG */
-    .flight-path {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-    }
-
-    .pin {
-      position: absolute;
-      width: 44px;
-      height: 56px;
-      background-color: var(--gold-color);
-      border-radius: 50% 50% 50% 0;
-      transform: rotate(-45deg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-
-    .pin-flag {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      transform: rotate(45deg);
-      object-fit: cover;
-      border: 1.5px solid lab(97.14% 2.67 0.94);
-    }
-
-    .pin-honduras {
-      left: 30px;
-      bottom: 40px;
-    }
-
-    .pin-usa {
-      right: 30px;
-      top: 20px;
-    }
-
-    .plane-icon {
-      position: absolute;
-      left: 50%;
-      top: 45%;
-      transform: translate(-50%, -50%) rotate(15deg);
-      color: var(--gold-color);
-      width: 28px;
-      height: 28px;
-    }
-.separador {
-
-  width: 100%;
-
-  padding: 35px 20px;
-
+.cloud-content {
+  position: relative;
+  padding: 28px 25px;
+  background: #f8fdff;
+  border: 2px solid #35bce5;
+  border-radius: 35px;
   text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 191, 255, 0.20);
+}
 
+.cloud-content::before,
+.cloud-content::after {
+  content: "";
+  position: absolute;
+  background: #f8fdff;
+  border: 2px solid #35bce5;
+  border-radius: 50%;
+}
+
+.cloud-content::before {
+  width: 45px;
+  height: 45px;
+  top: -22px;
+  left: 45px;
+}
+
+.cloud-content::after {
+  width: 30px;
+  height: 30px;
+  top: -15px;
+  right: 50px;
+}
+
+.cloud-content h2,
+.cloud-content p {
+  position: relative;
+  z-index: 2;
+}
+
+.cloud-content h2 {
+  margin: 0 0 15px;
+  color: #d4af37;
+  font-size: 20px;
+}
+
+.cloud-content p {
+  margin: 8px 0;
+  color: #222;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* PRODUCTOS */
+
+.productos-section {
+  width: 100%;
+  padding: 45px 20px;
+  text-align: center;
+  background: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+.productos-section h2 {
+  margin: 0 0 25px;
+  color: #d4af37;
+  font-size: 24px;
+  letter-spacing: 2px;
+}
+
+.product-list {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.product-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  position: relative;
+  z-index: 3;
+  color: #111;
+}
+
+.product-image {
+  width: 100%;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.product-card h3 {
+  color: #111;
+  margin: 15px 0 8px;
+  font-size: 18px;
+}
+
+.product-price {
+  color: #111;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.product-description {
+  color: #555;
+  margin: 5px 0 15px;
+}
+
+.product-card button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  background: #00BFFF;
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 191, 255, 0.35);
+}
+
+.product-card button:active {
+  transform: scale(0.97);
+}
+
+.product-card button:disabled {
+  background: #999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* CARRITO NOVAGUET */
+
+.cart-product {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 12px;
+  align-items: center;
+  background: #f8f8f8;
+  margin: 12px 0;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  text-align: left;
+}
+
+.cart-product h4 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.cart-product p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.cart-product-image {
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.cart-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.cart-quantity {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.cart-quantity button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: #000;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.cart-quantity span {
+  min-width: 25px;
+  font-size: 17px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.remove-button {
+  margin-top: 8px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #000;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cart-summary {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 2px solid #d4af37;
+}
+
+.cart-summary p {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* FINALIZAR COMPRA */
+
+.checkout-button {
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+  padding: 13px;
+  border: none;
+  border-radius: 7px;
+  background: #d4af37;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.checkout-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(212, 175, 55, 0.4);
+}
+
+.checkout-button:active {
+  transform: scale(0.97);
+}
+
+.checkout-box {
+  padding: 20px;
+}
+
+.checkout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.checkout-header h2 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.checkout-header button {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.checkout-box h3 {
+  margin: 18px 0 10px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.checkout-box input,
+.checkout-box textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  font-size: 14px;
+  outline: none;
+}
+
+.checkout-box textarea {
+  height: 80px;
+  resize: none;
+}
+
+.payment-option {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  background: #fff;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.payment-option:hover {
+  border-color: #d4af37;
+  transform: translateY(-2px);
+}
+
+.confirm-order {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 7px;
+  background: #d4af37;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.confirm-order:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(212, 175, 55, 0.35);
+}
+
+/* SEPARADOR */
+
+.separador {
+  width: 100%;
+  padding: 35px 20px;
+  text-align: center;
   background: #ffffff;
-
 }
 
 .separador h2 {
-
   margin: 0 0 8px;
-
   color: #d4af37;
-
   font-size: 24px;
-
   letter-spacing: 2px;
-
 }
 
 .separador p {
-
   margin: 0;
-
   color: #222;
-
   font-size: 14px;
+}
 
+/* RESPONSIVE PRODUCTOS Y CARRITO */
+
+@media (max-width: 480px) {
+
+  .navbar {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .logo img {
+    width: 100px;
+  }
+
+  nav {
+    width: 100%;
+    gap: 12px;
+  }
+
+  nav a {
+    font-size: 12px;
+  }
+
+  .icons {
+    gap: 10px;
+  }
+
+  .hero {
+    padding: 50px 15px 70px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .countries {
+    gap: 12px;
+  }
+
+  .flag {
+    font-size: 45px;
+  }
+
+  .connection {
+    font-size: 25px;
+  }
+
+  .country h2 {
+    font-size: 9px;
+  }
+
+  .productos-section {
+    padding: 35px 15px;
+  }
+
+  .product-list {
+    grid-template-columns: 1fr;
+  }
+
+  .product-image {
+    height: 260px;
+  }
+
+  .cart-box {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .nosotros-cloud {
+    width: 290px;
+  }
+
+}
+
+/* =========================
+   RECTÁNGULO INFORMACIÓN DE ENTREGA
+========================= */
+
+.payment-section {
+  background: #ffffff;
+  border: 2px solid #00BFFF;
+  border-radius: 16px;
+  padding: 25px;
+  margin: 20px auto;
+  max-width: 600px;
+  width: calc(100% - 30px);
+  box-sizing: border-box;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Título */
+.payment-section h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: #111111;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+/* Etiquetas */
+.payment-section label {
+  display: block;
+  margin: 15px 0 7px;
+  color: #222222;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Campos */
+.payment-section input,
+.payment-section textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d6d6d6;
+  border-radius: 9px;
+  box-sizing: border-box;
+  font-size: 15px;
+  background: #fafafa;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+/* Cuando el usuario toca un campo */
+.payment-section input:focus,
+.payment-section textarea:focus {
+  border-color: #00BFFF;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.12);
+  background: #ffffff;
+}
+
+/* Textarea */
+.payment-section textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* CELULAR */
+@media (max-width: 600px) {
+
+  .payment-section {
+    width: calc(100% - 24px);
+    padding: 20px 16px;
+    margin: 15px auto;
+    border-radius: 14px;
+  }
+
+  .payment-section h3 {
+    font-size: 18px;
+  }
+
+  .payment-section label {
+    font-size: 13px;
+  }
+
+  .payment-section input,
+  .payment-section textarea {
+    font-size: 14px;
+  }
+}
+/* =========================
+   CHECKOUT - TARJETAS
+========================= */
+
+.checkout-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 10px 15px 30px;
+  box-sizing: border-box;
+}
+
+.checkout-card {
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #00BFFF;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+}
+
+/* TÍTULOS */
+
+.checkout-card h3 {
+  margin: 0 0 22px;
+  text-align: center;
+  color: #111111;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* CAMPOS */
+
+.checkout-card label:not(.option-card) {
+  display: block;
+  margin: 15px 0 7px;
+  color: #222222;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.checkout-card input[type="text"],
+.checkout-card input[type="tel"],
+.checkout-card textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d5d5d5;
+  border-radius: 9px;
+  background: #fafafa;
+  font-size: 15px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.checkout-card textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* CAMPOS SELECCIONADOS */
+
+.checkout-card input[type="text"]:focus,
+.checkout-card input[type="tel"]:focus,
+.checkout-card textarea:focus {
+  border-color: #00BFFF;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.12);
+}
+
+
+/* =========================
+   OPCIONES DE ENTREGA Y PAGO
+========================= */
+
+.option-card {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 15px;
+  margin: 10px 0 !important;
+  background: #f8f8f8;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.option-card:hover {
+  border-color: #00BFFF;
+  background: #f5fcff;
+}
+
+.option-card input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #00BFFF;
+}
+
+.option-card span {
+  color: #222222;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+
+/* =========================
+   CELULAR
+========================= */
+
+@media (max-width: 600px) {
+
+  .checkout-container {
+    padding: 8px 12px 25px;
+  }
+
+  .checkout-card {
+    padding: 19px 15px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+  }
+
+  .checkout-card h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .checkout-card input[type="text"],
+  .checkout-card input[type="tel"],
+  .checkout-card textarea {
+    font-size: 14px;
+  }
+
+  .option-card {
+    padding: 13px;
+  }
+
+  .option-card span {
+    font-size: 14px;
+  }
+}
+/* =========================
+   DEPARTAMENTO DE ENTREGA
+========================= */
+
+.department-box {
+  display: none;
+  margin: 15px 0;
+  padding: 16px;
+  background: #f8f8f8;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+}
+
+.department-box.show {
+  display: block;
+}
+
+.department-box label {
+  display: block;
+  margin: 0 0 8px !important;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.department-box select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d5d5d5;
+  border-radius: 9px;
+  background: #ffffff;
+  font-size: 15px;
+  color: #222222;
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.department-box select:focus {
+  border-color: #00BFFF;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.12);
+}
+/* =========================
+   PUNTO DE RECOGIDA - COMAYAGUA
+========================= */
+
+.pickup-location {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  background: #ffffff;
+  border: 1px solid #d5d5d5;
+  border-radius: 9px;
+  font-size: 15px;
+  color: #222222;
+}
+
+/* =========================
+   CORRECCIONES NOVAGUET
+========================= */
+
+/* BUSCADOR */
+.search-box.show {
+  display: flex;
+}
+
+/* CARRITO */
+.cart-box.show {
+  right: 0;
+}
+
+/* CONTENEDOR DE IMAGEN DEL PRODUCTO */
+.product-image-container {
+  width: 100%;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+/* IMAGEN DEL PRODUCTO */
+.product-image-container img.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* EVITAR QUE LAS TARJETAS SE ESTIREN */
+.product-card {
+  min-width: 0;
+  width: 100%;
+}
+
+/* EVITAR QUE LA IMAGEN SE SALGA EN TELÉFONO */
+@media (max-width: 480px) {
+
+  .product-image-container {
+    height: 260px;
+    width: 100%;
+  }
+
+  .product-image-container img.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+}
+
+/* =====================================================
+   PANTALLA PEDIDO CONFIRMADO
+===================================================== */
+.success-result {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.96);
+  animation: successAppear 0.5s ease-out;
+}
+.success-circle {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 25px;
+}
+.success-check {
+  width: 120px;
+  height: 120px;
+  overflow: visible;
+}
+.success-circle-line {
+  fill: none;
+  stroke: #00BFFF;
+  stroke-width: 3;
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: drawCircle 0.8s ease forwards;
+}
+.success-check-line {
+  fill: none;
+  stroke: #FFD700;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 45;
+  stroke-dashoffset: 45;
+  animation: drawCheck 0.5s ease forwards;
+  animation-delay: 0.65s;
+}
+.success-result h2 {
+  margin: 10px 0;
+  font-size: 32px;
+  color: white;
+  animation: textAppear 0.6s ease forwards;
+  animation-delay: 1s;
+  opacity: 0;
+}
+.success-message {
+  font-size: 20px;
+  color: white;
+  margin: 8px 0 15px;
+  animation: textAppear 0.6s ease forwards;
+  animation-delay: 1.2s;
+  opacity: 0;
+}
+.success-message strong {
+  color: #FFD700;
+}
+.success-order-number {
+  color: #ccc;
+  font-size: 15px;
+  margin-bottom: 25px;
+  animation: textAppear 0.6s ease forwards;
+  animation-delay: 1.4s;
+  opacity: 0;
+}
+#backToStoreButton {
+  animation: textAppear 0.6s ease forwards;
+  animation-delay: 1.6s;
+  opacity: 0;
+}
+/* =====================================================
+   ANIMACIONES
+===================================================== */
+@keyframes successAppear {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes drawCircle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes textAppear {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* =================================================
+   BOTÓN VOLVER A LA TIENDA
+================================================= */
+
+#backToStoreButton {
+  width: auto;
+  display: inline-block;
+  padding: 12px 24px;
+}
+/* =========================================================
+   NOVAGUET — DISEÑO MINIMALISTA
+   TRANSFERENCIA BANCARIA
+========================================================= */
+
+#transferInfo {
+  margin-top: 18px;
+  animation: transferFadeIn 0.35s ease;
+}
+
+@keyframes transferFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================================
+   TARJETA DE DATOS BANCARIOS
+========================================================= */
+
+#transferInfo > div:first-child {
+  background: #ffffff !important;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px !important;
+  padding: 20px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  text-align: left;
+}
+
+
+#transferInfo h4 {
+  margin: 0 0 18px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #111111;
+}
+
+
+/* =========================================================
+   INFORMACIÓN DE LA CUENTA
+========================================================= */
+
+#bankAccountData {
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+
+#bankAccountData p {
+  margin: 9px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #444444;
+}
+
+
+#bankAccountData p:first-child {
+  margin-top: 0;
+}
+
+
+#bankAccountData p:last-child {
+  margin-bottom: 0;
+}
+
+
+#bankAccountData strong {
+  color: #111111;
+}
+
+
+/* =========================================================
+   NÚMERO DE CUENTA
+========================================================= */
+
+#bankAccountData p:nth-child(3) {
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 15px;
+}
+
+
+#bankAccountData p:nth-child(3) strong {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #777777;
+  margin-bottom: 3px;
+}
+
+
+/* =========================================================
+   MENSAJE DE INSTRUCCIÓN
+========================================================= */
+
+#bankAccountData p:last-child {
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid #eeeeee;
+  color: #666666;
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   DATOS DEL CLIENTE
+========================================================= */
+
+#transferInfo > div:last-child {
+  margin-top: 20px !important;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+
+#transferInfo > div:last-child::before {
+  content: "DATOS DE TU TRANSFERENCIA";
+  display: block;
+  margin-bottom: 18px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  color: #111111;
+}
+
+
+/* =========================================================
+   ETIQUETAS
+========================================================= */
+
+#transferInfo label {
+  display: block;
+  margin-top: 14px;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333333;
+}
+
+
+#transferInfo label:first-of-type {
+  margin-top: 0;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+#transferInfo input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+#transferInfo input::placeholder {
+  color: #aaaaaa;
+}
+
+
+#transferInfo input:focus {
+  border-color: #00BFFF;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.12);
+}
+
+
+/* =========================================================
+   SELECTOR DE BANCO
+========================================================= */
+
+#bankBox select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #222222;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+#bankBox select:focus {
+  border-color: #00BFFF;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.12);
+}
+
+
+/* =========================================================
+   RESPONSIVE — TELÉFONO
+========================================================= */
+
+@media (max-width: 600px) {
+
+  #transferInfo > div:first-child,
+  #transferInfo > div:last-child {
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
+
+
+  #bankAccountData {
+    padding: 13px;
+  }
+
+
+  #bankAccountData p {
+    font-size: 13px;
+  }
+
+
+  #bankAccountData p:nth-child(3) {
+    font-size: 14px;
+  }
+
+
+  #transferInfo input,
+  #bankBox select {
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+
+}
+.icon-button {
+  font-size: 27px;
 }

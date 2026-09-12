@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1789193530403,
+    "nombre": "Camisa de niño PAW PATROL",
+    "precio": 699,
+    "categoria": "Ropa",
+    "talla": "4T",
+    "descripcion": "camisa diseño paw patrol",
+    "imagen": "/images/1789193530401-1789193234564-camisa-paw-patrol.jpeg",
+    "stock": 4
+  },
+  {
+    "id": 1789213258405,
+    "nombre": "Sandalias blancas de niña",
+    "precio": 500,
+    "categoria": "Calzado",
+    "talla": "5",
+    "descripcion": "Sandalias bancas de niña, con moñitos.",
+    "imagen": "/images/1789213258402-sandalias-de-ni-a.jpeg",
+    "stock": 1
+  }
+]
