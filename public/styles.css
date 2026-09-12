@@ -1677,3 +1677,60 @@ footer {
   }
 
 }
+/* =====================================================
+   CARRITO — AJUSTE PARA TELÉFONO
+===================================================== */
+
+@media (max-width: 600px) {
+
+  .cart-box {
+    width: 100%;
+    max-width: 100%;
+    right: -100%;
+    left: auto;
+    height: 100dvh;
+    max-height: 100dvh;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .cart-box.show {
+    right: 0;
+  }
+
+  .cart-product {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .cart-product-info {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  .cart-product h4 {
+    overflow-wrap: anywhere;
+  }
+
+  .cart-summary {
+    width: 100%;
+    box-sizing: border-box;
+    padding-bottom: 25px;
+  }
+
+  .checkout-container {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .checkout-card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+}
