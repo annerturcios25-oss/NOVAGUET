@@ -2270,7 +2270,81 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
   }
+/* =====================================================
+   SONIDO DE COMPRA CONFIRMADA
+===================================================== */
 
+function reproducirSonidoConfirmacion() {
+
+  try {
+
+    const AudioContext =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioContext) return;
+
+    const audioContext =
+      new AudioContext();
+
+    const ahora =
+      audioContext.currentTime;
+
+    const oscilador =
+      audioContext.createOscillator();
+
+    const ganancia =
+      audioContext.createGain();
+
+    oscilador.type = "sine";
+
+    oscilador.frequency.setValueAtTime(
+      880,
+      ahora
+    );
+
+    oscilador.frequency.exponentialRampToValueAtTime(
+      1320,
+      ahora + 0.18
+    );
+
+    ganancia.gain.setValueAtTime(
+      0.0001,
+      ahora
+    );
+
+    ganancia.gain.exponentialRampToValueAtTime(
+      0.18,
+      ahora + 0.02
+    );
+
+    ganancia.gain.exponentialRampToValueAtTime(
+      0.0001,
+      ahora + 0.45
+    );
+
+    oscilador.connect(ganancia);
+
+    ganancia.connect(
+      audioContext.destination
+    );
+
+    oscilador.start(ahora);
+
+    oscilador.stop(
+      ahora + 0.45
+    );
+
+  } catch (error) {
+
+    console.log(
+      "No se pudo reproducir el sonido de confirmación.",
+      error
+    );
+
+  }
+
+}
 
   /* =====================================================
      RESULTADO EXITOSO
@@ -2375,6 +2449,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     mostrarPaso(stepResult);
+    reproducirSonidoConfirmacion();
 
 
     const backToStoreButton =
