@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>NOVAGUET | Administración</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top, #111 0%, #050505 45%, #000 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .login-box {
+      background: rgba(15, 15, 15, 0.96);
+      border: 1px solid rgba(0, 191, 255, 0.25);
+      border-radius: 24px;
+      padding: 38px 30px;
+      box-shadow:
+        0 0 35px rgba(0, 191, 255, 0.10),
+        0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .brand h1 {
+      font-size: 38px;
+      letter-spacing: 4px;
+      color: #00BFFF;
+      font-weight: 900;
+    }
+
+    .brand .gold-line {
+      width: 55px;
+      height: 3px;
+      background: #d4af37;
+      margin: 10px auto 14px;
+      border-radius: 10px;
+    }
+
+    .brand p {
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .title h2 {
+      font-size: 22px;
+      margin-bottom: 7px;
+    }
+
+    .title p {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #ccc;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 14px 45px 14px 15px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      background: #090909;
+      color: white;
+      outline: none;
+      font-size: 15px;
+      transition: 0.25s;
+    }
+
+    .input-wrapper input:focus {
+      border-color: #00BFFF;
+      box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.08);
+    }
+
+    .eye {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888;
+      font-size: 17px;
+      user-select: none;
+    }
+
+    .eye:hover {
+      color: #00BFFF;
+    }
+
+    .login-button {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 8px;
+      background: #00BFFF;
+      color: #000;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .login-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 191, 255, 0.25);
+    }
+
+    .login-button:active {
+      transform: translateY(0);
+    }
+
+    .error {
+      display: none;
+      margin-top: 15px;
+      padding: 11px;
+      border-radius: 10px;
+      background: rgba(255, 60, 60, 0.10);
+      border: 1px solid rgba(255, 60, 60, 0.25);
+      color: #ff6b6b;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      color: #777;
+      text-decoration: none;
+      font-size: 13px;
+      transition: 0.2s;
+    }
+
+    .back:hover {
+      color: #00BFFF;
+    }
+
+    .security {
+      text-align: center;
+      margin-top: 25px;
+      color: #555;
+      font-size: 11px;
+    }
+
+    @media (max-width: 480px) {
+      .login-box {
+        padding: 32px 22px;
+        border-radius: 20px;
+      }
+
+      .brand h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-container">
+
+    <div class="login-box">
+
+      <div class="brand">
+        <h1>NOVAGUET</h1>
+        <div class="gold-line"></div>
+        <p>Moda que habla por ti.</p>
+      </div>
+
+      <div class="title">
+        <h2>Panel de Administración</h2>
+        <p>Ingresa para administrar tu tienda</p>
+      </div>
+
+      <form id="loginForm">
+
+        <div class="input-group">
+          <label for="username">Usuario</label>
+
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="username"
+              placeholder="Ingresa tu usuario"
+              autocomplete="username"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="password">Contraseña</label>
+
+          <div class="input-wrapper">
+            <input
+              type="password"
+              id="password"
+              placeholder="Ingresa tu contraseña"
+              autocomplete="current-password"
+              required
+            >
+
+            <span class="eye" id="togglePassword">👁</span>
+          </div>
+        </div>
+
+        <button type="submit" class="login-button">
+          INICIAR SESIÓN
+        </button>
+
+        <div class="error" id="errorMessage">
+          Usuario o contraseña incorrectos.
+        </div>
+
+      </form>
+
+      <a href="/" class="back">
+        ← Volver a NOVAGUET
+      </a>
+
+      <div class="security">
+        Área exclusiva para administración
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const password = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    const errorMessage = document.getElementById("errorMessage");
+
+    togglePassword.addEventListener("click", () => {
+      if (password.type === "password") {
+        password.type = "text";
+        togglePassword.textContent = "🙈";
+      } else {
+        password.type = "password";
+        togglePassword.textContent = "👁";
+      }
+    });
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      errorMessage.style.display = "none";
+
+      const username =
+        document.getElementById("username").value.trim();
+
+      const passwordValue =
+        password.value;
+
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            username,
+            password: passwordValue
+          })
+        });
+
+        if (response.ok) {
+          window.location.href = "/admin.html";
+        } else {
+          errorMessage.style.display = "block";
+        }
+
+      } catch (error) {
+        errorMessage.textContent =
+          "No se pudo conectar con el servidor.";
+        errorMessage.style.display = "block";
+      }
+    });
+  </script>
+
+</body>
+</html>
