@@ -1,4 +1,4 @@
-const express = require("express");
+ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
@@ -855,6 +855,102 @@ app.get("/api/pedidos", protegerAdmin, (req, res) => {
     res.status(500).json({
 
       error: "No se pudieron cargar los pedidos."
+
+    });
+
+  }
+
+});
+
+/* =========================
+
+   CAMBIAR ESTADO DEL PEDIDO - SOLO ADMIN
+
+========================= */
+
+app.patch("/api/pedidos/:id/estado", protegerAdmin, (req, res) => {
+
+  try {
+
+    const { estado } = req.body;
+
+    const estadosPermitidos = [
+
+      "Pendiente",
+
+      "Confirmado",
+
+      "Preparando",
+
+      "Enviado",
+
+      "Entregado",
+
+      "Cancelado"
+
+    ];
+
+    if (!estadosPermitidos.includes(estado)) {
+
+      return res.status(400).json({
+
+        error: "Estado de pedido inválido."
+
+      });
+
+    }
+
+    const pedidos = JSON.parse(
+
+      fs.readFileSync(ordersFile, "utf8")
+
+    );
+
+    const pedido = pedidos.find(
+
+      p => String(p.id) === String(req.params.id)
+
+    );
+
+    if (!pedido) {
+
+      return res.status(404).json({
+
+        error: "Pedido no encontrado."
+
+      });
+
+    }
+
+    pedido.estado = estado;
+
+    pedido.estadoActualizado =
+
+      new Date().toISOString();
+
+    fs.writeFileSync(
+
+      ordersFile,
+
+      JSON.stringify(pedidos, null, 2)
+
+    );
+
+    res.json({
+
+      ok: true,
+
+      pedido
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+
+      error: "No se pudo actualizar el estado del pedido."
 
     });
 
