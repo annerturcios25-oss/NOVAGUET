@@ -680,19 +680,20 @@
       try {
 
         const respuesta =
-          await fetch(
-            "/api/productos/" + id,
-            {
-              method: "DELETE",
-              headers: {
-                "Authorization":
-                  "Basic " +
-                  btoa(
-                    "NOVAGUET:Novaguet/2005"
-                  )
-              }
-            }
-          );
+
+  await fetch(
+
+    "/api/productos/" + id,
+
+    {
+
+      method: "DELETE",
+
+      credentials: "include"
+
+    }
+
+  );
 
 
         if (!respuesta.ok) {
