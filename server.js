@@ -375,6 +375,27 @@ const productsFile =
     __dirname,
     "products.json"
   );
+  /* =========================
+
+   PEDIDOS
+
+========================= */
+
+const ordersFile = path.join(__dirname, "orders.json");
+
+/* Crear archivo de pedidos si no existe */
+
+if (!fs.existsSync(ordersFile)) {
+
+  fs.writeFileSync(
+
+    ordersFile,
+
+    JSON.stringify([], null, 2)
+
+  );
+
+}
 
 /* =========================
    CREAR PRODUCTOS INICIALES
@@ -445,6 +466,401 @@ app.get(
 
   }
 );
+/* =========================
+
+   CREAR PEDIDO
+
+   - Verifica stock
+
+   - Descuenta stock
+
+   - Guarda el pedido
+
+========================= */
+
+app.post("/api/pedidos", (req, res) => {
+
+  try {
+
+    const datos = req.body;
+
+    if (!datos || !datos.cliente || !Array.isArray(datos.productos) || datos.productos.length === 0) {
+
+      return res.status(400).json({
+
+        error: "Los datos del pedido están incompletos."
+
+      });
+
+    }
+
+    const productos = JSON.parse(
+
+      fs.readFileSync(productsFile, "utf8")
+
+    );
+
+    const pedidos = JSON.parse(
+
+      fs.readFileSync(ordersFile, "utf8")
+
+    );
+
+    /* =========================
+
+       VERIFICAR PRODUCTOS Y STOCK
+
+    ========================= */
+
+    for (const item of datos.productos) {
+
+      const cantidad = Number(item.cantidad);
+
+      if (!Number.isInteger(cantidad) || cantidad <= 0) {
+
+        return res.status(400).json({
+
+          error: "Cantidad de producto inválida."
+
+        });
+
+      }
+
+      const producto = productos.find(
+
+        p => String(p.id) === String(item.id)
+
+      );
+
+      if (!producto) {
+
+        return res.status(404).json({
+
+          error: `El producto "${item.nombre || item.id}" ya no está disponible.`
+
+        });
+
+      }
+
+      /* STOCK POR TALLA */
+
+      if (
+
+        producto.stockPorTalla &&
+
+        typeof producto.stockPorTalla === "object"
+
+      ) {
+
+        const talla = item.talla || "";
+
+        if (!Object.prototype.hasOwnProperty.call(
+
+          producto.stockPorTalla,
+
+          talla
+
+        )) {
+
+          return res.status(409).json({
+
+            error: `La talla ${talla || "seleccionada"} de "${producto.nombre}" no está disponible.`
+
+          });
+
+        }
+
+        const stockDisponible = Number(
+
+          producto.stockPorTalla[talla]
+
+        );
+
+        if (cantidad > stockDisponible) {
+
+          return res.status(409).json({
+
+            error: `No hay suficiente stock de "${producto.nombre}" en talla ${talla}. Stock disponible: ${stockDisponible}.`
+
+          });
+
+        }
+
+      } else {
+
+        /* STOCK GENERAL */
+
+        const stockDisponible = Number(producto.stock);
+
+        if (!Number.isFinite(stockDisponible)) {
+
+          return res.status(409).json({
+
+            error: `El producto "${producto.nombre}" no tiene stock configurado.`
+
+          });
+
+        }
+
+        if (cantidad > stockDisponible) {
+
+          return res.status(409).json({
+
+            error: `No hay suficiente stock de "${producto.nombre}". Stock disponible: ${stockDisponible}.`
+
+          });
+
+        }
+
+      }
+
+    }
+
+    /* =========================
+
+       CALCULAR TOTAL REAL
+
+       USANDO LOS PRECIOS DEL SERVIDOR
+
+    ========================= */
+
+    let subtotal = 0;
+
+    const productosPedido = datos.productos.map(item => {
+
+      const producto = productos.find(
+
+        p => String(p.id) === String(item.id)
+
+      );
+
+      const cantidad = Number(item.cantidad);
+
+      const precio = Number(producto.precio);
+
+      subtotal += precio * cantidad;
+
+      return {
+
+        id: producto.id,
+
+        nombre: producto.nombre,
+
+        precio: precio,
+
+        cantidad: cantidad,
+
+        talla: item.talla || "",
+
+        imagen: producto.imagen || ""
+
+      };
+
+    });
+
+    /* =========================
+
+       DESCUENTO NOVA15
+
+    ========================= */
+
+    const codigoPromocional =
+
+      String(datos.codigoPromocional || "").trim().toUpperCase();
+
+    const descuento =
+
+      codigoPromocional === "NOVA15"
+
+        ? subtotal * 0.15
+
+        : 0;
+
+    const total = subtotal - descuento;
+
+    /* =========================
+
+       DESCONTAR STOCK
+
+    ========================= */
+
+    for (const item of datos.productos) {
+
+      const producto = productos.find(
+
+        p => String(p.id) === String(item.id)
+
+      );
+
+      const cantidad = Number(item.cantidad);
+
+      if (
+
+        producto.stockPorTalla &&
+
+        typeof producto.stockPorTalla === "object"
+
+      ) {
+
+        const talla = item.talla || "";
+
+        producto.stockPorTalla[talla] =
+
+          Number(producto.stockPorTalla[talla]) - cantidad;
+
+      } else {
+
+        producto.stock =
+
+          Number(producto.stock) - cantidad;
+
+      }
+
+    }
+
+    /* =========================
+
+       CREAR NÚMERO DE PEDIDO
+
+    ========================= */
+
+    const numeroPedido =
+
+      "NV-" + Date.now().toString().slice(-8);
+
+    const pedidoGuardado = {
+
+      id: numeroPedido,
+
+      fecha: new Date().toISOString(),
+
+      estado: "Pendiente",
+
+      cliente: {
+
+        nombre: datos.cliente.nombre || "",
+
+        telefono: datos.cliente.telefono || "",
+
+        direccion: datos.cliente.direccion || "",
+
+        ciudad: datos.cliente.ciudad || "",
+
+        departamento: datos.cliente.departamento || "",
+
+        referencia: datos.cliente.referencia || ""
+
+      },
+
+      entrega: datos.entrega || {},
+
+      pago: datos.pago || {},
+
+      productos: productosPedido,
+
+      subtotal: subtotal,
+
+      descuento: descuento,
+
+      codigoPromocional:
+
+        codigoPromocional === "NOVA15"
+
+          ? "NOVA15"
+
+          : "",
+
+      total: total
+
+    };
+
+    /* =========================
+
+       GUARDAR CAMBIOS
+
+    ========================= */
+
+    pedidos.push(pedidoGuardado);
+
+    fs.writeFileSync(
+
+      productsFile,
+
+      JSON.stringify(productos, null, 2)
+
+    );
+
+    fs.writeFileSync(
+
+      ordersFile,
+
+      JSON.stringify(pedidos, null, 2)
+
+    );
+
+    res.json({
+
+      ok: true,
+
+      mensaje: "Pedido recibido correctamente.",
+
+      pedido: pedidoGuardado
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+
+      error: "No se pudo procesar el pedido."
+
+    });
+
+  }
+
+});
+
+/* =========================
+
+   VER PEDIDOS - SOLO ADMIN
+
+========================= */
+
+app.get("/api/pedidos", protegerAdmin, (req, res) => {
+
+  try {
+
+    const pedidos = JSON.parse(
+
+      fs.readFileSync(ordersFile, "utf8")
+
+    );
+
+    pedidos.sort(
+
+      (a, b) =>
+
+        new Date(b.fecha) - new Date(a.fecha)
+
+    );
+
+    res.json(pedidos);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+
+      error: "No se pudieron cargar los pedidos."
+
+    });
+
+  }
+
+});
 
 /* =========================
    OBTENER PRODUCTOS
@@ -469,6 +885,7 @@ app.get(
       res.json(
         productos
       );
+      
 
     } catch (error) {
 
