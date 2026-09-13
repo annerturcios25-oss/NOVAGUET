@@ -821,25 +821,24 @@
           }
 
 
-          const respuesta =
-            await fetch(
-              url,
-              {
-                method: metodo,
+const respuesta =
 
-                headers: {
-                  "Authorization":
-                    "Basic " +
-                    btoa(
-                      "NOVAGUET:Novaguet/2005"
-                    )
-                },
+  await fetch(
 
-                body: formData
+    url,
 
-              }
-            );
+    {
 
+      method: metodo,
+
+      credentials: "include",
+
+      body: formData
+
+    }
+
+  );
+          
 
           if (!respuesta.ok) {
 
