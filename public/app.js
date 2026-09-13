@@ -2741,9 +2741,8 @@ if (cartTotal) {
   ) {
 
     confirmOrderButton.addEventListener(
-      "click",
-      () => {
-
+     "click",
+async () => {
         try {
 
           if (
@@ -2999,42 +2998,67 @@ if (cartTotal) {
 
           };
 
+/* =============================================
 
-          /* =============================================
-             GUARDAR PEDIDO
-          ============================================= */
+   ENVIAR PEDIDO AL SERVIDOR
 
-          const pedidosGuardados =
-            JSON.parse(
-              localStorage.getItem(
-                "novaguetPedidos"
-              )
-            ) || [];
+============================================= */
 
+const respuesta = await fetch(
 
-          pedidosGuardados.push(
-            pedido
-          );
+  "/api/pedidos",
 
+  {
 
-          localStorage.setItem(
-            "novaguetPedidos",
-            JSON.stringify(
-              pedidosGuardados
-            )
-          );
+    method: "POST",
 
+    headers: {
 
-          /* =============================================
-             MOSTRAR ÉXITO
-          ============================================= */
+      "Content-Type": "application/json"
 
-          mostrarResultadoExito(
-            numeroPedido,
-            paymentMethod
-          );
+    },
 
+    body: JSON.stringify(pedido)
 
+  }
+
+);
+
+const resultado =
+
+  await respuesta.json();
+
+if (!respuesta.ok) {
+
+  mostrarResultadoError(
+
+    resultado.error ||
+
+    "No se pudo procesar el pedido."
+
+  );
+
+  return;
+
+}
+
+/* PEDIDO CONFIRMADO */
+
+mostrarResultadoExito(
+
+  resultado.pedido.id,
+
+  paymentMethod
+
+);
+
+carrito = [];
+
+guardarCarrito();
+
+mostrarCarrito();
+        
+          
           /* =============================================
              LIMPIAR CARRITO
           ============================================= */
