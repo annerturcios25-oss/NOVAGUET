@@ -22,8 +22,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartButton =
     document.getElementById("cartButton");
 
-    const cartCount =
-  document.getElementById("cartCount");
+  const cartCount =
+    document.getElementById("cartCount");
+    const promoCode =
+  document.getElementById("promoCode");
+
+const applyPromo =
+  document.getElementById("applyPromo");
+
+const promoMessage =
+  document.getElementById("promoMessage");
+
+let descuentoPromocional = 0;
+let codigoPromocionalAplicado = "";
 
   const cartBox =
     document.getElementById("cartBox");
@@ -186,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =====================================================
-     CONTADOR
+     CONTADOR DEL CARRITO
   ===================================================== */
 
   function actualizarContadorCarrito() {
@@ -196,11 +207,110 @@ document.addEventListener("DOMContentLoaded", () => {
     const cantidad =
       carrito.reduce(
         (total, producto) =>
-          total + producto.cantidad,
+          total +
+          (Number(producto.cantidad) || 0),
         0
       );
 
     cartCount.textContent = cantidad;
+
+  }
+
+
+  /* =====================================================
+     OBTENER TALLAS
+  ===================================================== */
+
+  function obtenerTallas(producto) {
+
+    if (
+      Array.isArray(producto.tallas) &&
+      producto.tallas.length > 0
+    ) {
+
+      return producto.tallas
+        .map(talla => String(talla))
+        .filter(talla => talla.trim() !== "");
+
+    }
+
+
+    if (producto.talla) {
+
+      return [
+        String(producto.talla)
+      ];
+
+    }
+
+
+    return [];
+
+  }
+
+
+  /* =====================================================
+     OBTENER STOCK
+  ===================================================== */
+
+  function obtenerStock(
+    producto,
+    talla = ""
+  ) {
+
+    /*
+     * Si existe stock por talla:
+     *
+     * stockPorTalla: {
+     *   "2T": 2,
+     *   "3T": 4,
+     *   "4T": 3
+     * }
+     */
+
+    if (
+      producto &&
+      producto.stockPorTalla &&
+      typeof producto.stockPorTalla === "object"
+    ) {
+
+      const stockTalla =
+        producto.stockPorTalla[talla];
+
+      if (
+        stockTalla !== undefined &&
+        stockTalla !== null
+      ) {
+
+        return Number(stockTalla);
+
+      }
+
+    }
+
+
+    /*
+     * Si no hay stock por talla,
+     * usamos el stock general.
+     */
+
+    if (
+      producto &&
+      producto.stock !== undefined &&
+      producto.stock !== null
+    ) {
+
+      return Number(producto.stock);
+
+    }
+
+
+    /*
+     * Si el producto no tiene stock
+     * definido, no limitamos.
+     */
+
+    return Infinity;
 
   }
 
@@ -216,18 +326,89 @@ document.addEventListener("DOMContentLoaded", () => {
       const respuesta =
         await fetch("/api/productos");
 
+
       if (!respuesta.ok) {
+
         throw new Error(
           "No se pudieron cargar los productos"
         );
+
       }
+
 
       productos =
         await respuesta.json();
 
+
+      /*
+       * Actualizar stock guardado en el carrito
+       * con la información actual del servidor.
+       */
+
+      carrito =
+        carrito.filter(item => {
+
+          const productoActual =
+            productos.find(
+              producto =>
+                Number(producto.id) ===
+                Number(item.id)
+            );
+
+          return !!productoActual;
+
+        });
+
+
+      carrito.forEach(item => {
+
+        const productoActual =
+          productos.find(
+            producto =>
+              Number(producto.id) ===
+              Number(item.id)
+          );
+
+
+        if (!productoActual) return;
+
+
+        const stockActual =
+          obtenerStock(
+            productoActual,
+            item.talla || ""
+          );
+
+
+        if (
+          stockActual !== Infinity &&
+          Number(item.cantidad) > stockActual
+        ) {
+
+          item.cantidad =
+            Math.max(
+              0,
+              stockActual
+            );
+
+        }
+
+      });
+
+
+      carrito =
+        carrito.filter(
+          item =>
+            Number(item.cantidad) > 0
+        );
+
+
+      guardarCarrito();
+
       mostrarProductos(productos);
 
       mostrarCarrito();
+
 
     } catch (error) {
 
@@ -235,6 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Error cargando productos:",
         error
       );
+
 
       if (productsContainer) {
 
@@ -259,10 +441,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!productsContainer) return;
 
+
     productsContainer.innerHTML = "";
 
 
-    if (!lista || lista.length === 0) {
+    if (
+      !lista ||
+      lista.length === 0
+    ) {
 
       productsContainer.innerHTML = `
         <p style="text-align:center;">
@@ -280,7 +466,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const card =
         document.createElement("div");
 
-      card.className = "product-card";
+
+      card.className =
+        "product-card";
+
+
+      const tallas =
+        obtenerTallas(producto);
+
+
+      const tallaInicial =
+        tallas.length > 0
+          ? tallas[0]
+          : "";
 
 
       card.innerHTML = `
@@ -295,39 +493,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
         </div>
 
+
         <div class="product-info">
 
           <h3>
             ${producto.nombre}
           </h3>
 
+
           <p class="product-price">
             HNL ${Number(producto.precio).toLocaleString("es-HN")}
           </p>
 
+
           ${
-            producto.talla
+            tallas.length > 0
               ? `
-                <p class="product-size">
-                  Talla: ${producto.talla}
-                </p>
+
+                <div class="product-size-selector">
+
+                  <span class="product-size-title">
+                    Talla:
+                  </span>
+
+
+                  <div class="size-options">
+
+                    ${
+                      tallas
+                        .map(
+                          (talla, index) => `
+
+                            <button
+                              type="button"
+                              class="size-option ${
+                                index === 0
+                                  ? "selected"
+                                  : ""
+                              }"
+                              data-size="${talla}"
+                            >
+                              ${talla}
+                            </button>
+
+                          `
+                        )
+                        .join("")
+                    }
+
+                  </div>
+
+                </div>
+
               `
               : ""
           }
 
-          ${
-            producto.categoria
-              ? `
-                <p class="product-category">
-                  ${producto.categoria}
-                </p>
-              `
-              : ""
-          }
 
           <button
             class="add-to-cart"
             data-id="${producto.id}"
+            type="button"
           >
             Agregar al carrito
           </button>
@@ -339,26 +565,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
       productsContainer.appendChild(card);
 
-    });
+
+      /* =================================================
+         SELECCIÓN DE TALLA
+      ================================================= */
+
+      const sizeButtons =
+        card.querySelectorAll(
+          ".size-option"
+        );
 
 
-    productsContainer
-      .querySelectorAll(".add-to-cart")
-      .forEach(button => {
+      let tallaSeleccionada =
+        tallaInicial;
 
-        button.addEventListener(
+
+      sizeButtons.forEach(
+        sizeButton => {
+
+          sizeButton.addEventListener(
+            "click",
+            () => {
+
+              sizeButtons.forEach(
+                button => {
+
+                  button.classList.remove(
+                    "selected"
+                  );
+
+                }
+              );
+
+
+              sizeButton.classList.add(
+                "selected"
+              );
+
+
+              tallaSeleccionada =
+                sizeButton.dataset.size;
+
+            }
+          );
+
+        }
+      );
+
+
+      /* =================================================
+         BOTÓN AGREGAR
+      ================================================= */
+
+      const addButton =
+        card.querySelector(
+          ".add-to-cart"
+        );
+
+
+      if (addButton) {
+
+        addButton.addEventListener(
           "click",
           () => {
 
             const id =
-              Number(button.dataset.id);
+              Number(
+                addButton.dataset.id
+              );
 
-            agregarAlCarrito(id);
+
+            agregarAlCarrito(
+              id,
+              tallaSeleccionada
+            );
 
           }
         );
 
-      });
+      }
+
+    });
 
   }
 
@@ -371,6 +658,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!searchInput) return;
 
+
     const texto =
       searchInput.value
         .toLowerCase()
@@ -379,7 +667,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!texto) {
 
-      mostrarProductos(productos);
+      mostrarProductos(
+        productos
+      );
 
       return;
 
@@ -387,34 +677,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const resultados =
-      productos.filter(producto => {
+      productos.filter(
+        producto => {
 
-        const nombre =
-          String(
-            producto.nombre || ""
-          ).toLowerCase();
-
-        const categoria =
-          String(
-            producto.categoria || ""
-          ).toLowerCase();
-
-        const talla =
-          String(
-            producto.talla || ""
-          ).toLowerCase();
+          const nombre =
+            String(
+              producto.nombre || ""
+            ).toLowerCase();
 
 
-        return (
-          nombre.includes(texto) ||
-          categoria.includes(texto) ||
-          talla.includes(texto)
-        );
-
-      });
+          const categoria =
+            String(
+              producto.categoria || ""
+            ).toLowerCase();
 
 
-    mostrarProductos(resultados);
+          const talla =
+            obtenerTallas(producto)
+              .join(" ")
+              .toLowerCase();
+
+
+          return (
+            nombre.includes(texto) ||
+            categoria.includes(texto) ||
+            talla.includes(texto)
+          );
+
+        }
+      );
+
+
+    mostrarProductos(
+      resultados
+    );
 
   }
 
@@ -423,16 +719,24 @@ document.addEventListener("DOMContentLoaded", () => {
      BUSCADOR
   ===================================================== */
 
-  if (searchButton && searchBox) {
+  if (
+    searchButton &&
+    searchBox
+  ) {
 
     searchButton.addEventListener(
       "click",
       () => {
 
-        searchBox.classList.add("show");
+        searchBox.classList.add(
+          "show"
+        );
+
 
         if (searchInput) {
+
           searchInput.focus();
+
         }
 
       }
@@ -441,19 +745,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  if (closeSearch && searchBox) {
+  if (
+    closeSearch &&
+    searchBox
+  ) {
 
     closeSearch.addEventListener(
       "click",
       () => {
 
-        searchBox.classList.remove("show");
+        searchBox.classList.remove(
+          "show"
+        );
+
 
         if (searchInput) {
+
           searchInput.value = "";
+
         }
 
-        mostrarProductos(productos);
+
+        mostrarProductos(
+          productos
+        );
 
       }
     );
@@ -475,34 +790,88 @@ document.addEventListener("DOMContentLoaded", () => {
      AGREGAR AL CARRITO
   ===================================================== */
 
-  function agregarAlCarrito(id) {
+  function agregarAlCarrito(
+    id,
+    tallaSeleccionada = ""
+  ) {
 
     const producto =
       productos.find(
         item =>
-          Number(item.id) === Number(id)
+          Number(item.id) ===
+          Number(id)
       );
 
 
     if (!producto) return;
 
 
+    const tallas =
+      obtenerTallas(producto);
+
+
+    /*
+     * Si solo existe una talla,
+     * la seleccionamos automáticamente.
+     */
+
+    if (
+      !tallaSeleccionada &&
+      tallas.length === 1
+    ) {
+
+      tallaSeleccionada =
+        tallas[0];
+
+    }
+
+
+    /*
+     * Si existen varias tallas
+     * pero no hay una seleccionada.
+     */
+
+    if (
+      tallas.length > 1 &&
+      !tallaSeleccionada
+    ) {
+
+      alert(
+        "Selecciona una talla antes de agregar el producto."
+      );
+
+      return;
+
+    }
+
+
+    const stockDisponible =
+      obtenerStock(
+        producto,
+        tallaSeleccionada
+      );
+
+
     const productoExistente =
       carrito.find(
         item =>
-          Number(item.id) === Number(id)
+          Number(item.id) ===
+            Number(id) &&
+          String(item.talla || "") ===
+            String(tallaSeleccionada || "")
       );
 
 
     if (productoExistente) {
 
       if (
-        producto.stock !== undefined &&
-        productoExistente.cantidad >= producto.stock
+        stockDisponible !== Infinity &&
+        Number(productoExistente.cantidad) >=
+          stockDisponible
       ) {
 
         alert(
-          "No hay más unidades disponibles de este producto."
+          "No hay más unidades disponibles de esta talla."
         );
 
         return;
@@ -514,22 +883,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } else {
 
+      /*
+       * Si ya no hay stock.
+       */
+
+      if (
+        stockDisponible !== Infinity &&
+        stockDisponible <= 0
+      ) {
+
+        alert(
+          "Esta talla no está disponible."
+        );
+
+        return;
+
+      }
+
+
       carrito.push({
 
-        id: producto.id,
+        id:
+          producto.id,
 
-        nombre: producto.nombre,
+        nombre:
+          producto.nombre,
 
-        precio: Number(producto.precio),
+        precio:
+          Number(producto.precio),
 
-        imagen: producto.imagen,
+        imagen:
+          producto.imagen,
 
-        talla: producto.talla || "",
+        talla:
+          tallaSeleccionada,
 
         categoria:
           producto.categoria || "",
 
-        cantidad: 1
+        cantidad:
+          1,
+
+        stock:
+          stockDisponible !== Infinity
+            ? stockDisponible
+            : undefined
 
       });
 
@@ -553,22 +951,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!cartItems) return;
 
+
     cartItems.innerHTML = "";
 
 
-    if (carrito.length === 0) {
+    if (
+      carrito.length === 0
+    ) {
 
       if (cartEmpty) {
-        cartEmpty.style.display = "block";
+
+        cartEmpty.style.display =
+          "block";
+
       }
+
 
       if (cartSubtotal) {
-        cartSubtotal.textContent = "HNL 0";
+
+        cartSubtotal.textContent =
+          "HNL 0";
+
       }
 
+
       if (cartTotal) {
-        cartTotal.textContent = "HNL 0";
+
+        cartTotal.textContent =
+          "HNL 0";
+
       }
+
 
       actualizarContadorCarrito();
 
@@ -578,7 +991,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     if (cartEmpty) {
-      cartEmpty.style.display = "none";
+
+      cartEmpty.style.display =
+        "none";
+
     }
 
 
@@ -590,15 +1006,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const cantidad =
         Number(producto.cantidad) || 1;
 
+
       const precio =
         Number(producto.precio) || 0;
+
 
       subtotal +=
         precio * cantidad;
 
 
       const item =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       item.className =
         "cart-product";
@@ -612,11 +1033,13 @@ document.addEventListener("DOMContentLoaded", () => {
           class="cart-product-image"
         >
 
+
         <div class="cart-product-info">
 
           <h4>
             ${producto.nombre}
           </h4>
+
 
           ${
             producto.talla
@@ -628,33 +1051,47 @@ document.addEventListener("DOMContentLoaded", () => {
               : ""
           }
 
+
           <p>
             HNL ${precio.toLocaleString("es-HN")}
           </p>
+
 
           <div class="cart-quantity">
 
             <button
               class="quantity-minus"
-              data-id="${producto.id}">
+              data-id="${producto.id}"
+              data-talla="${producto.talla || ""}"
+              type="button"
+            >
               −
             </button>
+
 
             <span>
               ${cantidad}
             </span>
 
+
             <button
               class="quantity-plus"
-              data-id="${producto.id}">
+              data-id="${producto.id}"
+              data-talla="${producto.talla || ""}"
+              type="button"
+            >
               +
             </button>
 
           </div>
 
+
           <button
             class="remove-product"
-            data-id="${producto.id}">
+            data-id="${producto.id}"
+            data-talla="${producto.talla || ""}"
+            type="button"
+          >
             Eliminar
           </button>
 
@@ -663,35 +1100,50 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
 
 
-      cartItems.appendChild(item);
+      cartItems.appendChild(
+        item
+      );
 
     });
 
+const descuento =
+  subtotal * descuentoPromocional;
 
-    const totalFormateado =
-      "HNL " +
-      subtotal.toLocaleString("es-HN");
+const totalConDescuento =
+  subtotal - descuento;
 
+const totalFormateado =
+  "HNL " +
+  totalConDescuento.toLocaleString(
+    "es-HN"
+  );
 
-    if (cartSubtotal) {
-      cartSubtotal.textContent =
-        totalFormateado;
-    }
+if (cartSubtotal) {
 
+  cartSubtotal.textContent =
+    "HNL " +
+    subtotal.toLocaleString("es-HN");
 
-    if (cartTotal) {
-      cartTotal.textContent =
-        totalFormateado;
-    }
+}
 
+if (cartTotal) {
+
+  cartTotal.textContent =
+    totalFormateado;
+
+}
 
     actualizarContadorCarrito();
 
 
-    /* AUMENTAR */
+    /* =================================================
+       AUMENTAR
+    ================================================= */
 
     cartItems
-      .querySelectorAll(".quantity-plus")
+      .querySelectorAll(
+        ".quantity-plus"
+      )
       .forEach(button => {
 
         button.addEventListener(
@@ -699,17 +1151,78 @@ document.addEventListener("DOMContentLoaded", () => {
           () => {
 
             const id =
-              Number(button.dataset.id);
+              Number(
+                button.dataset.id
+              );
+
+
+            const talla =
+              String(
+                button.dataset.talla || ""
+              );
+
 
             const producto =
               carrito.find(
                 item =>
-                  Number(item.id) === id
+                  Number(item.id) ===
+                    id &&
+                  String(
+                    item.talla || ""
+                  ) === talla
               );
+
 
             if (!producto) return;
 
+
+            /*
+             * Buscamos el producto actual
+             * en el servidor.
+             */
+
+            const productoActual =
+              productos.find(
+                item =>
+                  Number(item.id) ===
+                  id
+              );
+
+
+            let stockDisponible =
+              producto.stock;
+
+
+            if (productoActual) {
+
+              stockDisponible =
+                obtenerStock(
+                  productoActual,
+                  talla
+                );
+
+            }
+
+
+            if (
+              stockDisponible !== undefined &&
+              stockDisponible !== null &&
+              stockDisponible !== Infinity &&
+              Number(producto.cantidad) >=
+                Number(stockDisponible)
+            ) {
+
+              alert(
+                "No hay más unidades disponibles de esta talla."
+              );
+
+              return;
+
+            }
+
+
             producto.cantidad++;
+
 
             guardarCarrito();
 
@@ -721,10 +1234,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
 
-    /* DISMINUIR */
+    /* =================================================
+       DISMINUIR
+    ================================================= */
 
     cartItems
-      .querySelectorAll(".quantity-minus")
+      .querySelectorAll(
+        ".quantity-minus"
+      )
       .forEach(button => {
 
         button.addEventListener(
@@ -732,18 +1249,35 @@ document.addEventListener("DOMContentLoaded", () => {
           () => {
 
             const id =
-              Number(button.dataset.id);
+              Number(
+                button.dataset.id
+              );
+
+
+            const talla =
+              String(
+                button.dataset.talla || ""
+              );
+
 
             const producto =
               carrito.find(
                 item =>
-                  Number(item.id) === id
+                  Number(item.id) ===
+                    id &&
+                  String(
+                    item.talla || ""
+                  ) === talla
               );
+
 
             if (!producto) return;
 
 
-            if (producto.cantidad > 1) {
+            if (
+              Number(producto.cantidad) >
+              1
+            ) {
 
               producto.cantidad--;
 
@@ -752,7 +1286,13 @@ document.addEventListener("DOMContentLoaded", () => {
               carrito =
                 carrito.filter(
                   item =>
-                    Number(item.id) !== id
+                    !(
+                      Number(item.id) ===
+                        id &&
+                      String(
+                        item.talla || ""
+                      ) === talla
+                    )
                 );
 
             }
@@ -768,10 +1308,14 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
 
-    /* ELIMINAR */
+    /* =================================================
+       ELIMINAR
+    ================================================= */
 
     cartItems
-      .querySelectorAll(".remove-product")
+      .querySelectorAll(
+        ".remove-product"
+      )
       .forEach(button => {
 
         button.addEventListener(
@@ -779,13 +1323,29 @@ document.addEventListener("DOMContentLoaded", () => {
           () => {
 
             const id =
-              Number(button.dataset.id);
+              Number(
+                button.dataset.id
+              );
+
+
+            const talla =
+              String(
+                button.dataset.talla || ""
+              );
+
 
             carrito =
               carrito.filter(
                 item =>
-                  Number(item.id) !== id
+                  !(
+                    Number(item.id) ===
+                      id &&
+                    String(
+                      item.talla || ""
+                    ) === talla
+                  )
               );
+
 
             guardarCarrito();
 
@@ -803,13 +1363,19 @@ document.addEventListener("DOMContentLoaded", () => {
      ABRIR CARRITO
   ===================================================== */
 
-  if (cartButton && cartBox) {
+  if (
+    cartButton &&
+    cartBox
+  ) {
 
     cartButton.addEventListener(
       "click",
       () => {
 
-        cartBox.classList.add("show");
+        cartBox.classList.add(
+          "show"
+        );
+
 
         mostrarCarrito();
 
@@ -823,13 +1389,18 @@ document.addEventListener("DOMContentLoaded", () => {
      CERRAR CARRITO
   ===================================================== */
 
-  if (closeCart && cartBox) {
+  if (
+    closeCart &&
+    cartBox
+  ) {
 
     closeCart.addEventListener(
       "click",
       () => {
 
-        cartBox.classList.remove("show");
+        cartBox.classList.remove(
+          "show"
+        );
 
       }
     );
@@ -844,26 +1415,39 @@ document.addEventListener("DOMContentLoaded", () => {
   function mostrarPaso(paso) {
 
     const pasos = [
+
       stepCustomer,
+
       stepDelivery,
+
       stepPayment,
+
       stepSummary,
+
       stepResult
+
     ];
 
 
-    pasos.forEach(step => {
+    pasos.forEach(
+      step => {
 
-      if (step) {
-        step.style.display = "none";
+        if (step) {
+
+          step.style.display =
+            "none";
+
+        }
+
       }
-
-    });
+    );
 
 
     if (paso) {
 
-      paso.style.display = "block";
+      paso.style.display =
+        "block";
+
 
       paso.scrollIntoView({
         behavior: "smooth",
@@ -882,8 +1466,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function reiniciarCheckout() {
 
     if (checkoutContainer) {
-      checkoutContainer.style.display = "none";
+
+      checkoutContainer.style.display =
+        "none";
+
     }
+
 
     mostrarPaso(null);
 
@@ -900,7 +1488,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "click",
       () => {
 
-        if (carrito.length === 0) {
+        if (
+          carrito.length === 0
+        ) {
 
           alert(
             "Tu carrito está vacío."
@@ -912,12 +1502,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         if (checkoutContainer) {
+
           checkoutContainer.style.display =
             "block";
+
         }
 
 
-        mostrarPaso(stepCustomer);
+        mostrarPaso(
+          stepCustomer
+        );
 
       }
     );
@@ -930,7 +1524,9 @@ document.addEventListener("DOMContentLoaded", () => {
      CONFIRMAR INFORMACIÓN
   ===================================================== */
 
-  if (confirmCustomerButton) {
+  if (
+    confirmCustomerButton
+  ) {
 
     confirmCustomerButton.addEventListener(
       "click",
@@ -940,6 +1536,7 @@ document.addEventListener("DOMContentLoaded", () => {
           customerName
             ? customerName.value.trim()
             : "";
+
 
         const telefono =
           customerPhone
@@ -953,7 +1550,13 @@ document.addEventListener("DOMContentLoaded", () => {
             "Escribe tu nombre completo."
           );
 
-          customerName.focus();
+
+          if (customerName) {
+
+            customerName.focus();
+
+          }
+
 
           return;
 
@@ -966,14 +1569,22 @@ document.addEventListener("DOMContentLoaded", () => {
             "Escribe tu número de teléfono."
           );
 
-          customerPhone.focus();
+
+          if (customerPhone) {
+
+            customerPhone.focus();
+
+          }
+
 
           return;
 
         }
 
 
-        mostrarPaso(stepDelivery);
+        mostrarPaso(
+          stepDelivery
+        );
 
       }
     );
@@ -991,15 +1602,26 @@ document.addEventListener("DOMContentLoaded", () => {
       "change",
       () => {
 
-        if (!homeDelivery.checked) return;
+        if (
+          !homeDelivery.checked
+        ) return;
 
 
         if (departmentBox) {
-          departmentBox.classList.add("show");
+
+          departmentBox.classList.add(
+            "show"
+          );
+
         }
 
+
         if (pickupBox) {
-          pickupBox.classList.remove("show");
+
+          pickupBox.classList.remove(
+            "show"
+          );
+
         }
 
       }
@@ -1014,15 +1636,26 @@ document.addEventListener("DOMContentLoaded", () => {
       "change",
       () => {
 
-        if (!storePickup.checked) return;
+        if (
+          !storePickup.checked
+        ) return;
 
 
         if (departmentBox) {
-          departmentBox.classList.remove("show");
+
+          departmentBox.classList.remove(
+            "show"
+          );
+
         }
 
+
         if (pickupBox) {
-          pickupBox.classList.add("show");
+
+          pickupBox.classList.add(
+            "show"
+          );
+
         }
 
       }
@@ -1036,7 +1669,9 @@ document.addEventListener("DOMContentLoaded", () => {
      CONTINUAR ENTREGA
   ===================================================== */
 
-  if (continueDeliveryButton) {
+  if (
+    continueDeliveryButton
+  ) {
 
     continueDeliveryButton.addEventListener(
       "click",
@@ -1073,7 +1708,13 @@ document.addEventListener("DOMContentLoaded", () => {
               "Selecciona tu departamento."
             );
 
-            departmentSelect.focus();
+
+            if (departmentSelect) {
+
+              departmentSelect.focus();
+
+            }
+
 
             return;
 
@@ -1082,7 +1723,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        mostrarPaso(stepPayment);
+        mostrarPaso(
+          stepPayment
+        );
 
       }
     );
@@ -1094,18 +1737,25 @@ document.addEventListener("DOMContentLoaded", () => {
      FORMA DE PAGO
   ===================================================== */
 
-  if (transferPayment) {
+  if (
+    transferPayment
+  ) {
 
     transferPayment.addEventListener(
       "change",
       () => {
 
-        if (!transferPayment.checked)
-          return;
+        if (
+          !transferPayment.checked
+        ) return;
 
 
         if (bankBox) {
-          bankBox.classList.add("show");
+
+          bankBox.classList.add(
+            "show"
+          );
+
         }
 
 
@@ -1123,17 +1773,24 @@ document.addEventListener("DOMContentLoaded", () => {
       "change",
       () => {
 
-        if (!cashPayment.checked)
-          return;
+        if (
+          !cashPayment.checked
+        ) return;
 
 
         if (bankBox) {
-          bankBox.classList.remove("show");
+
+          bankBox.classList.remove(
+            "show"
+          );
+
         }
 
 
         if (bankSelect) {
+
           bankSelect.value = "";
+
         }
 
 
@@ -1144,7 +1801,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         if (transferInfo) {
+
           transferInfo.remove();
+
         }
 
       }
@@ -1154,7 +1813,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =====================================================
-     DATOS PARA REALIZAR LA TRANSFERENCIA
+     DATOS PARA TRANSFERENCIA
   ===================================================== */
 
   function mostrarDatosTransferencia() {
@@ -1171,10 +1830,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!transferInfo) {
 
       transferInfo =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       transferInfo.id =
         "transferInfo";
+
 
       bankBox.appendChild(
         transferInfo
@@ -1191,6 +1854,7 @@ document.addEventListener("DOMContentLoaded", () => {
           🏦 DATOS PARA REALIZAR LA TRANSFERENCIA
         </div>
 
+
         <div id="bankAccountData">
 
           <p>
@@ -1198,6 +1862,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </p>
 
         </div>
+
 
         <button
           type="button"
@@ -1221,7 +1886,9 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    if (continueBankButton) {
+    if (
+      continueBankButton
+    ) {
 
       continueBankButton.addEventListener(
         "click",
@@ -1236,9 +1903,13 @@ document.addEventListener("DOMContentLoaded", () => {
               "Selecciona un banco para continuar."
             );
 
+
             if (bankSelect) {
+
               bankSelect.focus();
+
             }
+
 
             return;
 
@@ -1271,7 +1942,9 @@ document.addEventListener("DOMContentLoaded", () => {
       !bankAccountData ||
       !bankSelect
     ) {
+
       return;
+
     }
 
 
@@ -1346,6 +2019,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </p>
 
       `;
+
 
       return;
 
@@ -1459,6 +2133,7 @@ document.addEventListener("DOMContentLoaded", () => {
           👤 Nombre de quien realizó la transferencia
         </label>
 
+
         <input
           type="text"
           id="transferName"
@@ -1470,6 +2145,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <label for="transferAmount">
           💰 Monto transferido
         </label>
+
 
         <input
           type="number"
@@ -1483,6 +2159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <label for="transferReference">
           🧾 Número de referencia
         </label>
+
 
         <input
           type="text"
@@ -1510,7 +2187,9 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    if (confirmTransferDataButton) {
+    if (
+      confirmTransferDataButton
+    ) {
 
       confirmTransferDataButton.addEventListener(
         "click",
@@ -1543,9 +2222,13 @@ document.addEventListener("DOMContentLoaded", () => {
               "Escribe el nombre de quien realizó la transferencia."
             );
 
+
             if (transferName) {
+
               transferName.focus();
+
             }
+
 
             return;
 
@@ -1561,9 +2244,13 @@ document.addEventListener("DOMContentLoaded", () => {
               "Escribe el monto transferido."
             );
 
+
             if (transferAmount) {
+
               transferAmount.focus();
+
             }
+
 
             return;
 
@@ -1579,6 +2266,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert(
               "El monto transferido debe ser mayor que 0."
             );
+
 
             transferAmount.focus();
 
@@ -1596,9 +2284,13 @@ document.addEventListener("DOMContentLoaded", () => {
               "Escribe el número de referencia de la transferencia."
             );
 
+
             if (transferReference) {
+
               transferReference.focus();
+
             }
+
 
             return;
 
@@ -1607,7 +2299,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           mostrarResumen();
 
-          mostrarPaso(stepSummary);
+          mostrarPaso(
+            stepSummary
+          );
 
         }
       );
@@ -1618,11 +2312,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =====================================================
-     CONTINUAR PAGO
-     EFECTIVO
+     CONTINUAR PAGO - EFECTIVO
   ===================================================== */
 
-  if (continuePaymentButton) {
+  if (
+    continuePaymentButton
+  ) {
 
     continuePaymentButton.addEventListener(
       "click",
@@ -1647,9 +2342,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /*
          * TRANSFERENCIA
-         *
-         * El usuario continúa desde el botón
-         * que aparece debajo de los datos bancarios.
          */
 
         if (
@@ -1666,9 +2358,13 @@ document.addEventListener("DOMContentLoaded", () => {
               "Selecciona el banco para realizar la transferencia."
             );
 
+
             if (bankSelect) {
+
               bankSelect.focus();
+
             }
+
 
             return;
 
@@ -1688,7 +2384,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         mostrarResumen();
 
-        mostrarPaso(stepSummary);
+        mostrarPaso(
+          stepSummary
+        );
 
       }
     );
@@ -1718,31 +2416,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const nombre =
-      customerName.value.trim();
+      customerName
+        ? customerName.value.trim()
+        : "";
+
 
     const telefono =
-      customerPhone.value.trim();
+      customerPhone
+        ? customerPhone.value.trim()
+        : "";
+
 
     const direccion =
-      customerAddress.value.trim();
+      customerAddress
+        ? customerAddress.value.trim()
+        : "";
+
 
     const ciudad =
-      customerCity.value.trim();
+      customerCity
+        ? customerCity.value.trim()
+        : "";
+
 
     const referencia =
-      deliveryReference.value.trim();
+      deliveryReference
+        ? deliveryReference.value.trim()
+        : "";
 
 
     let subtotal = 0;
 
 
-    carrito.forEach(producto => {
+    carrito.forEach(
+      producto => {
 
-      subtotal +=
-        Number(producto.precio) *
-        Number(producto.cantidad);
+        subtotal +=
+          Number(producto.precio) *
+          Number(producto.cantidad);
 
-    });
+      }
+    );
 
 
     let entregaTexto = "";
@@ -1754,25 +2468,43 @@ document.addEventListener("DOMContentLoaded", () => {
       "delivery"
     ) {
 
-      entregaTexto =
-        `
-        🚚 Envío a domicilio<br>
-        🇭🇳 ${
+      let departamentoTexto = "";
+
+
+      if (
+        departmentSelect &&
+        departmentSelect.selectedIndex >= 0
+      ) {
+
+        departamentoTexto =
           departmentSelect.options[
             departmentSelect.selectedIndex
-          ].text
-        }<br>
+          ].text;
+
+      }
+
+
+      entregaTexto = `
+
+        🚚 Envío a domicilio<br>
+
+        🇭🇳 ${departamentoTexto}<br>
+
         🏙️ ${ciudad}<br>
+
         🏠 ${direccion}
-        `;
+
+      `;
 
     } else {
 
-      entregaTexto =
-        `
+      entregaTexto = `
+
         🏪 Recoger en tienda<br>
+
         📍 Comayagua, Honduras
-        `;
+
+      `;
 
     }
 
@@ -1804,16 +2536,21 @@ document.addEventListener("DOMContentLoaded", () => {
         )?.value.trim() || "";
 
 
-      pagoTexto =
-        `
+      const bancoTexto =
+        bankSelect &&
+        bankSelect.selectedIndex >= 0
+          ? bankSelect.options[
+              bankSelect.selectedIndex
+            ].text
+          : "";
+
+
+      pagoTexto = `
+
         🏦 Transferencia bancaria<br>
 
         Banco:
-        ${
-          bankSelect.options[
-            bankSelect.selectedIndex
-          ].text
-        }
+        ${bancoTexto}
 
         <br>
 
@@ -1831,14 +2568,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         🧾 Referencia:
         ${transferReference}
-        `;
+
+      `;
 
     } else {
 
-      pagoTexto =
-        `
+      pagoTexto = `
+
         💵 Pago en efectivo
-        `;
+
+      `;
 
     }
 
@@ -1846,38 +2585,56 @@ document.addEventListener("DOMContentLoaded", () => {
     let productosHTML = "";
 
 
-    carrito.forEach(producto => {
+    carrito.forEach(
+      producto => {
 
-      const cantidad =
-        Number(producto.cantidad);
+        const cantidad =
+          Number(
+            producto.cantidad
+          );
 
-      const precio =
-        Number(producto.precio);
 
-      productosHTML += `
+        const precio =
+          Number(
+            producto.precio
+          );
 
-        <div style="margin-bottom:10px;">
 
-          <strong>
-            ${producto.nombre}
-          </strong>
+        productosHTML += `
 
-          <br>
+          <div style="margin-bottom:10px;">
 
-          Cantidad:
-          ${cantidad}
+            <strong>
+              ${producto.nombre}
+            </strong>
 
-          <br>
+            <br>
 
-          HNL
-          ${(precio * cantidad)
-            .toLocaleString("es-HN")}
+            ${
+              producto.talla
+                ? `
+                  Talla:
+                  ${producto.talla}
+                  <br>
+                `
+                : ""
+            }
 
-        </div>
+            Cantidad:
+            ${cantidad}
 
-      `;
+            <br>
 
-    });
+            HNL
+            ${(precio * cantidad)
+              .toLocaleString("es-HN")}
+
+          </div>
+
+        `;
+
+      }
+    );
 
 
     orderSummary.innerHTML = `
@@ -1904,6 +2661,7 @@ document.addEventListener("DOMContentLoaded", () => {
         deliveryRadio.value ===
         "delivery"
           ? `
+
             <div style="margin-bottom:15px;">
 
               <strong>
@@ -1915,6 +2673,7 @@ document.addEventListener("DOMContentLoaded", () => {
               ${referencia || "No especificada"}
 
             </div>
+
           `
           : ""
       }
@@ -1959,14 +2718,14 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
 
 
-      <div>
+     <div>
 
-        <strong>
-          TOTAL:
-          HNL ${subtotal.toLocaleString("es-HN")}
-        </strong>
+  <strong>
+    TOTAL:
+    HNL ${(subtotal - (subtotal * descuentoPromocional)).toLocaleString("es-HN")}
+  </strong>
 
-      </div>
+</div>
 
     `;
 
@@ -1977,7 +2736,9 @@ document.addEventListener("DOMContentLoaded", () => {
      CONFIRMAR PEDIDO
   ===================================================== */
 
-  if (confirmOrderButton) {
+  if (
+    confirmOrderButton
+  ) {
 
     confirmOrderButton.addEventListener(
       "click",
@@ -1985,7 +2746,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-          if (carrito.length === 0) {
+          if (
+            carrito.length === 0
+          ) {
 
             mostrarResultadoError(
               "Tu carrito está vacío."
@@ -2038,12 +2801,13 @@ document.addEventListener("DOMContentLoaded", () => {
             paymentRadio.value;
 
 
-          let bancoSeleccionado = "";
+          let bancoSeleccionado =
+            "";
 
 
           if (
             paymentMethod ===
-            "transfer" &&
+              "transfer" &&
             bankSelect
           ) {
 
@@ -2060,8 +2824,12 @@ document.addEventListener("DOMContentLoaded", () => {
               (suma, producto) =>
                 suma +
                 (
-                  Number(producto.precio) *
-                  Number(producto.cantidad)
+                  Number(
+                    producto.precio
+                  ) *
+                  Number(
+                    producto.cantidad
+                  )
                 ),
               0
             );
@@ -2076,7 +2844,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const pedido = {
 
-            id: numeroPedido,
+            id:
+              numeroPedido,
+
 
             fecha:
               new Date().toISOString(),
@@ -2085,26 +2855,38 @@ document.addEventListener("DOMContentLoaded", () => {
             cliente: {
 
               nombre:
-                customerName.value.trim(),
+                customerName
+                  ? customerName.value.trim()
+                  : "",
 
               telefono:
-                customerPhone.value.trim(),
+                customerPhone
+                  ? customerPhone.value.trim()
+                  : "",
 
               direccion:
                 deliveryMethod ===
                 "delivery"
-                  ? customerAddress.value.trim()
+                  ? (
+                      customerAddress
+                        ? customerAddress.value.trim()
+                        : ""
+                    )
                   : "",
 
               ciudad:
                 deliveryMethod ===
                 "delivery"
-                  ? customerCity.value.trim()
+                  ? (
+                      customerCity
+                        ? customerCity.value.trim()
+                        : ""
+                    )
                   : "",
 
               departamento:
                 deliveryMethod ===
-                "delivery" &&
+                  "delivery" &&
                 departmentSelect
                   ? departmentSelect.value
                   : "",
@@ -2112,7 +2894,11 @@ document.addEventListener("DOMContentLoaded", () => {
               referencia:
                 deliveryMethod ===
                 "delivery"
-                  ? deliveryReference.value.trim()
+                  ? (
+                      deliveryReference
+                        ? deliveryReference.value.trim()
+                        : ""
+                    )
                   : ""
 
             },
@@ -2180,27 +2966,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             productos:
-              carrito.map(producto => ({
+              carrito.map(
+                producto => ({
 
-                id:
-                  producto.id,
+                  id:
+                    producto.id,
 
-                nombre:
-                  producto.nombre,
+                  nombre:
+                    producto.nombre,
 
-                precio:
-                  Number(producto.precio),
+                  precio:
+                    Number(
+                      producto.precio
+                    ),
 
-                cantidad:
-                  Number(producto.cantidad),
+                  cantidad:
+                    Number(
+                      producto.cantidad
+                    ),
 
-                talla:
-                  producto.talla || "",
+                  talla:
+                    producto.talla || "",
 
-                imagen:
-                  producto.imagen || ""
+                  imagen:
+                    producto.imagen || ""
 
-              })),
+                })
+              ),
 
 
             total
@@ -2249,7 +3041,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           carrito = [];
 
+
           guardarCarrito();
+
 
           mostrarCarrito();
 
@@ -2259,6 +3053,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "Error procesando pedido:",
             error
           );
+
 
           mostrarResultadoError(
             "No pudimos procesar tu pedido. Intenta nuevamente."
@@ -2270,81 +3065,104 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
   }
-/* =====================================================
-   SONIDO DE COMPRA CONFIRMADA
-===================================================== */
 
-function reproducirSonidoConfirmacion() {
 
-  try {
+  /* =====================================================
+     SONIDO DE COMPRA CONFIRMADA
+  ===================================================== */
 
-    const AudioContext =
-      window.AudioContext ||
-      window.webkitAudioContext;
+  function reproducirSonidoConfirmacion() {
 
-    if (!AudioContext) return;
+    try {
 
-    const audioContext =
-      new AudioContext();
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
 
-    const ahora =
-      audioContext.currentTime;
 
-    const oscilador =
-      audioContext.createOscillator();
+      if (!AudioContext) return;
 
-    const ganancia =
-      audioContext.createGain();
 
-    oscilador.type = "sine";
+      const audioContext =
+        new AudioContext();
 
-    oscilador.frequency.setValueAtTime(
-      880,
-      ahora
-    );
 
-    oscilador.frequency.exponentialRampToValueAtTime(
-      1320,
-      ahora + 0.18
-    );
+      const ahora =
+        audioContext.currentTime;
 
-    ganancia.gain.setValueAtTime(
-      0.0001,
-      ahora
-    );
 
-    ganancia.gain.exponentialRampToValueAtTime(
-      0.18,
-      ahora + 0.02
-    );
+      const oscilador =
+        audioContext.createOscillator();
 
-    ganancia.gain.exponentialRampToValueAtTime(
-      0.0001,
-      ahora + 0.45
-    );
 
-    oscilador.connect(ganancia);
+      const ganancia =
+        audioContext.createGain();
 
-    ganancia.connect(
-      audioContext.destination
-    );
 
-    oscilador.start(ahora);
+      oscilador.type =
+        "sine";
 
-    oscilador.stop(
-      ahora + 0.45
-    );
 
-  } catch (error) {
+      oscilador.frequency.setValueAtTime(
+        950,
+        ahora
+      );
 
-    console.log(
-      "No se pudo reproducir el sonido de confirmación.",
-      error
-    );
+
+      oscilador.frequency.exponentialRampToValueAtTime(
+        1250,
+        ahora + 0.15
+      );
+
+
+      ganancia.gain.setValueAtTime(
+        0.0001,
+        ahora
+      );
+
+
+      ganancia.gain.exponentialRampToValueAtTime(
+        0.30,
+        ahora + 0.02
+      );
+
+
+      ganancia.gain.exponentialRampToValueAtTime(
+        0.0001,
+        ahora + 0.65
+      );
+
+
+      oscilador.connect(
+        ganancia
+      );
+
+
+      ganancia.connect(
+        audioContext.destination
+      );
+
+
+      oscilador.start(
+        ahora
+      );
+
+
+      oscilador.stop(
+        ahora + 0.65
+      );
+
+    } catch (error) {
+
+      console.log(
+        "No se pudo reproducir el sonido de confirmación.",
+        error
+      );
+
+    }
 
   }
 
-}
 
   /* =====================================================
      RESULTADO EXITOSO
@@ -2366,21 +3184,27 @@ function reproducirSonidoConfirmacion() {
       "transfer"
     ) {
 
-      mensajePago =
-        `
+      mensajePago = `
+
         Tu pedido fue confirmado correctamente.
+
         <br>
+
         Hemos registrado la transferencia como forma de pago.
-        `;
+
+      `;
 
     } else {
 
-      mensajePago =
-        `
+      mensajePago = `
+
         Tu pedido fue confirmado correctamente.
+
         <br>
+
         El pago en efectivo quedó registrado.
-        `;
+
+      `;
 
     }
 
@@ -2402,6 +3226,7 @@ function reproducirSonidoConfirmacion() {
           >
           </circle>
 
+
           <path
             class="success-check-line"
             d="M14 27 L22 35 L39 17"
@@ -2419,19 +3244,25 @@ function reproducirSonidoConfirmacion() {
 
 
       <p class="success-message">
+
         Gracias por comprar en
         <strong>NOVAGUET</strong>
+
       </p>
 
 
       <p class="success-order-number">
+
         Número de pedido:
         ${numeroPedido}
+
       </p>
 
 
       <p>
+
         ${mensajePago}
+
       </p>
 
 
@@ -2448,7 +3279,11 @@ function reproducirSonidoConfirmacion() {
     `;
 
 
-    mostrarPaso(stepResult);
+    mostrarPaso(
+      stepResult
+    );
+
+
     reproducirSonidoConfirmacion();
 
 
@@ -2458,27 +3293,36 @@ function reproducirSonidoConfirmacion() {
       );
 
 
-    if (backToStoreButton) {
+    if (
+      backToStoreButton
+    ) {
 
       backToStoreButton.addEventListener(
         "click",
         () => {
 
           if (stepResult) {
+
             stepResult.style.display =
               "none";
+
           }
 
 
           if (checkoutContainer) {
+
             checkoutContainer.style.display =
               "none";
+
           }
 
 
           window.scrollTo({
+
             top: 0,
+
             behavior: "smooth"
+
           });
 
         }
@@ -2506,18 +3350,22 @@ function reproducirSonidoConfirmacion() {
         ❌
       </div>
 
+
       <h2>
         NO SE PUDO PROCESAR
       </h2>
+
 
       <p>
         ${mensaje}
       </p>
 
+
       <button
         type="button"
         class="checkout-button"
-        id="retryCheckoutButton">
+        id="retryCheckoutButton"
+      >
 
         INTENTAR NUEVAMENTE
 
@@ -2526,7 +3374,9 @@ function reproducirSonidoConfirmacion() {
     `;
 
 
-    mostrarPaso(stepResult);
+    mostrarPaso(
+      stepResult
+    );
 
 
     const retryButton =
@@ -2541,7 +3391,9 @@ function reproducirSonidoConfirmacion() {
         "click",
         () => {
 
-          mostrarPaso(stepCustomer);
+          mostrarPaso(
+            stepCustomer
+          );
 
         }
       );
@@ -2550,52 +3402,107 @@ function reproducirSonidoConfirmacion() {
 
   }
 
+/* =====================================================
+     CÓDIGO PROMOCIONAL NOVA15
+  ===================================================== */
+
+  if (applyPromo) {
+
+    applyPromo.addEventListener(
+      "click",
+      () => {
+
+        const codigo =
+          promoCode
+            ? promoCode.value.trim().toUpperCase()
+            : "";
+
+        if (codigo === "NOVA15") {
+
+          descuentoPromocional = 0.15;
+          codigoPromocionalAplicado = "NOVA15";
+
+          if (promoMessage) {
+
+            promoMessage.textContent =
+              "✓ Código NOVA15 aplicado: 15% de descuento";
+
+            promoMessage.style.color =
+              "#008000";
+
+          }
+
+        } else {
+
+          descuentoPromocional = 0;
+          codigoPromocionalAplicado = "";
+
+          if (promoMessage) {
+
+            promoMessage.textContent =
+              "Código promocional no válido.";
+
+            promoMessage.style.color =
+              "#cc0000";
+
+          }
+
+        }
+
+        mostrarCarrito();
+
+      }
+    );
+
+  }
 
   /* =====================================================
      CATEGORÍAS
   ===================================================== */
 
-  categoryButtons.forEach(button => {
+  categoryButtons.forEach(
+    button => {
 
-    button.addEventListener(
-      "click",
-      () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        const categoria =
-          button.dataset.category;
+          const categoria =
+            button.dataset.category;
 
 
-        if (!categoria) {
+          if (!categoria) {
+
+            mostrarProductos(
+              productos
+            );
+
+            return;
+
+          }
+
+
+          const resultados =
+            productos.filter(
+              producto =>
+                String(
+                  producto.categoria || ""
+                ).toLowerCase() ===
+                String(
+                  categoria
+                ).toLowerCase()
+            );
+
 
           mostrarProductos(
-            productos
+            resultados
           );
-
-          return;
 
         }
+      );
 
-
-        const resultados =
-          productos.filter(
-            producto =>
-              String(
-                producto.categoria || ""
-              ).toLowerCase() ===
-              String(
-                categoria
-              ).toLowerCase()
-          );
-
-
-        mostrarProductos(
-          resultados
-        );
-
-      }
-    );
-
-  });
+    }
+  );
 
 
   /* =====================================================
@@ -2613,6 +3520,7 @@ function reproducirSonidoConfirmacion() {
 
         event.preventDefault();
 
+
         nosotrosCloud.classList.toggle(
           "show"
         );
@@ -2621,23 +3529,34 @@ function reproducirSonidoConfirmacion() {
     );
 
   }
+
+
   /* =====================================================
      CERRAR NOSOTROS AL TOCAR OTRA PARTE
   ===================================================== */
 
-  document.addEventListener("click", event => {
+  document.addEventListener(
+    "click",
+    event => {
 
-    if (
-      nosotrosCloud &&
-      nosotrosCloud.classList.contains("show") &&
-      !event.target.closest(".nosotros-menu")
-    ) {
+      if (
+        nosotrosCloud &&
+        nosotrosCloud.classList.contains(
+          "show"
+        ) &&
+        !event.target.closest(
+          ".nosotros-menu"
+        )
+      ) {
 
-      nosotrosCloud.classList.remove("show");
+        nosotrosCloud.classList.remove(
+          "show"
+        );
+
+      }
 
     }
-
-  });
+  );
 
 
   /* =====================================================
@@ -2658,14 +3577,16 @@ function reproducirSonidoConfirmacion() {
         .querySelectorAll(
           "[data-es][data-en]"
         )
-        .forEach(elemento => {
+        .forEach(
+          elemento => {
 
-          elemento.textContent =
-            elemento.dataset[
-              idioma
-            ];
+            elemento.textContent =
+              elemento.dataset[
+                idioma
+              ];
 
-        });
+          }
+        );
 
     };
 
