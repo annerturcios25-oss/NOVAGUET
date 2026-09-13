@@ -10,82 +10,77 @@ const PORT = process.env.PORT || 3000;
 /* =========================
    CONTRASEÑA ADMINISTRADOR
 ========================= */
+const ADMIN_USER = process.env.ADMIN_USER;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD; 
+const crypto = require("crypto");
 
-const ADMIN_USER = "NOVAGUET";
-const ADMIN_PASSWORD = "Novaguet/2005";
+const sesiones = new Set();
+
+function obtenerCookie(req, nombre) {
+  const cookies = req.headers.cookie || "";
+
+  const encontrada = cookies
+    .split(";")
+    .map(c => c.trim())
+    .find(c => c.startsWith(nombre + "="));
+
+  if (!encontrada) {
+    return null;
+  }
+
+  return decodeURIComponent(
+    encontrada.substring(nombre.length + 1)
+  );
+}
 
 /* =========================
    AUTENTICACIÓN
 ========================= */
-
 function protegerAdmin(req, res, next) {
 
-  const autorizacion = req.headers.authorization;
+  const token = obtenerCookie(
 
-  if (!autorizacion) {
+    req,
 
-    res.setHeader(
-      "WWW-Authenticate",
-      'Basic realm="NOVAGUET Administración"'
-    );
+    "novaguet_session"
 
-    return res.status(401).send(
-      "Acceso restringido. Ingresa las credenciales de NOVAGUET."
-    );
-
-  }
-
-  const partes = autorizacion.split(" ");
+  );
 
   if (
-    partes.length !== 2 ||
-    partes[0] !== "Basic"
+
+    !token ||
+
+    !sesiones.has(token)
+
   ) {
 
-    return res.status(401).send(
-      "Autorización inválida."
-    );
+    if (
 
-  }
+      req.path === "/admin.html"
 
-  const credenciales = Buffer
-    .from(partes[1], "base64")
-    .toString("utf8");
+    ) {
 
-  const separador =
-    credenciales.indexOf(":");
+      return res.redirect(
 
-  const usuario =
-    credenciales.substring(
-      0,
-      separador
-    );
+        "/login.html"
 
-  const password =
-    credenciales.substring(
-      separador + 1
-    );
+      );
 
-  if (
-    usuario !== ADMIN_USER ||
-    password !== ADMIN_PASSWORD
-  ) {
+    }
 
-    res.setHeader(
-      "WWW-Authenticate",
-      'Basic realm="NOVAGUET Administración"'
-    );
+    return res.status(401).json({
 
-    return res.status(401).send(
-      "Usuario o contraseña incorrectos."
-    );
+      error:
+
+        "No autorizado"
+
+    });
 
   }
 
   next();
 
 }
-
 /* =========================
    CARPETA DE IMÁGENES
 ========================= */
@@ -217,6 +212,127 @@ app.use(
   express.json()
 );
 
+/*=========================
+
+   LOGIN ADMIN
+
+========================= */
+
+app.post(
+
+  "/api/login",
+
+  (req, res) => {
+
+    const {
+
+      username,
+
+      password
+
+    } = req.body;
+
+    if (
+
+      username !== ADMIN_USER ||
+
+      password !== ADMIN_PASSWORD
+
+    ) {
+
+      return res.status(401).json({
+
+        error:
+
+          "Usuario o contraseña incorrectos"
+
+      });
+
+    }
+
+    const token =
+
+      crypto.randomBytes(32).toString("hex");
+
+    sesiones.add(token);
+
+    const secureCookie =
+
+      process.env.NODE_ENV === "production" ||
+
+      process.env.RENDER === "true"
+
+        ? "; Secure"
+
+        : "";
+
+    res.setHeader(
+
+      "Set-Cookie",
+
+      "novaguet_session=" +
+
+        token +
+
+        "; HttpOnly; Path=/; SameSite=Lax; Max-Age=28800" +
+
+        secureCookie
+
+    );
+
+    res.json({
+
+      ok: true
+
+    });
+
+  }
+
+);
+
+/* =========================
+
+   CERRAR SESIÓN ADMIN
+
+========================= */
+
+app.post(
+
+  "/api/logout",
+
+  (req, res) => {
+
+    const token = obtenerCookie(
+
+      req,
+
+      "novaguet_session"
+
+    );
+
+    if (token) {
+
+      sesiones.delete(token);
+
+    }
+
+    res.setHeader(
+
+      "Set-Cookie",
+
+      "novaguet_session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0"
+
+    );
+
+    res.json({
+
+      ok: true
+
+    });
+
+  }
+
+);
 /* =========================
    PROTEGER PANEL ADMIN
 ========================= */
