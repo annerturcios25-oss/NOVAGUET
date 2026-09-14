@@ -1755,135 +1755,103 @@ if (
 
       }
 
-      /* =========================
+/* =========================
 
-         ENTREGA / ENVÍO
+   ENTREGA / ENVÍO
 
-      ========================= */
+========================= */
 
-      if (
+if (
 
-        deliveryRadio.value ===
+  deliveryRadio.value ===
 
-        "delivery"
+  "delivery"
 
-      ) {
+) {
 
-        if (
+  if (
 
-          !departmentSelect ||
+    !departmentSelect ||
 
-          !departmentSelect.value
+    !departmentSelect.value
 
-        ) {
+  ) {
 
-          alert(
+    alert(
 
-            "Selecciona tu departamento."
+      "Selecciona tu departamento."
 
-          );
+    );
 
-          if (departmentSelect) {
+    if (departmentSelect) {
 
-            departmentSelect.focus();
-
-          }
-
-          return;
-
-        }
-
-        const ciudad =
-
-          customerCity
-
-            ? customerCity.value.trim()
-
-            : "";
-
-        if (!ciudad) {
-
-          alert(
-
-            "Escribe tu ciudad o municipio."
-
-          );
-
-          if (customerCity) {
-
-            customerCity.focus();
-
-          }
-
-          return;
-
-        }
-
-        const direccion =
-
-          customerAddress
-
-            ? customerAddress.value.trim()
-
-            : "";
-
-        if (!direccion) {
-
-          alert(
-
-            "Escribe tu dirección de entrega."
-
-          );
-
-          if (customerAddress) {
-
-            customerAddress.focus();
-
-          }
-
-          return;
-
-        }
-
-        const referencia =
-
-          deliveryReference
-
-            ? deliveryReference.value.trim()
-
-            : "";
-
-        if (!referencia) {
-
-          alert(
-
-            "Escribe una referencia para encontrar la dirección."
-
-          );
-
-          if (deliveryReference) {
-
-            deliveryReference.focus();
-
-          }
-
-          return;
-
-        }
-
-      }
-
-      mostrarPaso(
-
-        stepPayment
-
-      );
+      departmentSelect.focus();
 
     }
 
-  );
+    return;
+
+  }
+
+  const municipio =
+
+    municipality
+
+      ? municipality.value.trim()
+
+      : "";
+
+  if (!municipio) {
+
+    alert(
+
+      "Selecciona tu municipio."
+
+    );
+
+    if (municipality) {
+
+      municipality.focus();
+
+    }
+
+    return;
+
+  }
+
+  const referencia =
+
+    deliveryReference
+
+      ? deliveryReference.value.trim()
+
+      : "";
+
+  if (!referencia) {
+
+    alert(
+
+      "Escribe una referencia para encontrar la dirección."
+
+    );
+
+    if (deliveryReference) {
+
+      deliveryReference.focus();
+
+    }
+
+    return;
+
+  }
 
 }
+
+mostrarPaso(
+
+  stepPayment
+
+);
 
   /* =====================================================
      FORMA DE PAGO
