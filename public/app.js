@@ -1993,145 +1993,113 @@ if (cashPayment) {
 
 }
 
-  /* =====================================================
-     DATOS PARA TRANSFERENCIA
-  ===================================================== */
-
   function mostrarDatosTransferencia() {
- if (cardPayment) {
 
-    cardPayment.addEventListener(
-
-      "change",
-
-      () => {
-
-        if (
-
-          !cardPayment.checked
-
-        ) return;
-
-        if (bankBox) {
-
-          bankBox.classList.remove(
-
-            "show"
-
-          );
-
-        }
-
-        if (bankSelect) {
-
-          bankSelect.value = "";
-
-        }
-
-        const transferInfo =
-
-          document.getElementById(
-
-            "transferInfo"
-
-          );
-
-        if (transferInfo) {
-
-          transferInfo.remove();
-
-        }
-
-      }
-
-    );
-
-  }
     if (!bankBox) return;
 
-
     let transferInfo =
-      document.getElementById(
-        "transferInfo"
-      );
 
+      document.getElementById(
+
+        "transferInfo"
+
+      );
 
     if (!transferInfo) {
 
       transferInfo =
+
         document.createElement(
+
           "div"
+
         );
 
-
       transferInfo.id =
+
         "transferInfo";
 
-
       bankBox.appendChild(
+
         transferInfo
+
       );
 
     }
-
 
     transferInfo.innerHTML = `
 
       <div class="transfer-bank-card">
 
         <div class="transfer-title">
-          🏦 DATOS PARA REALIZAR LA TRANSFERENCIA
-        </div>
 
+          🏦 DATOS PARA REALIZAR LA TRANSFERENCIA
+
+        </div>
 
         <div id="bankAccountData">
 
           <p>
+
             Selecciona un banco para ver los datos de la cuenta.
+
           </p>
 
         </div>
 
-
         <button
+
           type="button"
+
           id="continueBankButton"
+
           class="checkout-button"
+
         >
+
           CONTINUAR
+
         </button>
 
       </div>
 
     `;
 
-
     actualizarDatosBanco();
 
-
     const continueBankButton =
+
       document.getElementById(
+
         "continueBankButton"
+
       );
 
-
     if (
+
       continueBankButton
+
     ) {
 
       continueBankButton.addEventListener(
+
         "click",
+
         () => {
 
           if (
+
             !bankSelect ||
+
             !bankSelect.value
+
           ) {
 
             alert(
-              "Selecciona un banco para continuar."
-            );
 
+              "Selecciona un banco para continuar."
+
+            );
 
             if (bankSelect) {
 
@@ -2139,26 +2107,25 @@ if (cashPayment) {
 
             }
 
-
             return;
 
           }
 
-
           mostrarDatosTransferenciaCliente();
 
         }
+
       );
 
     }
 
   }
 
-
   /* =====================================================
-     DATOS DE LAS CUENTAS
-  ===================================================== */
 
+     DATOS DE LAS CUENTAS
+
+  ===================================================== */
   function actualizarDatosBanco() {
 
     const bankAccountData =
