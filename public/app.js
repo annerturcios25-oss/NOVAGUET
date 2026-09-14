@@ -56,7 +56,39 @@ let codigoPromocionalAplicado = "";
 
   const checkoutButton =
     document.getElementById("checkoutButton");
+/* =====================================================
 
+     TELÉFONO HONDURAS
+
+  ===================================================== */
+
+  const customerPhone =
+
+    document.getElementById("customerPhone");
+
+  if (customerPhone) {
+
+    customerPhone.addEventListener("input", () => {
+
+      // Permitir únicamente números
+
+      customerPhone.value =
+
+        customerPhone.value.replace(/\D/g, "");
+
+      // Máximo 8 números
+
+      if (customerPhone.value.length > 8) {
+
+        customerPhone.value =
+
+          customerPhone.value.slice(0, 8);
+
+      }
+
+    });
+
+  }
 
   /* =====================================================
      CHECKOUT
