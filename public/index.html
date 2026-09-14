@@ -532,7 +532,79 @@
   </span>
 
 </label>
+<!-- DATOS DE TARJETA -->
 
+<div
+  id="cardBox"
+  class="department-box">
+
+  <h4>
+    💳 Datos de la tarjeta
+  </h4>
+
+  <label for="cardName">
+    Nombre del titular
+  </label>
+
+  <input
+    type="text"
+    id="cardName"
+    placeholder="Nombre como aparece en la tarjeta"
+    autocomplete="cc-name"
+  >
+
+  <label for="cardNumber">
+    Número de tarjeta
+  </label>
+
+  <input
+    type="text"
+    id="cardNumber"
+    placeholder="0000 0000 0000 0000"
+    inputmode="numeric"
+    autocomplete="cc-number"
+    maxlength="19"
+  >
+
+  <div class="card-fields">
+
+    <div>
+
+      <label for="cardExpiry">
+        Vencimiento
+      </label>
+
+      <input
+        type="text"
+        id="cardExpiry"
+        placeholder="MM/AA"
+        inputmode="numeric"
+        autocomplete="cc-exp"
+        maxlength="5"
+      >
+
+    </div>
+
+    <div>
+
+      <label for="cardCVV">
+        CVV
+      </label>
+
+      <input
+        type="password"
+        id="cardCVV"
+        placeholder="CVV"
+        inputmode="numeric"
+        autocomplete="cc-csc"
+        maxlength="4"
+      >
+
+    </div>
+
+  </div>
+
+</div>
           <!-- EFECTIVO -->
 
           <label class="option-card">
