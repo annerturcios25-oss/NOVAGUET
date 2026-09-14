@@ -1870,102 +1870,81 @@ if (
   }
 
 /* =========================
-
    TARJETA
-
 ========================= */
 
 if (cardPayment) {
 
   cardPayment.addEventListener(
-
     "change",
-
     () => {
 
       if (!cardPayment.checked) return;
 
       if (bankBox) {
-
         bankBox.classList.remove("show");
-
       }
 
       if (cardBox) {
-
         cardBox.classList.add("show");
-
       }
 
       if (bankSelect) {
-
         bankSelect.value = "";
-
       }
 
       const transferInfo =
-
         document.getElementById(
-
           "transferInfo"
-
         );
 
       if (transferInfo) {
-
         transferInfo.remove();
-
       }
 
     }
-
   );
 
 }
-  if (cashPayment) {
-
-    cashPayment.addEventListener(
-      "change",
-      () => {
-
-        if (
-          !cashPayment.checked
-        ) return;
 
 
-        if (bankBox) {
+/* =========================
+   EFECTIVO
+========================= */
 
-          bankBox.classList.remove(
-            "show"
-          );
+if (cashPayment) {
 
-        }
+  cashPayment.addEventListener(
+    "change",
+    () => {
 
+      if (!cashPayment.checked) return;
 
-        if (bankSelect) {
-
-          bankSelect.value = "";
-
-        }
-
-
-        const transferInfo =
-          document.getElementById(
-            "transferInfo"
-          );
-
-
-        if (transferInfo) {
-
-          transferInfo.remove();
-
-        }
-
+      if (bankBox) {
+        bankBox.classList.remove("show");
       }
-    );
 
-  }
+      if (cardBox) {
+        cardBox.classList.remove("show");
+      }
 
+      if (bankSelect) {
+        bankSelect.value = "";
+      }
+
+      const transferInfo =
+        document.getElementById(
+          "transferInfo"
+        );
+
+      if (transferInfo) {
+        transferInfo.remove();
+      }
+
+    }
+  );
+
+}
 
   /* =====================================================
      DATOS PARA TRANSFERENCIA
