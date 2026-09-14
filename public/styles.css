@@ -2628,3 +2628,26 @@ select option {
 .department-box h4 {
   color: #00bfff;
 }
+/* =====================================================
+   ETIQUETAS DE LOS FORMULARIOS — NOVAGUET
+===================================================== */
+
+.checkout-card > label,
+.checkout-card label[for],
+.department-box label {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* Campos escritos / placeholders */
+.checkout-card input,
+.checkout-card select,
+.checkout-card textarea {
+  color: #00bfff !important;
+}
+
+.checkout-card input::placeholder,
+.checkout-card textarea::placeholder {
+  color: #00bfff !important;
+  opacity: 0.75;
+}
