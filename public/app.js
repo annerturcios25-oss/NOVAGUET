@@ -3415,39 +3415,48 @@ mostrarCarrito();
   ) {
 
     if (!paymentResult) return;
-
-
+    
     let mensajePago = "";
 
+if (paymentMethod === "transfer") {
 
-    if (
-      paymentMethod ===
-      "transfer"
-    ) {
+  mensajePago = `
 
-      mensajePago = `
+    Tu pedido fue confirmado correctamente.
 
-        Tu pedido fue confirmado correctamente.
+    <br>
 
-        <br>
+    Hemos registrado la transferencia como forma de pago.
 
-        Hemos registrado la transferencia como forma de pago.
+  `;
 
-      `;
+} else if (paymentMethod === "card") {
 
-    } else {
+  mensajePago = `
 
-      mensajePago = `
+    Tu pedido fue confirmado correctamente.
 
-        Tu pedido fue confirmado correctamente.
+    <br>
 
-        <br>
+    La tarjeta de débito/crédito quedó seleccionada como forma de pago.
 
-        El pago en efectivo quedó registrado.
+  `;
 
-      `;
+} else {
 
-    }
+  mensajePago = `
+
+    Tu pedido fue confirmado correctamente.
+
+    <br>
+
+    El pago en efectivo quedó registrado.
+
+  `;
+
+}
+
+    
 
 
     paymentResult.innerHTML = `
