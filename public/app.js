@@ -138,9 +138,6 @@ let codigoPromocionalAplicado = "";
   const customerName =
     document.getElementById("customerName");
 
-  const customerPhone =
-    document.getElementById("customerPhone");
-
   const customerAddress =
     document.getElementById("customerAddress");
 
@@ -1597,31 +1594,49 @@ if (cartTotal) {
 
         }
 
+if (!telefono) {
 
-        if (!telefono) {
+  alert(
 
-          alert(
-            "Escribe tu número de teléfono."
-          );
+    "Escribe tu número de teléfono."
 
+  );
 
-          if (customerPhone) {
+  if (customerPhone) {
 
-            customerPhone.focus();
+    customerPhone.focus();
 
-          }
+  }
 
+  return;
 
-          return;
+}
 
-        }
+if (!/^\d{8}$/.test(telefono)) {
 
+  alert(
 
-        mostrarPaso(
-          stepDelivery
-        );
+    "El número de teléfono debe tener exactamente 8 dígitos."
+
+  );
+
+  if (customerPhone) {
+
+    customerPhone.focus();
+
+  }
+
+  return;
+
+}
+mostrarPaso(
+
+  stepDelivery
+
+);
 
       }
+
     );
 
   }
