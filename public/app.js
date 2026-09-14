@@ -1869,7 +1869,59 @@ if (
 
   }
 
+/* =========================
 
+   TARJETA
+
+========================= */
+
+if (cardPayment) {
+
+  cardPayment.addEventListener(
+
+    "change",
+
+    () => {
+
+      if (!cardPayment.checked) return;
+
+      if (bankBox) {
+
+        bankBox.classList.remove("show");
+
+      }
+
+      if (cardBox) {
+
+        cardBox.classList.add("show");
+
+      }
+
+      if (bankSelect) {
+
+        bankSelect.value = "";
+
+      }
+
+      const transferInfo =
+
+        document.getElementById(
+
+          "transferInfo"
+
+        );
+
+      if (transferInfo) {
+
+        transferInfo.remove();
+
+      }
+
+    }
+
+  );
+
+}
   if (cashPayment) {
 
     cashPayment.addEventListener(
