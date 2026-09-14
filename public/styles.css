@@ -2658,3 +2658,7 @@ select option {
 #paymentMethodLabel {
   color: #ffffff !important;
 }
+#homeDelivery,
+#storePickup {
+  color: #fff !important;
+}
