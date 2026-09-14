@@ -147,23 +147,26 @@ const deliveryReference =
   document.getElementById("deliveryReference");
   
   /* =====================================================
-     ENTREGA
-  ===================================================== */
 
-  const homeDelivery =
-    document.getElementById("homeDelivery");
+   ENTREGA
 
-  const storePickup =
-    document.getElementById("storePickup");
+===================================================== */
 
-  const departmentBox =
-    document.getElementById("departmentBox");
+const homeDelivery =
 
-  const pickupBox =
-    document.getElementById("pickupBox");
+  document.getElementById("homeDelivery");
 
-  const departmentSelect =
-    document.getElementById("department");
+const storePickup =
+
+  document.getElementById("storePickup");
+
+const departmentBox =
+
+  document.getElementById("departmentBox");
+
+const pickupBox =
+
+  document.getElementById("pickupBox");
 
 
   /* =====================================================
