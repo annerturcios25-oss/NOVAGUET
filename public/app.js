@@ -138,11 +138,13 @@ let codigoPromocionalAplicado = "";
   const customerName =
     document.getElementById("customerName");
 
-  const customerAddress =
-    document.getElementById("customerAddress");
+  const department =
 
-  const customerCity =
-    document.getElementById("customerCity");
+  document.getElementById("department");
+
+const municipality =
+
+  document.getElementById("municipality");
 
   const deliveryReference =
     document.getElementById("deliveryReference");
