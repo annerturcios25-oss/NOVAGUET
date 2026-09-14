@@ -2653,10 +2653,8 @@ select option {
   color: #00bfff !important;
   opacity: 0.75;
 }
-/* ETIQUETAS DEL CHECKOUT */
-.cart-box label,
-.cart-box .checkout-label,
-.cart-box h3,
-.cart-box h4 {
+/* SOLO MÉTODO DE ENTREGA Y FORMA DE PAGO */
+#deliveryMethodLabel,
+#paymentMethodLabel {
   color: #ffffff !important;
 }
