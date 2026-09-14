@@ -1086,7 +1086,7 @@ footer {
 }
 
 .option-card span {
-  color: #222222;
+  color: #ffffff !important;
   font-size: 15px;
   font-weight: 500;
 }
