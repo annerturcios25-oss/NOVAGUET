@@ -2594,3 +2594,37 @@ button:hover {
   box-shadow:
     0 10px 25px rgba(0, 191, 255, 0.30);
 }
+/* =====================================================
+   TEXTO DE LOS FORMULARIOS — NOVAGUET
+===================================================== */
+
+input,
+select,
+textarea {
+  color: #00bfff !important;
+  font-weight: 500;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #00bfff !important;
+  opacity: 0.65;
+}
+
+select option {
+  background: #151515;
+  color: #00bfff;
+}
+
+/* Texto de las etiquetas */
+.checkout-card label,
+.department-box label {
+  color: #00bfff;
+}
+
+/* Títulos de los formularios */
+.checkout-card h3,
+.checkout-card h4,
+.department-box h4 {
+  color: #00bfff;
+}
