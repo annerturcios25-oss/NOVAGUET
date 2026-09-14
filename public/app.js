@@ -148,7 +148,8 @@ let codigoPromocionalAplicado = "";
 
   const cashPayment =
     document.getElementById("cashPayment");
-
+const cardPayment =
+    document.getElementById("cardPayment");
   const bankBox =
     document.getElementById("bankBox");
 
@@ -1917,7 +1918,55 @@ if (
   ===================================================== */
 
   function mostrarDatosTransferencia() {
+ if (cardPayment) {
 
+    cardPayment.addEventListener(
+
+      "change",
+
+      () => {
+
+        if (
+
+          !cardPayment.checked
+
+        ) return;
+
+        if (bankBox) {
+
+          bankBox.classList.remove(
+
+            "show"
+
+          );
+
+        }
+
+        if (bankSelect) {
+
+          bankSelect.value = "";
+
+        }
+
+        const transferInfo =
+
+          document.getElementById(
+
+            "transferInfo"
+
+          );
+
+        if (transferInfo) {
+
+          transferInfo.remove();
+
+        }
+
+      }
+
+    );
+
+  }
     if (!bankBox) return;
 
 
@@ -2412,86 +2461,144 @@ if (
 
 
   /* =====================================================
-     CONTINUAR PAGO - EFECTIVO
-  ===================================================== */
 
-  if (
-    continuePaymentButton
-  ) {
+   CONTINUAR PAGO
 
-    continuePaymentButton.addEventListener(
-      "click",
-      () => {
+===================================================== */
 
-        const paymentRadio =
-          document.querySelector(
-            'input[name="paymentMethod"]:checked'
-          );
+if (
 
+  continuePaymentButton
 
-        if (!paymentRadio) {
+) {
 
-          alert(
-            "Selecciona una forma de pago."
-          );
+  continuePaymentButton.addEventListener(
 
-          return;
+    "click",
 
-        }
+    () => {
 
+      const paymentRadio =
 
-        /*
-         * TRANSFERENCIA
-         */
+        document.querySelector(
+
+          'input[name="paymentMethod"]:checked'
+
+        );
+
+      if (!paymentRadio) {
+
+        alert(
+
+          "Selecciona una forma de pago."
+
+        );
+
+        return;
+
+      }
+
+      /*
+
+       * TRANSFERENCIA
+
+       */
+
+      if (
+
+        paymentRadio.value ===
+
+        "transfer"
+
+      ) {
 
         if (
-          paymentRadio.value ===
-          "transfer"
+
+          !bankSelect ||
+
+          !bankSelect.value
+
         ) {
 
-          if (
-            !bankSelect ||
-            !bankSelect.value
-          ) {
+          alert(
 
-            alert(
-              "Selecciona el banco para realizar la transferencia."
-            );
+            "Selecciona el banco para realizar la transferencia."
 
+          );
 
-            if (bankSelect) {
+          if (bankSelect) {
 
-              bankSelect.focus();
-
-            }
-
-
-            return;
+            bankSelect.focus();
 
           }
 
-
-          mostrarDatosTransferencia();
-
           return;
 
         }
 
+        mostrarDatosTransferencia();
 
-        /*
-         * EFECTIVO
-         */
+        return;
+
+      }
+
+      /*
+
+       * TARJETA DE DÉBITO / CRÉDITO
+
+       */
+
+      if (
+
+        paymentRadio.value ===
+
+        "card"
+
+      ) {
 
         mostrarResumen();
 
         mostrarPaso(
+
           stepSummary
+
         );
 
-      }
-    );
+        return;
 
-  }
+      }
+
+      /*
+
+       * EFECTIVO
+
+       */
+
+      if (
+
+        paymentRadio.value ===
+
+        "cash"
+
+      ) {
+
+        mostrarResumen();
+
+        mostrarPaso(
+
+          stepSummary
+
+        );
+
+        return;
+
+      }
+
+    }
+
+  );
+
+}
 
 
   /* =====================================================
