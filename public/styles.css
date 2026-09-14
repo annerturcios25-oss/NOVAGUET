@@ -134,7 +134,7 @@ nav a:hover {
 .coming-soon p {
   font-weight: bold;
   letter-spacing: 4px;
-  color: #555;
+  color: #f5c400;
 }
 
 /* HONDURAS Y USA */
@@ -155,6 +155,8 @@ nav a:hover {
 .country h2 {
   font-size: 16px;
   letter-spacing: 2px;
+  color: #000000;
+  font-weight: 700;
 }
 
 .connection {
