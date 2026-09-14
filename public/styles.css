@@ -2049,3 +2049,548 @@ footer {
   font-size: 14px;
   margin-bottom: 18px;
 }
+/* =====================================================
+
+   NOVAGUET — TEXTURA PREMIUM
+
+===================================================== */
+
+/* Fondo general */
+
+body {
+
+  background:
+
+    radial-gradient(
+
+      circle at 20% 20%,
+
+      rgba(255, 255, 255, 0.035) 0,
+
+      transparent 35%
+
+    ),
+
+    radial-gradient(
+
+      circle at 80% 70%,
+
+      rgba(0, 191, 255, 0.025) 0,
+
+      transparent 35%
+
+    ),
+
+    repeating-linear-gradient(
+
+      115deg,
+
+      rgba(255, 255, 255, 0.018) 0px,
+
+      rgba(255, 255, 255, 0.018) 1px,
+
+      transparent 1px,
+
+      transparent 5px
+
+    ),
+
+    linear-gradient(
+
+      135deg,
+
+      #080808 0%,
+
+      #111111 45%,
+
+      #070707 100%
+
+    );
+
+  background-attachment: fixed;
+
+  color: #ffffff;
+
+}
+
+/* Textura adicional sobre toda la página */
+
+body::before {
+
+  content: "";
+
+  position: fixed;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  z-index: 9999;
+
+  background:
+
+    repeating-linear-gradient(
+
+      0deg,
+
+      rgba(255, 255, 255, 0.012) 0px,
+
+      rgba(255, 255, 255, 0.012) 1px,
+
+      transparent 1px,
+
+      transparent 4px
+
+    );
+
+  opacity: 0.45;
+
+}
+
+/* =====================================================
+
+   SECCIONES PRINCIPALES
+
+===================================================== */
+
+.products-box,
+
+.checkout-card,
+
+.cart-box,
+
+.search-box,
+
+.department-box,
+
+.option-card,
+
+.order-card {
+
+  background:
+
+    radial-gradient(
+
+      circle at 15% 20%,
+
+      rgba(255, 255, 255, 0.035),
+
+      transparent 35%
+
+    ),
+
+    repeating-linear-gradient(
+
+      120deg,
+
+      rgba(255, 255, 255, 0.012) 0px,
+
+      rgba(255, 255, 255, 0.012) 1px,
+
+      transparent 1px,
+
+      transparent 5px
+
+    ),
+
+    linear-gradient(
+
+      145deg,
+
+      #111111,
+
+      #181818,
+
+      #0d0d0d
+
+    );
+
+  color: #ffffff;
+
+}
+
+/* =====================================================
+
+   CAMPOS DE FORMULARIO
+
+===================================================== */
+
+input,
+
+select,
+
+textarea {
+
+  background:
+
+    linear-gradient(
+
+      145deg,
+
+      #181818,
+
+      #101010
+
+    ) !important;
+
+  color: #ffffff !important;
+
+  border-color: #3a3a3a !important;
+
+}
+
+input::placeholder,
+
+textarea::placeholder {
+
+  color: #999999;
+
+}
+
+/* =====================================================
+
+   TÍTULOS
+
+===================================================== */
+
+h1,
+
+h2,
+
+h3,
+
+h4 {
+
+  color: #ffffff;
+
+}
+
+/* =====================================================
+
+   BORDES PREMIUM
+
+===================================================== */
+
+.products-box,
+
+.checkout-card,
+
+.cart-box,
+
+.search-box,
+
+.order-card {
+
+  border-color: rgba(255, 255, 255, 0.16);
+
+  box-shadow:
+
+    0 8px 30px rgba(0, 0, 0, 0.35),
+
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+}
+
+/* =====================================================
+
+   BOTONES NOVAGUET
+
+===================================================== */
+
+button {
+
+  transition:
+
+    transform 0.2s ease,
+
+    box-shadow 0.2s ease;
+
+}
+
+button:hover {
+
+  transform: translateY(-2px);
+
+}
+
+/* =====================================================
+
+   DETALLE DE COLOR NOVAGUET
+
+===================================================== */
+
+.category-title,
+
+.section-title {
+
+  color: #f5c400;
+
+}
+
+/* Línea decorativa */
+
+.products-box::after {
+
+  background: linear-gradient(
+
+    90deg,
+
+    #00bfff,
+
+    #f5c400,
+
+    transparent
+
+  );
+
+}
+
+/* =====================================================
+   NOVAGUET — CARRITO DINÁMICO
+===================================================== */
+
+/* Caja principal del carrito */
+.cart-box {
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(0, 191, 255, 0.055),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 90% 90%,
+      rgba(245, 196, 0, 0.045),
+      transparent 30%
+    ),
+    repeating-linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.015) 0px,
+      rgba(255, 255, 255, 0.015) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    linear-gradient(
+      145deg,
+      #151515,
+      #202020,
+      #101010
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  color: #ffffff;
+}
+
+/* Productos dentro del carrito */
+.cart-product {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.015)
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Efecto al tocar/pasar sobre producto */
+.cart-product:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(0, 191, 255, 0.55);
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.35),
+    0 0 12px rgba(0, 191, 255, 0.08);
+}
+
+/* Imagen del producto */
+.cart-product img {
+  border-radius: 10px;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Nombre del producto */
+.cart-product h4,
+.cart-product strong {
+  color: #ffffff;
+}
+
+/* Precio */
+.cart-product .price {
+  color: #f5c400;
+  font-weight: 700;
+}
+
+/* =====================================================
+   CANTIDAD
+===================================================== */
+
+.cart-quantity {
+  background:
+    linear-gradient(
+      145deg,
+      #252525,
+      #151515
+    );
+
+  border: 1px solid rgba(0, 191, 255, 0.35);
+  border-radius: 10px;
+
+  color: #ffffff;
+}
+
+/* Botones de cantidad */
+.cart-quantity button {
+  background: transparent;
+  color: #00bfff;
+
+  border: none;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.cart-quantity button:hover {
+  color: #f5c400;
+  transform: scale(1.15);
+}
+
+/* =====================================================
+   CAMPOS DEL CARRITO / CHECKOUT
+===================================================== */
+
+.cart-box input,
+.cart-box select,
+.cart-box textarea {
+  background:
+    linear-gradient(
+      145deg,
+      #252525,
+      #171717
+    ) !important;
+
+  color: #ffffff !important;
+
+  border: 1px solid #3d3d3d !important;
+  border-radius: 10px;
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+/* Cuando el usuario escribe */
+.cart-box input:focus,
+.cart-box select:focus,
+.cart-box textarea:focus {
+  outline: none;
+
+  background:
+    linear-gradient(
+      145deg,
+      #292929,
+      #181818
+    ) !important;
+
+  border-color: #00bfff !important;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 191, 255, 0.10),
+    0 0 15px rgba(0, 191, 255, 0.08);
+}
+
+/* Placeholder */
+.cart-box input::placeholder,
+.cart-box textarea::placeholder {
+  color: #999999;
+}
+
+/* =====================================================
+   OPCIONES DEL CARRITO
+===================================================== */
+
+.cart-box .option-card {
+  background:
+    linear-gradient(
+      145deg,
+      #202020,
+      #141414
+    );
+
+  border: 1px solid #363636;
+
+  transition:
+    border-color 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease;
+}
+
+.cart-box .option-card:hover {
+  border-color: #00bfff;
+  transform: translateY(-1px);
+}
+
+/* =====================================================
+   TOTAL
+===================================================== */
+
+.cart-box .total,
+.cart-box .cart-total {
+  color: #ffffff;
+}
+
+.cart-box .total strong,
+.cart-box .cart-total strong {
+  color: #f5c400;
+}
+
+/* =====================================================
+   BOTÓN PAGAR
+===================================================== */
+
+.cart-box button[id="checkoutButton"] {
+  background:
+    linear-gradient(
+      135deg,
+      #00bfff,
+      #008fd1
+    );
+
+  color: #ffffff;
+
+  border: none;
+  border-radius: 10px;
+
+  font-weight: 700;
+
+  box-shadow:
+    0 6px 18px rgba(0, 191, 255, 0.20);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.cart-box button[id="checkoutButton"]:hover {
+  transform: translateY(-2px);
+
+  filter: brightness(1.08);
+
+  box-shadow:
+    0 10px 25px rgba(0, 191, 255, 0.30);
+}
