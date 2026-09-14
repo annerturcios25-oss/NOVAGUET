@@ -263,16 +263,33 @@
             autocomplete="name"
           >
 
-          <label for="customerPhone">
-            📞 Número de teléfono
-          </label>
+       <label for="customerPhone">
 
-          <input
-            type="tel"
-            id="customerPhone"
-            placeholder="Escribe tu número de teléfono"
-            autocomplete="tel"
-          >
+  📞 Número de teléfono
+
+</label>
+
+<div class="phone-input">
+
+  <span class="phone-prefix">+504</span>
+
+  <input
+
+    type="tel"
+
+    id="customerPhone"
+
+    placeholder="12345678"
+
+    maxlength="8"
+
+    inputmode="numeric"
+
+    autocomplete="tel"
+
+  >
+
+</div>
 
           <label for="customerAddress">
             🏠 Dirección de entrega
