@@ -2653,12 +2653,4 @@ select option {
   color: #00bfff !important;
   opacity: 0.75;
 }
-/* SOLO MÉTODO DE ENTREGA Y FORMA DE PAGO */
-#deliveryMethodLabel,
-#paymentMethodLabel {
-  color: #ffffff !important;
-}
-#homeDelivery,
-#storePickup {
-  color: #fff !important;
-}
+
