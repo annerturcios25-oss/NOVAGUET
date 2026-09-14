@@ -3130,10 +3130,20 @@ async () => {
             pago: {
 
               metodo:
-                paymentMethod ===
-                "transfer"
-                  ? "Transferencia bancaria"
-                  : "Pago en efectivo",
+
+  paymentMethod ===
+
+  "transfer"
+
+    ? "Transferencia bancaria"
+
+    : paymentMethod ===
+
+      "card"
+
+        ? "Tarjeta de débito/crédito"
+
+        : "Pago en efectivo",
 
               banco:
                 bancoSeleccionado,
