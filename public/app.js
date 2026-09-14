@@ -130,26 +130,22 @@ let codigoPromocionalAplicado = "";
   const paymentResult =
     document.getElementById("paymentResult");
 
+/* =====================================================
+   CLIENTE
+===================================================== */
 
-  /* =====================================================
-     CLIENTE
-  ===================================================== */
+const customerName =
+  document.getElementById("customerName");
 
-  const customerName =
-    document.getElementById("customerName");
-
-  const department =
-
+const departmentSelect =
   document.getElementById("department");
 
 const municipality =
-
   document.getElementById("municipality");
 
-  const deliveryReference =
-    document.getElementById("deliveryReference");
-
-
+const deliveryReference =
+  document.getElementById("deliveryReference");
+  
   /* =====================================================
      ENTREGA
   ===================================================== */
