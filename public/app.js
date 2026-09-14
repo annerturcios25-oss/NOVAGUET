@@ -150,6 +150,8 @@ let codigoPromocionalAplicado = "";
     document.getElementById("cashPayment");
 const cardPayment =
     document.getElementById("cardPayment");
+    const cardBox =
+  document.getElementById("cardBox");
   const bankBox =
     document.getElementById("bankBox");
 
