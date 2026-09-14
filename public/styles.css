@@ -1128,6 +1128,9 @@ footer {
 /* =========================
    DEPARTAMENTO DE ENTREGA
 ========================= */
+/* =========================
+   DEPARTAMENTO DE ENTREGA
+========================= */
 
 .department-box {
   display: none;
@@ -1140,6 +1143,14 @@ footer {
 
 .department-box.show {
   display: block;
+}
+
+.department-box label {
+  display: block;
+  margin: 0 0 8px !important;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222222;
 }
 
 .department-box label {
