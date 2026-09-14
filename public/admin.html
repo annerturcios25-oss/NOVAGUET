@@ -614,15 +614,42 @@
 
 <section class="products-box" id="ordersBox">
 
-  <h3>Pedidos</h3>
+  <h3>📦 Pedidos pendientes</h3>
+
+  <p id="pendingOrdersCount">
+
+    Cargando pedidos...
+
+  </p>
 
   <div id="adminOrders" class="orders-list">
 
-    <p>Cargando pedidos...</p>
+  </div>
+
+  <div class="delivered-orders-section">
+
+    <h3>✅ Historial de pedidos entregados</h3>
+
+    <p id="deliveredOrdersCount">
+
+      Cargando historial...
+
+    </p>
+
+    <div
+
+      id="deliveredOrders"
+
+      class="orders-list"
+
+    >
+
+    </div>
 
   </div>
 
 </section>
+
     <a
       href="/"
       class="back-button"
@@ -1058,41 +1085,35 @@ const respuesta =
       }
     );
 /* =========================
-
    PEDIDOS
-
 ========================= */
 
 async function cargarPedidosAdmin() {
 
   const adminOrders =
-
     document.getElementById("adminOrders");
 
-  if (!adminOrders) return;
+  const deliveredOrders =
+    document.getElementById("deliveredOrders");
+
+  if (!adminOrders || !deliveredOrders) return;
 
   try {
 
     const respuesta = await fetch(
-
       "/api/pedidos",
-
       {
-
         credentials: "include"
-
       }
-
     );
 
     if (!respuesta.ok) {
-
-      throw new Error("No se pudieron cargar los pedidos.");
-
+      throw new Error(
+        "No se pudieron cargar los pedidos."
+      );
     }
 
     const pedidos =
-
       await respuesta.json();
 
     mostrarPedidosAdmin(pedidos);
@@ -1102,291 +1123,347 @@ async function cargarPedidosAdmin() {
     console.error(error);
 
     adminOrders.innerHTML =
-
       "<p>No se pudieron cargar los pedidos.</p>";
+
+    deliveredOrders.innerHTML =
+      "<p>No se pudo cargar el historial.</p>";
 
   }
 
 }
 
+
 /* =========================
-
    MOSTRAR PEDIDOS
-
 ========================= */
 
 function mostrarPedidosAdmin(pedidos) {
 
   const adminOrders =
-
     document.getElementById("adminOrders");
 
-  if (!adminOrders) return;
+  const deliveredOrders =
+    document.getElementById("deliveredOrders");
 
-  if (!pedidos.length) {
+  const pendingOrdersCount =
+    document.getElementById("pendingOrdersCount");
 
-    adminOrders.innerHTML =
+  const deliveredOrdersCount =
+    document.getElementById("deliveredOrdersCount");
 
-      "<p>No hay pedidos todavía.</p>";
+  if (!adminOrders || !deliveredOrders) return;
 
-    return;
+
+  /* =========================
+     SEPARAR PEDIDOS
+  ========================= */
+
+  const pedidosPendientes =
+    pedidos.filter(
+      pedido =>
+        pedido.estado !== "Entregado"
+    );
+
+  const pedidosEntregados =
+    pedidos.filter(
+      pedido =>
+        pedido.estado === "Entregado"
+    );
+
+
+  /* =========================
+     CONTADORES
+  ========================= */
+
+  if (pendingOrdersCount) {
+
+    pendingOrdersCount.textContent =
+      `📦 ${pedidosPendientes.length} pedido${
+        pedidosPendientes.length === 1
+          ? ""
+          : "s"
+      } pendiente${
+        pedidosPendientes.length === 1
+          ? ""
+          : "s"
+      }`;
 
   }
 
-  adminOrders.innerHTML =
 
-    pedidos.map(pedido => {
+  if (deliveredOrdersCount) {
 
-      const cliente =
+    deliveredOrdersCount.textContent =
+      `✅ ${pedidosEntregados.length} pedido${
+        pedidosEntregados.length === 1
+          ? ""
+          : "s"
+      } entregado${
+        pedidosEntregados.length === 1
+          ? ""
+          : "s"
+      }`;
 
-        pedido.cliente || {};
+  }
 
-      const productos =
 
-        pedido.productos || [];
+  /* =========================
+     MOSTRAR PENDIENTES
+  ========================= */
 
-      const fecha =
+  if (!pedidosPendientes.length) {
 
-        new Date(pedido.fecha);
+    adminOrders.innerHTML =
+      "<p>🎉 No hay pedidos pendientes.</p>";
 
-      const fechaTexto =
+  } else {
 
-        fecha.toLocaleString(
+    adminOrders.innerHTML =
+      pedidosPendientes
+        .map(pedido =>
+          crearTarjetaPedido(pedido)
+        )
+        .join("");
 
-          "es-HN",
+  }
 
-          {
 
-            dateStyle: "medium",
+  /* =========================
+     MOSTRAR ENTREGADOS
+  ========================= */
 
-            timeStyle: "short"
+  if (!pedidosEntregados.length) {
 
-          }
+    deliveredOrders.innerHTML =
+      "<p>No hay pedidos entregados todavía.</p>";
 
-        );
+  } else {
 
-      const productosHTML =
+    deliveredOrders.innerHTML =
+      pedidosEntregados
+        .map(pedido =>
+          crearTarjetaPedido(pedido)
+        )
+        .join("");
 
-        productos.map(item => {
+  }
 
-          return `
+}
 
-            <p>
 
-              • ${item.nombre}
+/* =========================
+   CREAR TARJETA DE PEDIDO
+========================= */
 
-              — ${item.cantidad} ×
+function crearTarjetaPedido(pedido) {
 
-              HNL ${Number(item.precio).toFixed(2)}
+  const cliente =
+    pedido.cliente || {};
 
-              ${item.talla
+  const productos =
+    pedido.productos || [];
 
-                ? ` — Talla: ${item.talla}`
+  const fecha =
+    new Date(pedido.fecha);
 
-                : ""}
+  const fechaTexto =
+    fecha.toLocaleString(
+      "es-HN",
+      {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }
+    );
 
-            </p>
 
-          `;
-
-        }).join("");
+  const productosHTML =
+    productos.map(item => {
 
       return `
 
-        <article class="order-card">
+        <p>
 
-          <div class="order-header">
+          • ${item.nombre}
 
-            <strong>
+          — ${item.cantidad} ×
 
-              Pedido ${pedido.id}
+          HNL ${Number(
+            item.precio
+          ).toFixed(2)}
 
-            </strong>
+          ${
+            item.talla
+              ? ` — Talla: ${item.talla}`
+              : ""
+          }
 
-            <span>
-
-              ${fechaTexto}
-
-            </span>
-
-          </div>
-
-          <p>
-
-            <strong>Cliente:</strong>
-
-            ${cliente.nombre || ""}
-
-          </p>
-
-          <p>
-
-            <strong>Teléfono:</strong>
-
-            ${cliente.telefono || ""}
-
-          </p>
-
-          <p>
-
-            <strong>Dirección:</strong>
-
-            ${cliente.direccion || ""}
-
-          </p>
-
-          <p>
-
-            <strong>Ciudad:</strong>
-
-            ${cliente.ciudad || ""}
-
-          </p>
-
-          <p>
-
-            <strong>Departamento:</strong>
-
-            ${cliente.departamento || ""}
-
-          </p>
-
-          <div class="order-items">
-
-            <strong>Productos:</strong>
-
-            ${productosHTML}
-
-          </div>
-
-          <p class="order-total">
-
-            Total:
-
-            HNL ${Number(pedido.total || 0).toFixed(2)}
-
-          </p>
-
-          <div class="order-actions">
-
-            <label>
-
-              Estado del pedido:
-
-            </label>
-
-            <select
-
-              onchange="cambiarEstadoPedido(
-
-                '${pedido.id}',
-
-                this.value
-
-              )"
-
-            >
-
-              ${[
-
-                "Pendiente",
-
-                "Confirmado",
-
-                "Preparando",
-
-                "Enviado",
-
-                "Entregado",
-
-                "Cancelado"
-
-              ].map(estado => `
-
-                <option
-
-                  value="${estado}"
-
-                  ${pedido.estado === estado
-
-                    ? "selected"
-
-                    : ""}
-
-                >
-
-                  ${estado}
-
-                </option>
-
-              `).join("")}
-
-            </select>
-
-          </div>
-
-        </article>
+        </p>
 
       `;
 
     }).join("");
 
+
+  return `
+
+    <article class="order-card">
+
+      <div class="order-header">
+
+        <strong>
+          Pedido ${pedido.id}
+        </strong>
+
+        <span>
+          ${fechaTexto}
+        </span>
+
+      </div>
+
+
+      <p>
+        <strong>Cliente:</strong>
+        ${cliente.nombre || ""}
+      </p>
+
+
+      <p>
+        <strong>Teléfono:</strong>
+        ${cliente.telefono || ""}
+      </p>
+
+
+      <p>
+        <strong>Dirección:</strong>
+        ${cliente.direccion || ""}
+      </p>
+
+
+      <p>
+        <strong>Ciudad:</strong>
+        ${cliente.ciudad || ""}
+      </p>
+
+
+      <p>
+        <strong>Departamento:</strong>
+        ${cliente.departamento || ""}
+      </p>
+
+
+      <div class="order-items">
+
+        <strong>
+          Productos:
+        </strong>
+
+        ${productosHTML}
+
+      </div>
+
+
+      <p class="order-total">
+
+        Total:
+
+        HNL ${
+          Number(
+            pedido.total || 0
+          ).toFixed(2)
+        }
+
+      </p>
+
+
+      <div class="order-actions">
+
+        <label>
+          Estado del pedido:
+        </label>
+
+
+        <select
+          onchange="cambiarEstadoPedido(
+            '${pedido.id}',
+            this.value
+          )"
+        >
+
+          ${[
+            "Pendiente",
+            "Confirmado",
+            "Preparando",
+            "Enviado",
+            "Entregado",
+            "Cancelado"
+          ].map(estado => `
+
+            <option
+              value="${estado}"
+              ${
+                pedido.estado === estado
+                  ? "selected"
+                  : ""
+              }
+            >
+
+              ${estado}
+
+            </option>
+
+          `).join("")}
+
+        </select>
+
+      </div>
+
+    </article>
+
+  `;
+
 }
 
+
 /* =========================
-
    CAMBIAR ESTADO
-
 ========================= */
 
 async function cambiarEstadoPedido(
-
   id,
-
   estado
-
 ) {
 
   try {
 
-    const respuesta = await fetch(
+    const respuesta =
+      await fetch(
+        `/api/pedidos/${encodeURIComponent(id)}/estado`,
+        {
+          method: "PATCH",
 
-      `/api/pedidos/${encodeURIComponent(id)}/estado`,
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
 
-      {
+          credentials: "include",
 
-        method: "PATCH",
+          body: JSON.stringify({
+            estado: estado
+          })
+        }
+      );
 
-        headers: {
-
-          "Content-Type": "application/json"
-
-        },
-
-        credentials: "include",
-
-        body: JSON.stringify({
-
-          estado: estado
-
-        })
-
-      }
-
-    );
 
     const resultado =
-
       await respuesta.json();
+
 
     if (!respuesta.ok) {
 
       alert(
-
         resultado.error ||
-
         "No se pudo actualizar el estado."
-
       );
 
       cargarPedidosAdmin();
@@ -1395,16 +1472,20 @@ async function cambiarEstadoPedido(
 
     }
 
+
+    /* =========================
+       RECARGAR PEDIDOS
+    ========================= */
+
     cargarPedidosAdmin();
+
 
   } catch (error) {
 
     console.error(error);
 
     alert(
-
       "No se pudo actualizar el estado del pedido."
-
     );
 
     cargarPedidosAdmin();
