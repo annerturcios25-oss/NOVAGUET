@@ -1663,75 +1663,175 @@ if (cartTotal) {
 
   }
 
-
   /* =====================================================
-     PASO 2
-     CONTINUAR ENTREGA
-  ===================================================== */
-  if (
-    continueDeliveryButton
-  ) {
 
-    continueDeliveryButton.addEventListener(
-      "click",
-      () => {
+   PASO 2
 
-        const deliveryRadio =
-          document.querySelector(
-            'input[name="deliveryMethod"]:checked'
-          );
+   CONTINUAR ENTREGA
 
+===================================================== */
 
-        if (!deliveryRadio) {
+if (
+
+  continueDeliveryButton
+
+) {
+
+  continueDeliveryButton.addEventListener(
+
+    "click",
+
+    () => {
+
+      const deliveryRadio =
+
+        document.querySelector(
+
+          'input[name="deliveryMethod"]:checked'
+
+        );
+
+      if (!deliveryRadio) {
+
+        alert(
+
+          "Selecciona un método de entrega."
+
+        );
+
+        return;
+
+      }
+
+      /* =========================
+
+         ENTREGA / ENVÍO
+
+      ========================= */
+
+      if (
+
+        deliveryRadio.value ===
+
+        "delivery"
+
+      ) {
+
+        if (
+
+          !departmentSelect ||
+
+          !departmentSelect.value
+
+        ) {
 
           alert(
-            "Selecciona un método de entrega."
+
+            "Selecciona tu departamento."
+
           );
+
+          if (departmentSelect) {
+
+            departmentSelect.focus();
+
+          }
 
           return;
 
         }
 
+        const ciudad =
 
-        if (
-          deliveryRadio.value ===
-          "delivery"
-        ) {
+          customerCity
 
-          if (
-            !departmentSelect ||
-            !departmentSelect.value
-          ) {
+            ? customerCity.value.trim()
 
-            alert(
-              "Selecciona tu departamento."
-            );
+            : "";
 
+        if (!ciudad) {
 
-            if (departmentSelect) {
+          alert(
 
-              departmentSelect.focus();
+            "Escribe tu ciudad o municipio."
 
-            }
+          );
 
+          if (customerCity) {
 
-            return;
+            customerCity.focus();
 
           }
 
+          return;
+
         }
 
+        const direccion =
 
-        mostrarPaso(
-          stepPayment
-        );
+          customerAddress
+
+            ? customerAddress.value.trim()
+
+            : "";
+
+        if (!direccion) {
+
+          alert(
+
+            "Escribe tu dirección de entrega."
+
+          );
+
+          if (customerAddress) {
+
+            customerAddress.focus();
+
+          }
+
+          return;
+
+        }
+
+        const referencia =
+
+          deliveryReference
+
+            ? deliveryReference.value.trim()
+
+            : "";
+
+        if (!referencia) {
+
+          alert(
+
+            "Escribe una referencia para encontrar la dirección."
+
+          );
+
+          if (deliveryReference) {
+
+            deliveryReference.focus();
+
+          }
+
+          return;
+
+        }
 
       }
-    );
 
-  }
+      mostrarPaso(
 
+        stepPayment
 
+      );
+
+    }
+
+  );
+
+}
 
   /* =====================================================
      FORMA DE PAGO
