@@ -2892,6 +2892,13 @@ municipios.forEach(
           actualizarContadorCarrito();
 
           mostrarCarrito();
+          if (checkoutContainer) {
+  checkoutContainer.style.display = "none";
+}
+
+if (cartBox) {
+  cartBox.classList.remove("show");
+}
 
 
           if (paymentResult) {
