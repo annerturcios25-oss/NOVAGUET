@@ -42,7 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const cartTotal =
     document.getElementById("cartTotal");
+const cartSummary =
+    document.querySelector(".cart-summary");
 
+const checkoutContainer =
+    document.getElementById("checkoutContainer");
+
+const stepCustomer =
+    document.getElementById("stepCustomer");
   const promoCode =
     document.getElementById("promoCode");
 
@@ -975,8 +982,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =====================================================
      PROMOCIÓN
   ===================================================== */
-
-  if (applyPromo) {
+if (applyPromo) {
 
     applyPromo.addEventListener(
       "click",
@@ -1040,6 +1046,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
+  
   /* =====================================================
      CARRITO ABRIR / CERRAR
   ===================================================== */
@@ -1315,44 +1322,141 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =====================================================
      CHECKOUT - ABRIR
   ===================================================== */
+/* =====================================================
+   CHECKOUT - ABRIR
+===================================================== */
 
-  if (checkoutButton) {
+if (checkoutButton) {
 
-    checkoutButton.addEventListener(
-      "click",
-      () => {
+  checkoutButton.addEventListener(
+    "click",
+    (event) => {
 
-        if (carrito.length === 0) {
+      event.preventDefault();
 
-          alert(
-            "Tu carrito está vacío."
-          );
+      if (carrito.length === 0) {
 
-          return;
+        alert(
+          "Tu carrito está vacío."
+        );
 
-        }
-
-        if (checkoutBox) {
-
-          checkoutBox.classList.add(
-            "show"
-          );
-
-        }
-
-        if (cartBox) {
-
-          cartBox.classList.remove(
-            "show"
-          );
-
-        }
+        return;
 
       }
-    );
 
-  }
+      /* =========================================
+         MANTENER ABIERTO EL CARRITO
+      ========================================= */
 
+      if (cartBox) {
+
+        cartBox.classList.add(
+          "show"
+        );
+
+      }
+
+      /* =========================================
+         OCULTAR CONTENIDO DEL CARRITO
+      ========================================= */
+
+      if (cartItems) {
+        cartItems.style.display =
+          "none";
+      }
+
+      if (cartEmpty) {
+        cartEmpty.style.display =
+          "none";
+      }
+
+      if (cartSummary) {
+        cartSummary.style.display =
+          "none";
+      }
+
+      /* =========================================
+         MOSTRAR CHECKOUT
+      ========================================= */
+
+      if (checkoutContainer) {
+
+        checkoutContainer.style.display =
+          "block";
+
+      }
+
+      /* =========================================
+         MOSTRAR PRIMER PASO
+      ========================================= */
+
+      if (stepCustomer) {
+
+        stepCustomer.style.display =
+          "block";
+
+      }
+
+      /* =========================================
+         OCULTAR LOS DEMÁS PASOS
+      ========================================= */
+
+      document
+        .querySelectorAll(
+          ".checkout-step"
+        )
+        .forEach(
+          paso => {
+
+            if (
+              paso !== stepCustomer
+            ) {
+
+              paso.style.display =
+                "none";
+
+            }
+
+          }
+        );
+
+      /* =========================================
+         OCULTAR RESULTADO ANTERIOR
+      ========================================= */
+
+      const stepResult =
+        document.getElementById(
+          "stepResult"
+        );
+
+      if (stepResult) {
+
+        stepResult.style.display =
+          "none";
+
+      }
+
+      if (paymentResult) {
+
+        paymentResult.style.display =
+          "none";
+
+      }
+
+      /* =========================================
+         REINICIAR DATOS DEL CHECKOUT
+      ========================================= */
+
+      deliveryMethod = "";
+
+      paymentMethod = "";
+
+      orderData = {};
+
+    }
+  );
+
+}
 
   /* =====================================================
      CHECKOUT - CERRAR
@@ -1360,23 +1464,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (closeCheckout) {
 
-    closeCheckout.addEventListener(
-      "click",
-      () => {
+  closeCheckout.addEventListener(
 
-        if (checkoutBox) {
+    "click",
 
-          checkoutBox.classList.remove(
-            "show"
-          );
+    (event) => {
 
-        }
+      event.preventDefault();
+
+      if (checkoutContainer) {
+
+        checkoutContainer.style.display =
+
+          "none";
 
       }
-    );
 
-  }
+      if (cartItems) {
 
+        cartItems.style.display =
+
+          "block";
+
+      }
+
+      if (cartSummary) {
+
+        cartSummary.style.display =
+
+          "block";
+
+      }
+
+      mostrarCarrito();
+
+    }
+
+  );
+
+}
 
   /* =====================================================
      CLIENTE
