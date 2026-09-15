@@ -978,7 +978,7 @@ const stepCustomer =
   /* =====================================================
      PROMOCIÓN
   ===================================================== */
- (applyPromo) {
+if (applyPromo) {
 
     applyPromo.addEventListener(
       "click",
