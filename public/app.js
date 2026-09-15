@@ -478,13 +478,9 @@ const stepCustomer =
           ${
             Number.isFinite(stock)
               ? `
-                <div class="product-stock">
-                  ${
-                    stock > 0
-                      ? `Stock: ${stock}`
-                      : "Agotado"
-                  }
-                </div>
+              <div class="product-stock">
+  ${stock <= 0 ? "Agotado" : ""}
+      </div>
               `
               : ""
           }
