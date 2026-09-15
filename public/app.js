@@ -978,69 +978,23 @@ const stepCustomer =
   /* =====================================================
      PROMOCIÓN
   ===================================================== */
-if (applyPromo) {
+if (codigo === "NOVA10") {
+  const subtotal = calcularSubtotal();
+  descuentoPromocional = subtotal * 0.10;
 
-    applyPromo.addEventListener(
-      "click",
-      () => {
+  actualizarTotales();
 
-        const codigo =
-          promoCode
-            ? promoCode.value
-                .trim()
-                .toUpperCase()
-            : "";
+  alert("Código aplicado correctamente.");
 
-        if (!codigo) {
+} else if (codigo === "NOVA15") {
+  const subtotal = calcularSubtotal();
+  descuentoPromocional = subtotal * 0.15;
 
-          descuentoPromocional = 0;
+  actualizarTotales();
 
-          actualizarTotales();
+  alert("Código aplicado correctamente.");
 
-          alert(
-            "Ingresa un código promocional."
-          );
-
-          return;
-
-        }
-
-        /*
-          Mantener aquí los códigos
-          promocionales que ya tengas.
-        */
-
-        if (codigo === "NOVAGUET10") {
-
-          const subtotal =
-            calcularSubtotal();
-
-          descuentoPromocional =
-            subtotal * 0.10;
-
-          actualizarTotales();
-
-          alert(
-            "Código aplicado correctamente."
-          );
-
-        } else {
-
-          descuentoPromocional = 0;
-
-          actualizarTotales();
-
-          alert(
-            "Código promocional no válido."
-          );
-
-        }
-
-      }
-    );
-
-  }
-
+} else {
 
   
   /* =====================================================
