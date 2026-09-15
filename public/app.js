@@ -1985,35 +1985,51 @@ if (checkoutButton) {
           </option>
         `;
 
-        const departamento =
-          departmentSelect.value;
+        const departamento = departmentSelect.value;
 
-        const municipios =
-          municipiosHonduras[
-            departamento
-          ] || [];
+const equivalenciasDepartamentos = {
+  "atlantida": "Atlántida",
+  "choluteca": "Choluteca",
+  "colon": "Colón",
+  "comayagua": "Comayagua",
+  "copan": "Copán",
+  "cortes": "Cortés",
+  "el-paraiso": "El Paraíso",
+  "francisco-morazan": "Francisco Morazán",
+  "gracias-a-dios": "Gracias a Dios",
+  "intibuca": "Intibucá",
+  "islas-de-la-bahia": "Islas de la Bahía",
+  "la-paz": "La Paz",
+  "lempira": "Lempira",
+  "ocotepeque": "Ocotepeque",
+  "olancho": "Olancho",
+  "santa-barbara": "Santa Bárbara",
+  "valle": "Valle",
+  "yoro": "Yoro"
+};
 
-        municipios.forEach(
-          nombreMunicipio => {
+const claveDepartamento =
+  equivalenciasDepartamentos[departamento] || "";
 
-            const option =
-              document.createElement(
-                "option"
-              );
+const municipios =
+  municipiosHonduras[claveDepartamento] || [];
 
-            option.value =
-              nombreMunicipio;
+municipios.forEach(
+  nombreMunicipio => {
 
-            option.textContent =
-              nombreMunicipio;
+    const option =
+      document.createElement("option");
 
-            municipality.appendChild(
-              option
-            );
+    option.value =
+      nombreMunicipio;
 
-          }
-        );
+    option.textContent =
+      nombreMunicipio;
 
+    municipality.appendChild(option);
+
+  }
+);
       }
     );
 
