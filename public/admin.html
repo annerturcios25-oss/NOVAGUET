@@ -8,6 +8,160 @@
   <title>NOVAGUET | Administración</title>
 
   <style>
+  
+  /* =========================
+
+   PEDIDOS
+
+========================= */
+
+.orders-list {
+
+  display: grid;
+
+  gap: 20px;
+
+}
+
+.order-card {
+
+  border: 1px solid #ddd;
+
+  border-radius: 12px;
+
+  padding: 18px;
+
+  background: #fff;
+
+}
+
+.order-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+
+  margin-bottom: 15px;
+
+}
+
+.order-header strong {
+
+  color: #111;
+
+  font-size: 18px;
+
+}
+
+.order-header span {
+
+  color: #666;
+
+  font-size: 13px;
+
+}
+
+.order-card p {
+
+  margin: 7px 0;
+
+  color: #555;
+
+  font-size: 14px;
+
+}
+
+.order-items {
+
+  margin-top: 15px;
+
+  padding-top: 12px;
+
+  border-top: 1px solid #eee;
+
+}
+
+.order-total {
+
+  margin-top: 15px !important;
+
+  font-size: 18px !important;
+
+  font-weight: bold;
+
+  color: #d4af37 !important;
+
+}
+
+.order-actions {
+
+  margin-top: 15px;
+
+  padding-top: 15px;
+
+  border-top: 1px solid #eee;
+
+}
+
+.order-actions label {
+
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-weight: bold;
+
+  color: #111;
+
+}
+
+.order-actions select {
+
+  width: 100%;
+
+  max-width: 300px;
+
+  padding: 10px;
+
+  border: 1px solid #ccc;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+
+  background: #fff;
+
+}
+
+@media (max-width: 600px) {
+
+  .order-card {
+
+    padding: 15px;
+
+  }
+
+  .order-header {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+  }
+
+  .order-actions select {
+
+    max-width: 100%;
+
+  }
+
+}
 
     * {
       box-sizing: border-box;
@@ -452,6 +606,49 @@
 
     </section>
 
+<!-- =========================
+
+     PEDIDOS
+
+========================= -->
+
+<section class="products-box" id="ordersBox">
+
+  <h3>📦 Pedidos pendientes</h3>
+
+  <p id="pendingOrdersCount">
+
+    Cargando pedidos...
+
+  </p>
+
+  <div id="adminOrders" class="orders-list">
+
+  </div>
+
+  <div class="delivered-orders-section">
+
+    <h3>✅ Historial de pedidos entregados</h3>
+
+    <p id="deliveredOrdersCount">
+
+      Cargando historial...
+
+    </p>
+
+    <div
+
+      id="deliveredOrders"
+
+      class="orders-list"
+
+    >
+
+    </div>
+
+  </div>
+
+</section>
 
     <a
       href="/"
@@ -680,19 +877,20 @@
       try {
 
         const respuesta =
-          await fetch(
-            "/api/productos/" + id,
-            {
-              method: "DELETE",
-              headers: {
-                "Authorization":
-                  "Basic " +
-                  btoa(
-                    "NOVAGUET:Novaguet/2005"
-                  )
-              }
-            }
-          );
+
+  await fetch(
+
+    "/api/productos/" + id,
+
+    {
+
+      method: "DELETE",
+
+      credentials: "include"
+
+    }
+
+  );
 
 
         if (!respuesta.ok) {
@@ -820,25 +1018,24 @@
           }
 
 
-          const respuesta =
-            await fetch(
-              url,
-              {
-                method: metodo,
+const respuesta =
 
-                headers: {
-                  "Authorization":
-                    "Basic " +
-                    btoa(
-                      "NOVAGUET:Novaguet/2005"
-                    )
-                },
+  await fetch(
 
-                body: formData
+    url,
 
-              }
-            );
+    {
 
+      method: metodo,
+
+      credentials: "include",
+
+      body: formData
+
+    }
+
+  );
+          
 
           if (!respuesta.ok) {
 
@@ -887,13 +1084,422 @@
 
       }
     );
+/* =========================
+   PEDIDOS
+========================= */
 
+async function cargarPedidosAdmin() {
+
+  const adminOrders =
+    document.getElementById("adminOrders");
+
+  const deliveredOrders =
+    document.getElementById("deliveredOrders");
+
+  if (!adminOrders || !deliveredOrders) return;
+
+  try {
+
+    const respuesta = await fetch(
+      "/api/pedidos",
+      {
+        credentials: "include"
+      }
+    );
+
+    if (!respuesta.ok) {
+      throw new Error(
+        "No se pudieron cargar los pedidos."
+      );
+    }
+
+    const pedidos =
+      await respuesta.json();
+
+    mostrarPedidosAdmin(pedidos);
+
+  } catch (error) {
+
+    console.error(error);
+
+    adminOrders.innerHTML =
+      "<p>No se pudieron cargar los pedidos.</p>";
+
+    deliveredOrders.innerHTML =
+      "<p>No se pudo cargar el historial.</p>";
+
+  }
+
+}
+
+
+/* =========================
+   MOSTRAR PEDIDOS
+========================= */
+
+function mostrarPedidosAdmin(pedidos) {
+
+  const adminOrders =
+    document.getElementById("adminOrders");
+
+  const deliveredOrders =
+    document.getElementById("deliveredOrders");
+
+  const pendingOrdersCount =
+    document.getElementById("pendingOrdersCount");
+
+  const deliveredOrdersCount =
+    document.getElementById("deliveredOrdersCount");
+
+  if (!adminOrders || !deliveredOrders) return;
+
+
+  /* =========================
+     SEPARAR PEDIDOS
+  ========================= */
+
+  const pedidosPendientes =
+    pedidos.filter(
+      pedido =>
+        pedido.estado !== "Entregado"
+    );
+
+  const pedidosEntregados =
+    pedidos.filter(
+      pedido =>
+        pedido.estado === "Entregado"
+    );
+
+
+  /* =========================
+     CONTADORES
+  ========================= */
+
+  if (pendingOrdersCount) {
+
+    pendingOrdersCount.textContent =
+      `📦 ${pedidosPendientes.length} pedido${
+        pedidosPendientes.length === 1
+          ? ""
+          : "s"
+      } pendiente${
+        pedidosPendientes.length === 1
+          ? ""
+          : "s"
+      }`;
+
+  }
+
+
+  if (deliveredOrdersCount) {
+
+    deliveredOrdersCount.textContent =
+      `✅ ${pedidosEntregados.length} pedido${
+        pedidosEntregados.length === 1
+          ? ""
+          : "s"
+      } entregado${
+        pedidosEntregados.length === 1
+          ? ""
+          : "s"
+      }`;
+
+  }
+
+
+  /* =========================
+     MOSTRAR PENDIENTES
+  ========================= */
+
+  if (!pedidosPendientes.length) {
+
+    adminOrders.innerHTML =
+      "<p>🎉 No hay pedidos pendientes.</p>";
+
+  } else {
+
+    adminOrders.innerHTML =
+      pedidosPendientes
+        .map(pedido =>
+          crearTarjetaPedido(pedido)
+        )
+        .join("");
+
+  }
+
+
+  /* =========================
+     MOSTRAR ENTREGADOS
+  ========================= */
+
+  if (!pedidosEntregados.length) {
+
+    deliveredOrders.innerHTML =
+      "<p>No hay pedidos entregados todavía.</p>";
+
+  } else {
+
+    deliveredOrders.innerHTML =
+      pedidosEntregados
+        .map(pedido =>
+          crearTarjetaPedido(pedido)
+        )
+        .join("");
+
+  }
+
+}
+
+
+/* =========================
+   CREAR TARJETA DE PEDIDO
+========================= */
+
+function crearTarjetaPedido(pedido) {
+
+  const cliente =
+    pedido.cliente || {};
+
+  const productos =
+    pedido.productos || [];
+
+  const fecha =
+    new Date(pedido.fecha);
+
+  const fechaTexto =
+    fecha.toLocaleString(
+      "es-HN",
+      {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }
+    );
+
+
+  const productosHTML =
+    productos.map(item => {
+
+      return `
+
+        <p>
+
+          • ${item.nombre}
+
+          — ${item.cantidad} ×
+
+          HNL ${Number(
+            item.precio
+          ).toFixed(2)}
+
+          ${
+            item.talla
+              ? ` — Talla: ${item.talla}`
+              : ""
+          }
+
+        </p>
+
+      `;
+
+    }).join("");
+
+
+  return `
+
+    <article class="order-card">
+
+      <div class="order-header">
+
+        <strong>
+          Pedido ${pedido.id}
+        </strong>
+
+        <span>
+          ${fechaTexto}
+        </span>
+
+      </div>
+
+
+      <p>
+        <strong>Cliente:</strong>
+        ${cliente.nombre || ""}
+      </p>
+
+
+      <p>
+        <strong>Teléfono:</strong>
+        ${cliente.telefono || ""}
+      </p>
+
+
+      <p>
+        <strong>Dirección:</strong>
+        ${cliente.direccion || ""}
+      </p>
+
+
+      <p>
+        <strong>Ciudad:</strong>
+        ${cliente.ciudad || ""}
+      </p>
+
+
+      <p>
+        <strong>Departamento:</strong>
+        ${cliente.departamento || ""}
+      </p>
+
+
+      <div class="order-items">
+
+        <strong>
+          Productos:
+        </strong>
+
+        ${productosHTML}
+
+      </div>
+
+
+      <p class="order-total">
+
+        Total:
+
+        HNL ${
+          Number(
+            pedido.total || 0
+          ).toFixed(2)
+        }
+
+      </p>
+
+
+      <div class="order-actions">
+
+        <label>
+          Estado del pedido:
+        </label>
+
+
+        <select
+          onchange="cambiarEstadoPedido(
+            '${pedido.id}',
+            this.value
+          )"
+        >
+
+          ${[
+            "Pendiente",
+            "Confirmado",
+            "Preparando",
+            "Enviado",
+            "Entregado",
+            "Cancelado"
+          ].map(estado => `
+
+            <option
+              value="${estado}"
+              ${
+                pedido.estado === estado
+                  ? "selected"
+                  : ""
+              }
+            >
+
+              ${estado}
+
+            </option>
+
+          `).join("")}
+
+        </select>
+
+      </div>
+
+    </article>
+
+  `;
+
+}
+
+
+/* =========================
+   CAMBIAR ESTADO
+========================= */
+
+async function cambiarEstadoPedido(
+  id,
+  estado
+) {
+
+  try {
+
+    const respuesta =
+      await fetch(
+        `/api/pedidos/${encodeURIComponent(id)}/estado`,
+        {
+          method: "PATCH",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          credentials: "include",
+
+          body: JSON.stringify({
+            estado: estado
+          })
+        }
+      );
+
+
+    const resultado =
+      await respuesta.json();
+
+
+    if (!respuesta.ok) {
+
+      alert(
+        resultado.error ||
+        "No se pudo actualizar el estado."
+      );
+
+      cargarPedidosAdmin();
+
+      return;
+
+    }
+
+
+    /* =========================
+       RECARGAR PEDIDOS
+    ========================= */
+
+    cargarPedidosAdmin();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "No se pudo actualizar el estado del pedido."
+    );
+
+    cargarPedidosAdmin();
+
+  }
+
+}
 
     /* =========================
        INICIAR
     ========================= */
 
-    cargarProductosAdmin();
+  cargarProductosAdmin();
+cargarPedidosAdmin();
 
   </script>
 
