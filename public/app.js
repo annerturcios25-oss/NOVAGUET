@@ -2044,15 +2044,7 @@ if (checkoutButton) {
 
 }
 
-if (municipality) {
-  municipality.addEventListener("change", () => {
 
-    if (customerCity) {
-      customerCity.value = municipality.value;
-    }
-
-  });
-}
 
   /* =====================================================
      CONTINUAR ENTREGA
