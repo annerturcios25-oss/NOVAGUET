@@ -1966,68 +1966,93 @@ if (checkoutButton) {
 
   if (departmentSelect) {
 
-    departmentSelect.addEventListener(
-      "change",
-      () => {
+  departmentSelect.addEventListener("change", () => {
 
-        if (!municipality) return;
+    if (!municipality) return;
 
-        municipality.innerHTML = `
-          <option value="">
-            Selecciona tu municipio
-          </option>
-        `;
+    municipality.innerHTML = `
 
-        const departamento = departmentSelect.value;
+      <option value="">
 
-const equivalenciasDepartamentos = {
-  "atlantida": "Atlántida",
-  "choluteca": "Choluteca",
-  "colon": "Colón",
-  "comayagua": "Comayagua",
-  "copan": "Copán",
-  "cortes": "Cortés",
-  "el-paraiso": "El Paraíso",
-  "francisco-morazan": "Francisco Morazán",
-  "gracias-a-dios": "Gracias a Dios",
-  "intibuca": "Intibucá",
-  "islas-de-la-bahia": "Islas de la Bahía",
-  "la-paz": "La Paz",
-  "lempira": "Lempira",
-  "ocotepeque": "Ocotepeque",
-  "olancho": "Olancho",
-  "santa-barbara": "Santa Bárbara",
-  "valle": "Valle",
-  "yoro": "Yoro"
-};
+        Selecciona tu municipio
 
-const claveDepartamento =
-  equivalenciasDepartamentos[departamento] || "";
+      </option>
 
-const municipios =
-  municipiosHonduras[claveDepartamento] || [];
+    `;
 
-municipios.forEach(
-  nombreMunicipio => {
+    const departamento = departmentSelect.value;
 
-    const option =
-      document.createElement("option");
+    const equivalenciasDepartamentos = {
 
-    option.value =
-      nombreMunicipio;
+      "atlantida": "Atlántida",
 
-    option.textContent =
-      nombreMunicipio;
+      "choluteca": "Choluteca",
 
-    municipality.appendChild(option);
+      "colon": "Colón",
 
-  }
-);
-      }
-    );
+      "comayagua": "Comayagua",
 
-  }
+      "copan": "Copán",
 
+      "cortes": "Cortés",
+
+      "el-paraiso": "El Paraíso",
+
+      "francisco-morazan": "Francisco Morazán",
+
+      "gracias-a-dios": "Gracias a Dios",
+
+      "intibuca": "Intibucá",
+
+      "la-paz": "La Paz",
+
+      "lempira": "Lempira",
+
+      "ocotepeque": "Ocotepeque",
+
+      "olancho": "Olancho",
+
+      "santa-barbara": "Santa Bárbara",
+
+      "valle": "Valle",
+
+      "yoro": "Yoro"
+
+    };
+
+    const claveDepartamento =
+
+      equivalenciasDepartamentos[departamento];
+
+    const municipios =
+
+      municipiosHonduras[claveDepartamento] || [];
+
+    municipios.forEach(nombreMunicipio => {
+
+      const option = document.createElement("option");
+
+      option.value = nombreMunicipio;
+
+      option.textContent = nombreMunicipio;
+
+      municipality.appendChild(option);
+
+    });
+
+  });
+
+}
+
+if (municipality) {
+  municipality.addEventListener("change", () => {
+
+    if (customerCity) {
+      customerCity.value = municipality.value;
+    }
+
+  });
+}
 
   /* =====================================================
      CONTINUAR ENTREGA
