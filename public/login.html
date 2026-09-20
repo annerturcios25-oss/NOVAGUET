@@ -1,199 +1,705 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>NOVAGUET | Administración</title>
 
   <style>
+
     * {
+
       box-sizing: border-box;
+
       margin: 0;
+
       padding: 0;
+
+    }
+
+    :root {
+
+      --celeste: #00BFFF;
+
+      --dorado: #D4AF37;
+
+      --negro: #050505;
+
+      --gris: #111111;
+
     }
 
     body {
+
       min-height: 100vh;
+
       font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top, #111 0%, #050505 45%, #000 100%);
+
       color: white;
+
+      background:
+
+        radial-gradient(circle at 50% 20%, rgba(0,191,255,0.10), transparent 32%),
+
+        radial-gradient(circle at 50% 100%, rgba(212,175,55,0.08), transparent 35%),
+
+        #020202;
+
       display: flex;
-      justify-content: center;
+
       align-items: center;
-      padding: 20px;
+
+      justify-content: center;
+
+      padding: 25px;
+
+      overflow-x: hidden;
+
+    }
+
+    /* Decoración de fondo */
+
+    body::before {
+
+      content: "";
+
+      position: fixed;
+
+      width: 420px;
+
+      height: 420px;
+
+      border-radius: 50%;
+
+      border: 1px solid rgba(0,191,255,0.08);
+
+      top: -180px;
+
+      left: -180px;
+
+      pointer-events: none;
+
+    }
+
+    body::after {
+
+      content: "";
+
+      position: fixed;
+
+      width: 500px;
+
+      height: 500px;
+
+      border-radius: 50%;
+
+      border: 1px solid rgba(212,175,55,0.06);
+
+      bottom: -250px;
+
+      right: -220px;
+
+      pointer-events: none;
+
     }
 
     .login-container {
+
       width: 100%;
-      max-width: 420px;
+
+      max-width: 430px;
+
+      position: relative;
+
+      z-index: 2;
+
     }
+
+    /* Tarjeta principal */
 
     .login-box {
-      background: rgba(15, 15, 15, 0.96);
-      border: 1px solid rgba(0, 191, 255, 0.25);
-      border-radius: 24px;
-      padding: 38px 30px;
+
+      position: relative;
+
+      background:
+
+        linear-gradient(
+
+          145deg,
+
+          rgba(22,22,22,0.98),
+
+          rgba(7,7,7,0.98)
+
+        );
+
+      border: 1px solid rgba(0,191,255,0.25);
+
+      border-radius: 26px;
+
+      padding: 42px 34px 30px;
+
       box-shadow:
-        0 0 35px rgba(0, 191, 255, 0.10),
-        0 20px 60px rgba(0, 0, 0, 0.7);
+
+        0 0 0 1px rgba(212,175,55,0.04),
+
+        0 0 50px rgba(0,191,255,0.08),
+
+        0 30px 80px rgba(0,0,0,0.85);
+
+      overflow: hidden;
+
     }
 
+    .login-box::before {
+
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+
+      left: 0;
+
+      right: 0;
+
+      height: 3px;
+
+      background: linear-gradient(
+
+        90deg,
+
+        transparent,
+
+        var(--celeste),
+
+        var(--dorado),
+
+        var(--celeste),
+
+        transparent
+
+      );
+
+    }
+
+    /* Marca */
+
     .brand {
+
       text-align: center;
+
       margin-bottom: 30px;
+
     }
 
     .brand h1 {
-      font-size: 38px;
-      letter-spacing: 4px;
-      color: #00BFFF;
+
+      font-size: 43px;
+
       font-weight: 900;
+
+      letter-spacing: 5px;
+
+      line-height: 1;
+
     }
 
-    .brand .gold-line {
-      width: 55px;
+    .brand-nova {
+
+      color: var(--celeste);
+
+    }
+
+    .brand-guet {
+
+      color: var(--dorado);
+
+    }
+
+    .brand-line {
+
+      width: 70px;
+
       height: 3px;
-      background: #d4af37;
-      margin: 10px auto 14px;
-      border-radius: 10px;
+
+      margin: 13px auto 13px;
+
+      border-radius: 20px;
+
+      background: linear-gradient(
+
+        90deg,
+
+        var(--celeste),
+
+        var(--dorado)
+
+      );
+
+      box-shadow: 0 0 12px rgba(0,191,255,0.25);
+
     }
 
     .brand p {
-      color: #aaa;
-      font-size: 14px;
-    }
 
-    .title {
-      text-align: center;
-      margin-bottom: 25px;
-    }
+      color: #888;
 
-    .title h2 {
-      font-size: 22px;
-      margin-bottom: 7px;
-    }
-
-    .title p {
-      color: #777;
       font-size: 13px;
+
+      letter-spacing: 1px;
+
     }
+
+    /* Título */
+
+    .admin-heading {
+
+      text-align: center;
+
+      margin-bottom: 28px;
+
+    }
+
+    .admin-icon {
+
+      width: 48px;
+
+      height: 48px;
+
+      margin: 0 auto 13px;
+
+      border-radius: 14px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: rgba(0,191,255,0.08);
+
+      border: 1px solid rgba(0,191,255,0.20);
+
+      font-size: 23px;
+
+    }
+
+    .admin-heading h2 {
+
+      font-size: 21px;
+
+      font-weight: 800;
+
+      letter-spacing: 0.5px;
+
+      margin-bottom: 7px;
+
+    }
+
+    .admin-heading p {
+
+      color: #777;
+
+      font-size: 13px;
+
+    }
+
+    /* Campos */
 
     .input-group {
-      margin-bottom: 18px;
+
+      margin-bottom: 19px;
+
     }
 
     .input-group label {
+
       display: block;
+
+      color: #bdbdbd;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      letter-spacing: 0.7px;
+
       margin-bottom: 8px;
-      font-size: 13px;
-      color: #ccc;
+
+      text-transform: uppercase;
+
     }
 
     .input-wrapper {
+
       position: relative;
+
     }
 
     .input-wrapper input {
+
       width: 100%;
-      padding: 14px 45px 14px 15px;
-      border-radius: 12px;
-      border: 1px solid #333;
-      background: #090909;
-      color: white;
+
+      height: 52px;
+
+      padding: 0 48px 0 16px;
+
+      border-radius: 13px;
+
+      border: 1px solid #292929;
+
       outline: none;
+
+      background: #090909;
+
+      color: white;
+
       font-size: 15px;
-      transition: 0.25s;
+
+      transition: 0.25s ease;
+
+    }
+
+    .input-wrapper input::placeholder {
+
+      color: #505050;
+
+    }
+
+    .input-wrapper input:hover {
+
+      border-color: #3a3a3a;
+
     }
 
     .input-wrapper input:focus {
-      border-color: #00BFFF;
-      box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.08);
+
+      border-color: var(--celeste);
+
+      background: #0b0b0b;
+
+      box-shadow:
+
+        0 0 0 3px rgba(0,191,255,0.08),
+
+        0 0 18px rgba(0,191,255,0.06);
+
+    }
+
+    .input-icon {
+
+      position: absolute;
+
+      left: 15px;
+
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      color: #666;
+
+      font-size: 17px;
+
+      pointer-events: none;
+
+    }
+
+    .input-wrapper.with-icon input {
+
+      padding-left: 44px;
+
     }
 
     .eye {
+
       position: absolute;
-      right: 14px;
+
+      right: 15px;
+
       top: 50%;
+
       transform: translateY(-50%);
-      cursor: pointer;
-      color: #888;
+
+      color: #666;
+
       font-size: 17px;
+
+      cursor: pointer;
+
       user-select: none;
+
+      transition: 0.2s;
+
     }
 
     .eye:hover {
-      color: #00BFFF;
+
+      color: var(--celeste);
+
     }
 
+    /* Botón */
+
     .login-button {
+
+      position: relative;
+
       width: 100%;
+
+      height: 52px;
+
+      margin-top: 5px;
+
       border: none;
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 8px;
-      background: #00BFFF;
-      color: #000;
-      font-size: 15px;
-      font-weight: bold;
+
+      border-radius: 13px;
+
+      background: linear-gradient(
+
+        135deg,
+
+        #00BFFF,
+
+        #008fd0
+
+      );
+
+      color: #001016;
+
+      font-size: 14px;
+
+      font-weight: 900;
+
+      letter-spacing: 1px;
+
       cursor: pointer;
-      transition: 0.25s;
+
+      overflow: hidden;
+
+      transition: 0.25s ease;
+
+      box-shadow:
+
+        0 8px 25px rgba(0,191,255,0.16);
+
+    }
+
+    .login-button::before {
+
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+
+      left: -100%;
+
+      width: 60%;
+
+      height: 100%;
+
+      background: rgba(255,255,255,0.20);
+
+      transform: skewX(-20deg);
+
+      transition: 0.5s;
+
     }
 
     .login-button:hover {
+
       transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(0, 191, 255, 0.25);
+
+      box-shadow:
+
+        0 12px 30px rgba(0,191,255,0.25);
+
+    }
+
+    .login-button:hover::before {
+
+      left: 130%;
+
     }
 
     .login-button:active {
+
       transform: translateY(0);
+
     }
+
+    /* Error */
 
     .error {
+
       display: none;
+
       margin-top: 15px;
-      padding: 11px;
-      border-radius: 10px;
-      background: rgba(255, 60, 60, 0.10);
-      border: 1px solid rgba(255, 60, 60, 0.25);
-      color: #ff6b6b;
+
+      padding: 12px 14px;
+
+      border-radius: 11px;
+
+      background: rgba(255,60,60,0.07);
+
+      border: 1px solid rgba(255,60,60,0.20);
+
+      color: #ff7070;
+
       text-align: center;
-      font-size: 13px;
+
+      font-size: 12px;
+
     }
 
+    /* Volver */
+
     .back {
+
       display: block;
+
       text-align: center;
-      margin-top: 22px;
-      color: #777;
+
+      margin-top: 23px;
+
+      color: #666;
+
       text-decoration: none;
-      font-size: 13px;
+
+      font-size: 12px;
+
       transition: 0.2s;
+
     }
 
     .back:hover {
-      color: #00BFFF;
+
+      color: var(--celeste);
+
     }
+
+    /* Seguridad */
 
     .security {
-      text-align: center;
-      margin-top: 25px;
-      color: #555;
-      font-size: 11px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 7px;
+
+      margin-top: 23px;
+
+      padding-top: 20px;
+
+      border-top: 1px solid #191919;
+
+      color: #4f4f4f;
+
+      font-size: 10px;
+
+      letter-spacing: 0.4px;
+
     }
 
+    .security-dot {
+
+      width: 6px;
+
+      height: 6px;
+
+      border-radius: 50%;
+
+      background: #35c759;
+
+      box-shadow: 0 0 8px rgba(53,199,89,0.5);
+
+    }
+
+    /* Animación */
+
+    .login-box {
+
+      animation: panelAppear 0.6s ease-out;
+
+    }
+
+    @keyframes panelAppear {
+
+      from {
+
+        opacity: 0;
+
+        transform: translateY(18px) scale(0.98);
+
+      }
+
+      to {
+
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+
+      }
+
+    }
+
+    /* Teléfono */
+
     @media (max-width: 480px) {
+
+      body {
+
+        padding: 16px;
+
+      }
+
       .login-box {
-        padding: 32px 22px;
-        border-radius: 20px;
+
+        padding: 36px 22px 27px;
+
+        border-radius: 22px;
+
       }
 
       .brand h1 {
-        font-size: 32px;
+
+        font-size: 34px;
+
+        letter-spacing: 4px;
+
       }
+
+      .admin-heading h2 {
+
+        font-size: 19px;
+
+      }
+
+      .input-wrapper input {
+
+        height: 50px;
+
+      }
+
+      .login-button {
+
+        height: 50px;
+
+      }
+
     }
+
   </style>
+
 </head>
 
 <body>
@@ -202,65 +708,160 @@
 
     <div class="login-box">
 
+      <!-- MARCA -->
+
       <div class="brand">
-        <h1>NOVAGUET</h1>
-        <div class="gold-line"></div>
+
+        <h1>
+
+          <span class="brand-nova">NOVA</span><span class="brand-guet">GUET</span>
+
+        </h1>
+
+        <div class="brand-line"></div>
+
         <p>Moda que habla por ti.</p>
+
       </div>
 
-      <div class="title">
+      <!-- TÍTULO -->
+
+      <div class="admin-heading">
+
+        <div class="admin-icon">
+
+          ⚙️
+
+        </div>
+
         <h2>Panel de Administración</h2>
-        <p>Ingresa para administrar tu tienda</p>
+
+        <p>Acceso exclusivo para administrar NOVAGUET</p>
+
       </div>
+
+      <!-- LOGIN -->
 
       <form id="loginForm">
 
         <div class="input-group">
-          <label for="username">Usuario</label>
 
-          <div class="input-wrapper">
+          <label for="username">
+
+            Usuario
+
+          </label>
+
+          <div class="input-wrapper with-icon">
+
+            <span class="input-icon">👤</span>
+
             <input
+
               type="text"
+
               id="username"
+
               placeholder="Ingresa tu usuario"
+
               autocomplete="username"
+
               required
+
             >
+
           </div>
+
         </div>
 
         <div class="input-group">
-          <label for="password">Contraseña</label>
 
-          <div class="input-wrapper">
+          <label for="password">
+
+            Contraseña
+
+          </label>
+
+          <div class="input-wrapper with-icon">
+
+            <span class="input-icon">🔒</span>
+
             <input
+
               type="password"
+
               id="password"
+
               placeholder="Ingresa tu contraseña"
+
               autocomplete="current-password"
+
               required
+
             >
 
-            <span class="eye" id="togglePassword">👁</span>
+            <span
+
+              class="eye"
+
+              id="togglePassword"
+
+              aria-label="Mostrar contraseña"
+
+            >👁️</span>
+
           </div>
+
         </div>
 
-        <button type="submit" class="login-button">
-          INICIAR SESIÓN
+        <button
+
+          type="submit"
+
+          class="login-button"
+
+        >
+
+          INGRESAR AL PANEL
+
         </button>
 
-        <div class="error" id="errorMessage">
+        <div
+
+          class="error"
+
+          id="errorMessage"
+
+        >
+
           Usuario o contraseña incorrectos.
+
         </div>
 
       </form>
 
-      <a href="/" class="back">
+      <!-- VOLVER -->
+
+      <a
+
+        href="/"
+
+        class="back"
+
+      >
+
         ← Volver a NOVAGUET
+
       </a>
 
+      <!-- SEGURIDAD -->
+
       <div class="security">
-        Área exclusiva para administración
+
+        <span class="security-dot"></span>
+
+        Área segura de administración NOVAGUET
+
       </div>
 
     </div>
@@ -268,58 +869,143 @@
   </div>
 
   <script>
-    const loginForm = document.getElementById("loginForm");
-    const password = document.getElementById("password");
-    const togglePassword = document.getElementById("togglePassword");
-    const errorMessage = document.getElementById("errorMessage");
 
-    togglePassword.addEventListener("click", () => {
-      if (password.type === "password") {
-        password.type = "text";
-        togglePassword.textContent = "🙈";
-      } else {
-        password.type = "password";
-        togglePassword.textContent = "👁";
-      }
-    });
+    const loginForm =
 
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+      document.getElementById("loginForm");
 
-      errorMessage.style.display = "none";
+    const password =
 
-      const username =
-        document.getElementById("username").value.trim();
+      document.getElementById("password");
 
-      const passwordValue =
-        password.value;
+    const togglePassword =
 
-      try {
-        const response = await fetch("/api/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            username,
-            password: passwordValue
-          })
-        });
+      document.getElementById("togglePassword");
 
-        if (response.ok) {
-          window.location.href = "/admin.html";
+    const errorMessage =
+
+      document.getElementById("errorMessage");
+
+    /* Mostrar / ocultar contraseña */
+
+    togglePassword.addEventListener(
+
+      "click",
+
+      () => {
+
+        if (password.type === "password") {
+
+          password.type = "text";
+
+          togglePassword.textContent = "🙈";
+
         } else {
-          errorMessage.style.display = "block";
+
+          password.type = "password";
+
+          togglePassword.textContent = "👁️";
+
         }
 
-      } catch (error) {
-        errorMessage.textContent =
-          "No se pudo conectar con el servidor.";
-        errorMessage.style.display = "block";
       }
-    });
+
+    );
+
+    /* Inicio de sesión */
+
+    loginForm.addEventListener(
+
+      "submit",
+
+      async (e) => {
+
+        e.preventDefault();
+
+        errorMessage.style.display = "none";
+
+        const username =
+
+          document
+
+            .getElementById("username")
+
+            .value
+
+            .trim();
+
+        const passwordValue =
+
+          password.value;
+
+        try {
+
+          const response =
+
+            await fetch(
+
+              "/api/login",
+
+              {
+
+                method: "POST",
+
+                headers: {
+
+                  "Content-Type":
+
+                    "application/json"
+
+                },
+
+                credentials: "include",
+
+                body: JSON.stringify({
+
+                  username,
+
+                  password:
+
+                    passwordValue
+
+                })
+
+              }
+
+            );
+
+          if (response.ok) {
+
+            window.location.href =
+
+              "/admin.html";
+
+          } else {
+
+            errorMessage.style.display =
+
+              "block";
+
+          }
+
+        } catch (error) {
+
+          errorMessage.textContent =
+
+            "No se pudo conectar con el servidor.";
+
+          errorMessage.style.display =
+
+            "block";
+
+        }
+
+      }
+
+    );
+
   </script>
 
 </body>
+
 </html>
