@@ -2314,7 +2314,27 @@ if (departmentSelect) {
     }
 
   }
+if (bankDetails) {
 
+  if (paymentMethod === "transferencia") {
+
+    bankDetails.style.display =
+
+      bank && bank.value
+
+        ? "block"
+
+        : "none";
+
+  } else {
+
+    bankDetails.style.display =
+
+      "none";
+
+  }
+
+}
 
   if (transferPayment) {
 
