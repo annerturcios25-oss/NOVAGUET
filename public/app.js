@@ -110,8 +110,72 @@ const stepCustomer =
   const cashPayment =
     document.getElementById("cashPayment");
 
-  const bank =
-    document.getElementById("bank");
+const bank = document.getElementById("bank");
+
+const bankDetails = document.getElementById("bankDetails");
+
+const selectedBankName = document.getElementById("selectedBankName");
+
+const selectedAccountNumber = document.getElementById("selectedAccountNumber");
+if (bank) {
+
+  bank.addEventListener("change", () => {
+
+    const cuentas = {
+
+      atlantida: {
+
+        nombre: "Banco Atlántida",
+
+        numero: "230000000"
+
+      },
+
+      ficohsa: {
+
+        nombre: "Ficohsa",
+
+        numero: "240000000"
+
+      },
+
+      bac: {
+
+        nombre: "BAC Credomatic",
+
+        numero: "250000000"
+
+      }
+
+    };
+
+    const cuenta = cuentas[bank.value];
+
+    if (!cuenta) {
+
+      if (bankDetails) {
+
+        bankDetails.style.display = "none";
+
+      }
+
+      return;
+
+    }
+
+    selectedBankName.textContent =
+
+      cuenta.nombre;
+
+    selectedAccountNumber.textContent =
+
+      cuenta.numero;
+
+    bankDetails.style.display = "block";
+
+  });
+
+}
 
   const continuePaymentButton =
     document.getElementById("continuePaymentButton");
