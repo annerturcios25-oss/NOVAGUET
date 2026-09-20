@@ -94,6 +94,9 @@ const stepCustomer =
 
   const municipality =
     document.getElementById("municipality");
+    
+   const municipalityBox = 
+     document.getElementById("municipalityBox");
 
   const continueDeliveryButton =
     document.getElementById("continueDeliveryButton");
@@ -1963,18 +1966,27 @@ if (checkoutButton) {
 
   };
 
-
-  if (departmentSelect) {
+if (departmentSelect) {
 
   departmentSelect.addEventListener("change", () => {
 
     if (!municipality) return;
 
+    // Mostrar el cuadro de municipio
+
+    if (municipalityBox) {
+
+      municipalityBox.style.display = "block";
+
+    }
+
+    // Limpiar municipios anteriores
+
     municipality.innerHTML = `
 
       <option value="">
 
-        Selecciona tu municipio
+        Selecciona un municipio
 
       </option>
 
@@ -2043,8 +2055,7 @@ if (checkoutButton) {
   });
 
 }
-
-
+  
 
   /* =====================================================
      CONTINUAR ENTREGA
