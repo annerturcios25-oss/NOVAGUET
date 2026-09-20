@@ -56,13 +56,15 @@
 
     html {
 
-      scroll-behavior: smooth;
+      width: 100%;
+
+      min-height: 100%;
 
     }
 
     body {
 
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
 
       background:
 
@@ -92,69 +94,65 @@
 
       min-height: 100vh;
 
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 25px;
+
+      overflow-x: hidden;
+
     }
 
     /* =========================
 
-       HEADER
+       DECORACIÓN
 
     ========================= */
 
-    header {
+    body::before {
 
-      background:
+      content: "";
 
-        linear-gradient(
+      position: fixed;
 
-          180deg,
+      width: 420px;
 
-          #090909 0%,
+      height: 420px;
 
-          #050505 100%
+      border-radius: 50%;
 
-        );
+      border: 1px solid rgba(0, 191, 255, 0.07);
 
-      color: white;
+      top: -210px;
 
-      padding: 30px 20px 28px;
+      left: -210px;
 
-      text-align: center;
-
-      border-bottom: 2px solid var(--celeste);
-
-      box-shadow:
-
-        0 8px 30px rgba(0, 0, 0, 0.45),
-
-        0 0 25px rgba(0, 191, 255, 0.08);
+      pointer-events: none;
 
     }
 
-    header h1 {
+    body::after {
 
-      color: var(--celeste);
+      content: "";
 
-      letter-spacing: 5px;
+      position: fixed;
 
-      font-size: 32px;
+      width: 500px;
 
-      font-weight: 900;
+      height: 500px;
 
-      text-shadow:
+      border-radius: 50%;
 
-        0 0 15px rgba(0, 191, 255, 0.22);
+      border: 1px solid rgba(212, 175, 55, 0.06);
 
-    }
+      bottom: -270px;
 
-    header p {
+      right: -240px;
 
-      margin-top: 9px;
-
-      color: #bcbcbc;
-
-      font-size: 14px;
-
-      letter-spacing: 1px;
+      pointer-events: none;
 
     }
 
@@ -164,63 +162,27 @@
 
     ========================= */
 
-    .admin-container {
+    .login-container {
 
       width: 100%;
 
-      max-width: 1100px;
+      max-width: 500px;
 
-      margin: 40px auto;
+      position: relative;
 
-      padding: 0 20px 40px;
-
-    }
-
-    /* =========================
-
-       TITULO
-
-    ========================= */
-
-    .admin-title {
-
-      text-align: center;
-
-      margin-bottom: 32px;
-
-    }
-
-    .admin-title h2 {
-
-      color: var(--dorado);
-
-      margin-bottom: 10px;
-
-      font-size: 25px;
-
-      letter-spacing: 1px;
-
-    }
-
-    .admin-title p {
-
-      color: var(--texto-secundario);
-
-      font-size: 14px;
-
-      line-height: 1.5;
+      z-index: 2;
 
     }
 
     /* =========================
 
-       CAJAS PRINCIPALES
+       TARJETA
 
     ========================= */
 
-    .add-box,
+    .login-box {
 
-    .products-box {
+      position: relative;
 
       background:
 
@@ -234,7 +196,7 @@
 
         );
 
-      padding: 28px;
+      padding: 38px 34px 28px;
 
       border-radius: 18px;
 
@@ -242,35 +204,201 @@
 
       box-shadow:
 
-        0 15px 40px rgba(0, 0, 0, 0.35),
+        0 15px 40px rgba(0, 0, 0, 0.45),
 
-        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+        inset 0 1px 0 rgba(255, 255, 255, 0.025),
 
-    }
+        0 0 25px rgba(0, 191, 255, 0.06);
 
-    .add-box {
+      overflow: hidden;
 
-      margin-bottom: 35px;
-
-    }
-
-    .products-box {
-
-      margin-bottom: 35px;
+      animation: aparecer 0.5s ease-out;
 
     }
 
-    .add-box h3,
+    /* LÍNEA SUPERIOR */
 
-    .products-box h3 {
+    .login-box::before {
 
-      margin-bottom: 22px;
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+
+      left: 0;
+
+      right: 0;
+
+      height: 2px;
+
+      background:
+
+        linear-gradient(
+
+          90deg,
+
+          transparent,
+
+          var(--celeste),
+
+          var(--dorado),
+
+          var(--celeste),
+
+          transparent
+
+        );
+
+    }
+
+    /* =========================
+
+       LOGO
+
+    ========================= */
+
+    .brand {
+
+      text-align: center;
+
+      margin-bottom: 30px;
+
+    }
+
+    .brand h1 {
+
+      font-size: 38px;
+
+      font-weight: 900;
+
+      letter-spacing: 5px;
+
+      line-height: 1;
+
+      text-shadow:
+
+        0 0 15px rgba(0, 191, 255, 0.12);
+
+    }
+
+    .brand-nova {
+
+      color: var(--celeste);
+
+    }
+
+    .brand-guet {
 
       color: var(--dorado);
 
-      font-size: 18px;
+    }
 
-      letter-spacing: 0.5px;
+    .brand-line {
+
+      width: 70px;
+
+      height: 3px;
+
+      margin: 13px auto;
+
+      border-radius: 20px;
+
+      background:
+
+        linear-gradient(
+
+          90deg,
+
+          var(--celeste),
+
+          var(--dorado)
+
+        );
+
+    }
+
+    .brand p {
+
+      color: var(--texto-secundario);
+
+      font-size: 13px;
+
+      letter-spacing: 1px;
+
+    }
+
+    /* =========================
+
+       TITULO
+
+    ========================= */
+
+    .admin-title {
+
+      text-align: center;
+
+      margin-bottom: 27px;
+
+    }
+
+    .admin-title h2 {
+
+      color: var(--dorado);
+
+      margin-bottom: 9px;
+
+      font-size: 22px;
+
+      letter-spacing: 1px;
+
+    }
+
+    .admin-title p {
+
+      color: var(--texto-secundario);
+
+      font-size: 13px;
+
+      line-height: 1.5;
+
+    }
+
+    /* =========================
+
+       ICONO
+
+    ========================= */
+
+    .admin-icon {
+
+      width: 50px;
+
+      height: 50px;
+
+      margin: 0 auto 13px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-radius: 14px;
+
+      background:
+
+        rgba(0, 191, 255, 0.07);
+
+      border:
+
+        1px solid rgba(0, 191, 255, 0.20);
+
+      font-size: 22px;
+
+      box-shadow:
+
+        0 8px 20px rgba(0, 0, 0, 0.20);
 
     }
 
@@ -280,63 +408,57 @@
 
     ========================= */
 
-    .form-grid {
+    .input-group {
 
-      display: grid;
-
-      grid-template-columns: repeat(2, 1fr);
-
-      gap: 18px;
+      margin-bottom: 18px;
 
     }
 
-    .form-group {
+    .input-group label {
 
-      display: flex;
+      display: block;
 
-      flex-direction: column;
-
-      gap: 8px;
-
-    }
-
-    .form-group.full {
-
-      grid-column: 1 / -1;
-
-    }
-
-    label {
-
-      font-weight: bold;
-
-      font-size: 13px;
+      margin-bottom: 8px;
 
       color: #e7e7e7;
 
+      font-size: 13px;
+
+      font-weight: bold;
+
+      letter-spacing: 0.4px;
+
     }
 
-    input,
+    .input-wrapper {
 
-    textarea,
+      position: relative;
 
-    select {
+    }
+
+    .input-wrapper input {
 
       width: 100%;
 
-      padding: 13px 14px;
+      height: 51px;
 
-      border: 1px solid #2b2b2b;
+      padding:
+
+        0 47px 0 43px;
+
+      border:
+
+        1px solid #2b2b2b;
 
       border-radius: 10px;
-
-      font-size: 15px;
 
       outline: none;
 
       background: var(--gris-input);
 
       color: white;
+
+      font-size: 15px;
 
       transition:
 
@@ -348,19 +470,19 @@
 
     }
 
-    input::placeholder,
-
-    textarea::placeholder {
+    .input-wrapper input::placeholder {
 
       color: #777;
 
     }
 
-    input:focus,
+    .input-wrapper input:hover {
 
-    textarea:focus,
+      border-color: #3a3a3a;
 
-    select:focus {
+    }
+
+    .input-wrapper input:focus {
 
       border-color: var(--celeste);
 
@@ -372,47 +494,75 @@
 
     }
 
-    select {
+    /* =========================
 
-      cursor: pointer;
+       ICONOS
 
-    }
+    ========================= */
 
-    select option {
+    .input-icon {
 
-      background: #111;
+      position: absolute;
 
-      color: white;
+      left: 14px;
 
-    }
+      top: 50%;
 
-    textarea {
+      transform: translateY(-50%);
 
-      min-height: 100px;
+      color: #777;
 
-      resize: vertical;
+      font-size: 17px;
 
-    }
-
-    input[type="file"] {
-
-      padding: 10px;
-
-      cursor: pointer;
+      pointer-events: none;
 
     }
 
     /* =========================
 
-       BOTON AGREGAR
+       OJO
 
     ========================= */
 
-    .add-button {
+    .eye {
 
-      margin-top: 22px;
+      position: absolute;
+
+      right: 14px;
+
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      color: #777;
+
+      font-size: 17px;
+
+      cursor: pointer;
+
+      user-select: none;
+
+      transition: color 0.2s ease;
+
+    }
+
+    .eye:hover {
+
+      color: var(--celeste);
+
+    }
+
+    /* =========================
+
+       BOTÓN
+
+    ========================= */
+
+    .login-button {
 
       width: 100%;
+
+      margin-top: 5px;
 
       padding: 15px;
 
@@ -438,6 +588,8 @@
 
       font-size: 15px;
 
+      letter-spacing: 0.5px;
+
       cursor: pointer;
 
       box-shadow:
@@ -454,7 +606,7 @@
 
     }
 
-    .add-button:hover {
+    .login-button:hover {
 
       transform: translateY(-2px);
 
@@ -466,7 +618,7 @@
 
     }
 
-    .add-button:active {
+    .login-button:active {
 
       transform: translateY(0);
 
@@ -474,123 +626,33 @@
 
     /* =========================
 
-       MENSAJE
+       ERROR
 
     ========================= */
 
-    .message {
+    .error {
 
-      text-align: center;
+      display: none;
 
-      margin-top: 16px;
+      margin-top: 15px;
 
-      font-weight: bold;
+      padding: 12px 14px;
 
-      color: var(--celeste);
-
-      line-height: 1.5;
-
-    }
-
-    /* =========================
-
-       PRODUCTOS
-
-    ========================= */
-
-    #adminProducts {
-
-      display: grid;
-
-      grid-template-columns:
-
-        repeat(auto-fit, minmax(240px, 1fr));
-
-      gap: 20px;
-
-    }
-
-    .admin-product {
-
-      border: 1px solid #292929;
-
-      border-radius: 15px;
-
-      padding: 16px;
+      border-radius: 10px;
 
       background:
 
-        linear-gradient(
+        rgba(255, 77, 77, 0.07);
 
-          145deg,
+      border:
 
-          #191919,
+        1px solid rgba(255, 77, 77, 0.20);
 
-          #0d0d0d
+      color: #ff7070;
 
-        );
+      text-align: center;
 
-      box-shadow:
-
-        0 8px 25px rgba(0, 0, 0, 0.28);
-
-      transition:
-
-        transform 0.2s ease,
-
-        border-color 0.2s ease,
-
-        box-shadow 0.2s ease;
-
-    }
-
-    .admin-product:hover {
-
-      transform: translateY(-3px);
-
-      border-color:
-
-        rgba(0, 191, 255, 0.40);
-
-      box-shadow:
-
-        0 12px 30px rgba(0, 0, 0, 0.38);
-
-    }
-
-    .admin-product img {
-
-      width: 100%;
-
-      height: 220px;
-
-      object-fit: contain;
-
-      border-radius: 11px;
-
-      margin-bottom: 15px;
-
-      background: #080808;
-
-    }
-
-    .admin-product h4 {
-
-      font-size: 17px;
-
-      margin-bottom: 10px;
-
-      color: white;
-
-    }
-
-    .admin-product p {
-
-      margin: 6px 0;
-
-      color: #aaa;
-
-      font-size: 14px;
+      font-size: 12px;
 
       line-height: 1.4;
 
@@ -598,343 +660,19 @@
 
     /* =========================
 
-       STOCK
+       VOLVER
 
     ========================= */
 
-    .stock-available {
-
-      font-weight: bold;
-
-      color: #35d46b !important;
-
-    }
-
-    .stock-empty {
-
-      font-weight: bold;
-
-      color: #ff4d4d !important;
-
-    }
-
-    /* =========================
-
-       BOTON EDITAR
-
-    ========================= */
-
-    .edit-button {
-
-      width: 100%;
-
-      margin-top: 14px;
-
-      padding: 12px;
-
-      border: none;
-
-      border-radius: 9px;
-
-      background:
-
-        linear-gradient(
-
-          135deg,
-
-          #00BFFF,
-
-          #009acd
-
-        );
-
-      color: white;
-
-      font-weight: bold;
-
-      cursor: pointer;
-
-      transition:
-
-        transform 0.2s ease,
-
-        filter 0.2s ease;
-
-    }
-
-    .edit-button:hover {
-
-      transform: translateY(-1px);
-
-      filter: brightness(1.08);
-
-    }
-
-    /* =========================
-
-       BOTON ELIMINAR
-
-    ========================= */
-
-    .delete-button {
-
-      width: 100%;
-
-      margin-top: 9px;
-
-      padding: 12px;
-
-      border: 1px solid #333;
-
-      border-radius: 9px;
-
-      background: #050505;
-
-      color: white;
-
-      font-weight: bold;
-
-      cursor: pointer;
-
-      transition:
-
-        background 0.2s ease,
-
-        border-color 0.2s ease,
-
-        transform 0.2s ease;
-
-    }
-
-    .delete-button:hover {
-
-      background: #181818;
-
-      border-color: #555;
-
-      transform: translateY(-1px);
-
-    }
-
-    /* =========================
-
-       PEDIDOS
-
-    ========================= */
-
-    .orders-list {
-
-      display: grid;
-
-      gap: 20px;
-
-    }
-
-    .order-card {
-
-      border: 1px solid #292929;
-
-      border-radius: 15px;
-
-      padding: 20px;
-
-      background:
-
-        linear-gradient(
-
-          145deg,
-
-          #191919,
-
-          #0d0d0d
-
-        );
-
-      box-shadow:
-
-        0 8px 25px rgba(0, 0, 0, 0.28);
-
-    }
-
-    .order-header {
-
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      gap: 10px;
-
-      flex-wrap: wrap;
-
-      margin-bottom: 17px;
-
-      padding-bottom: 14px;
-
-      border-bottom: 1px solid #292929;
-
-    }
-
-    .order-header strong {
-
-      color: var(--celeste);
-
-      font-size: 18px;
-
-    }
-
-    .order-header span {
-
-      color: #888;
-
-      font-size: 13px;
-
-    }
-
-    .order-card p {
-
-      margin: 8px 0;
-
-      color: #bdbdbd;
-
-      font-size: 14px;
-
-      line-height: 1.45;
-
-    }
-
-    .order-card p strong {
-
-      color: #f1f1f1;
-
-    }
-
-    .order-items {
-
-      margin-top: 17px;
-
-      padding-top: 15px;
-
-      border-top: 1px solid #292929;
-
-    }
-
-    .order-items strong {
-
-      color: var(--dorado);
-
-    }
-
-    .order-total {
-
-      margin-top: 17px !important;
-
-      padding-top: 15px;
-
-      border-top: 1px solid #292929;
-
-      font-size: 18px !important;
-
-      font-weight: bold;
-
-      color: var(--dorado) !important;
-
-    }
-
-    .order-actions {
-
-      margin-top: 17px;
-
-      padding-top: 17px;
-
-      border-top: 1px solid #292929;
-
-    }
-
-    .order-actions label {
+    .back {
 
       display: block;
 
-      margin-bottom: 9px;
-
-      font-weight: bold;
-
-      color: #eee;
-
-    }
-
-    .order-actions select {
-
       width: 100%;
 
-      max-width: 300px;
+      margin-top: 20px;
 
-      padding: 11px;
-
-      border: 1px solid #333;
-
-      border-radius: 9px;
-
-      font-size: 14px;
-
-      background: #0b0b0b;
-
-      color: white;
-
-    }
-
-    /* =========================
-
-       HISTORIAL ENTREGADOS
-
-    ========================= */
-
-    .delivered-orders-section {
-
-      margin-top: 30px;
-
-      padding-top: 25px;
-
-      border-top: 1px solid #292929;
-
-    }
-
-    .delivered-orders-section h3 {
-
-      color: #35d46b;
-
-      margin-bottom: 10px;
-
-    }
-
-    #pendingOrdersCount,
-
-    #deliveredOrdersCount {
-
-      color: #999;
-
-      margin-bottom: 18px;
-
-      font-size: 14px;
-
-    }
-
-    /* =========================
-
-       BOTON VOLVER
-
-    ========================= */
-
-    .back-button {
-
-      display: block;
-
-      width: 240px;
-
-      margin: 30px auto 0;
-
-      padding: 14px;
+      padding: 12px;
 
       text-align: center;
 
@@ -944,11 +682,15 @@
 
       color: white;
 
-      border: 2px solid var(--dorado);
+      border:
+
+        1px solid var(--dorado);
 
       border-radius: 10px;
 
       font-weight: bold;
+
+      font-size: 13px;
 
       transition:
 
@@ -962,7 +704,7 @@
 
     }
 
-    .back-button:hover {
+    .back:hover {
 
       background: var(--dorado);
 
@@ -978,31 +720,75 @@
 
     /* =========================
 
-       TABLET
+       SEGURIDAD
 
     ========================= */
 
-    @media (max-width: 800px) {
+    .security {
 
-      .admin-container {
+      display: flex;
 
-        margin: 30px auto;
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 7px;
+
+      margin-top: 20px;
+
+      padding-top: 18px;
+
+      border-top: 1px solid #292929;
+
+      color: #777;
+
+      font-size: 10px;
+
+      letter-spacing: 0.4px;
+
+      text-align: center;
+
+    }
+
+    .security-dot {
+
+      width: 6px;
+
+      height: 6px;
+
+      flex-shrink: 0;
+
+      border-radius: 50%;
+
+      background: #35d46b;
+
+      box-shadow:
+
+        0 0 8px rgba(53, 212, 107, 0.45);
+
+    }
+
+    /* =========================
+
+       ANIMACIÓN
+
+    ========================= */
+
+    @keyframes aparecer {
+
+      from {
+
+        opacity: 0;
+
+        transform: translateY(15px);
 
       }
 
-      .add-box,
+      to {
 
-      .products-box {
+        opacity: 1;
 
-        padding: 22px;
-
-      }
-
-      #adminProducts {
-
-        grid-template-columns:
-
-          repeat(2, minmax(0, 1fr));
+        transform: translateY(0);
 
       }
 
@@ -1016,103 +802,43 @@
 
     @media (max-width: 700px) {
 
-      header {
-
-        padding: 25px 15px;
-
-      }
-
-      header h1 {
-
-        font-size: 27px;
-
-        letter-spacing: 4px;
-
-      }
-
-      header p {
-
-        font-size: 13px;
-
-      }
-
-      .admin-container {
-
-        margin: 25px auto;
-
-        padding: 0 14px 30px;
-
-      }
-
-      .admin-title {
-
-        margin-bottom: 25px;
-
-      }
-
-      .admin-title h2 {
-
-        font-size: 21px;
-
-      }
-
-      .form-grid {
-
-        grid-template-columns: 1fr;
-
-      }
-
-      .form-group.full {
-
-        grid-column: auto;
-
-      }
-
-      .add-box,
-
-      .products-box {
+      body {
 
         padding: 18px;
+
+      }
+
+      .login-box {
+
+        padding: 32px 22px 25px;
 
         border-radius: 15px;
 
       }
 
-      #adminProducts {
+      .brand h1 {
 
-        grid-template-columns: 1fr;
+        font-size: 32px;
 
-      }
-
-      .admin-product img {
-
-        height: 240px;
+        letter-spacing: 4px;
 
       }
 
-      .order-card {
+      .admin-title h2 {
 
-        padding: 16px;
-
-      }
-
-      .order-header {
-
-        align-items: flex-start;
-
-        flex-direction: column;
+        font-size: 20px;
 
       }
 
-      .order-actions select {
+      .input-wrapper input {
 
-        max-width: 100%;
+        height: 50px;
 
       }
 
-      .back-button {
+      .login-button {
 
-        width: 100%;
+        padding: 14px;
 
       }
 
@@ -1120,35 +846,41 @@
 
     /* =========================
 
-       TELEFON PEQUEÑO
+       TELEFONO PEQUEÑO
 
     ========================= */
 
     @media (max-width: 400px) {
 
-      header h1 {
+      body {
 
-        font-size: 24px;
+        padding: 14px;
+
+      }
+
+      .login-box {
+
+        padding: 28px 17px 23px;
+
+      }
+
+      .brand h1 {
+
+        font-size: 27px;
+
+        letter-spacing: 3px;
 
       }
 
       .admin-title h2 {
 
-        font-size: 19px;
+        font-size: 18px;
 
       }
 
-      .add-box,
+      .admin-title p {
 
-      .products-box {
-
-        padding: 15px;
-
-      }
-
-      .admin-product img {
-
-        height: 210px;
+        font-size: 12px;
 
       }
 
@@ -1160,819 +892,239 @@
 
 <body>
 
-  <header>
+  <div class="login-container">
 
-    <h1>NOVAGUET</h1>
+    <div class="login-box">
 
-    <p>Panel de Administración</p>
+      <!-- LOGO -->
 
-  </header>
+      <div class="brand">
 
-  <main class="admin-container">
+        <h1>
 
-    <div class="admin-title">
+          <span class="brand-nova">NOVA</span><span class="brand-guet">GUET</span>
 
-      <h2>ADMINISTRAR PRODUCTOS</h2>
+        </h1>
 
-      <p>
+        <div class="brand-line"></div>
 
-        Agrega nuevos productos o elimina los que ya no estén disponibles.
+        <p>Moda que habla por ti.</p>
 
-      </p>
+      </div>
 
-    </div>
+      <!-- TITULO -->
 
-    <!-- AGREGAR PRODUCTO -->
+      <div class="admin-title">
 
-    <section class="add-box">
+        <div class="admin-icon">
 
-      <h3>➕ AGREGAR PRODUCTO</h3>
+          ⚙️
 
-      <form id="productForm">
+        </div>
 
-        <div class="form-grid">
+        <h2>
 
-          <div class="form-group">
+          PANEL DE ADMINISTRACIÓN
 
-            <label for="nombre">
+        </h2>
 
-              Nombre del producto
+        <p>
 
-            </label>
+          Acceso exclusivo para administrar NOVAGUET
+
+        </p>
+
+      </div>
+
+      <!-- LOGIN -->
+
+      <form id="loginForm">
+
+        <!-- USUARIO -->
+
+        <div class="input-group">
+
+          <label for="username">
+
+            Usuario
+
+          </label>
+
+          <div class="input-wrapper">
+
+            <span class="input-icon">
+
+              👤
+
+            </span>
 
             <input
 
               type="text"
 
-              id="nombre"
+              id="username"
+
+              placeholder="Ingresa tu usuario"
+
+              autocomplete="username"
 
               required
-
-            >
-
-          </div>
-
-          <div class="form-group">
-
-            <label for="precio">
-
-              Precio HNL
-
-            </label>
-
-            <input
-
-              type="number"
-
-              id="precio"
-
-              min="0"
-
-              required
-
-            >
-
-          </div>
-
-          <div class="form-group">
-
-            <label for="stock">
-
-              Cantidad disponible
-
-            </label>
-
-            <input
-
-              type="number"
-
-              id="stock"
-
-              min="0"
-
-              value="0"
-
-              required
-
-            >
-
-          </div>
-
-          <div class="form-group">
-
-            <label for="categoria">
-
-              Categoría
-
-            </label>
-
-            <select id="categoria" required>
-
-              <option value="">
-
-                Seleccionar categoría
-
-              </option>
-
-              <option value="Ropa">
-
-                Ropa
-
-              </option>
-
-              <option value="Calzado">
-
-                Calzado
-
-              </option>
-
-              <option value="Accesorios">
-
-                Accesorios
-
-              </option>
-
-            </select>
-
-          </div>
-
-          <div class="form-group">
-
-            <label for="talla">
-
-              Talla
-
-            </label>
-
-            <input
-
-              type="text"
-
-              id="talla"
-
-              placeholder="Ej. M, L, 5, 2T"
-
-              required
-
-            >
-
-          </div>
-
-          <div class="form-group full">
-
-            <label for="descripcion">
-
-              Descripción
-
-            </label>
-
-            <textarea
-
-              id="descripcion"
-
-              placeholder="Descripción del producto"
-
-            ></textarea>
-
-          </div>
-
-          <div class="form-group full">
-
-            <label for="imagen">
-
-              Imagen del producto
-
-            </label>
-
-            <input
-
-              type="file"
-
-              id="imagen"
-
-              accept="image/*"
 
             >
 
           </div>
 
         </div>
+
+        <!-- CONTRASEÑA -->
+
+        <div class="input-group">
+
+          <label for="password">
+
+            Contraseña
+
+          </label>
+
+          <div class="input-wrapper">
+
+            <span class="input-icon">
+
+              🔒
+
+            </span>
+
+            <input
+
+              type="password"
+
+              id="password"
+
+              placeholder="Ingresa tu contraseña"
+
+              autocomplete="current-password"
+
+              required
+
+            >
+
+            <span
+
+              class="eye"
+
+              id="togglePassword"
+
+              aria-label="Mostrar contraseña"
+
+            >
+
+              👁️
+
+            </span>
+
+          </div>
+
+        </div>
+
+        <!-- BOTÓN -->
 
         <button
 
           type="submit"
 
-          class="add-button"
+          class="login-button"
 
         >
 
-          AGREGAR PRODUCTO
+          INGRESAR AL PANEL
 
         </button>
 
-      </form>
-
-      <div
-
-        id="formMessage"
-
-        class="message"
-
-      ></div>
-
-    </section>
-
-    <!-- PRODUCTOS -->
-
-    <section class="products-box">
-
-      <h3>
-
-        📦 PRODUCTOS ACTUALES
-
-      </h3>
-
-      <div id="adminProducts">
-
-        Cargando productos...
-
-      </div>
-
-    </section>
-
-    <!-- =========================
-
-         PEDIDOS
-
-    ========================= -->
-
-    <section class="products-box" id="ordersBox">
-
-      <h3>📦 Pedidos pendientes</h3>
-
-      <p id="pendingOrdersCount">
-
-        Cargando pedidos...
-
-      </p>
-
-      <div id="adminOrders" class="orders-list">
-
-      </div>
-
-      <div class="delivered-orders-section">
-
-        <h3>✅ Historial de pedidos entregados</h3>
-
-        <p id="deliveredOrdersCount">
-
-          Cargando historial...
-
-        </p>
+        <!-- ERROR -->
 
         <div
 
-          id="deliveredOrders"
+          class="error"
 
-          class="orders-list"
+          id="errorMessage"
 
         >
 
+          Usuario o contraseña incorrectos.
+
         </div>
+
+      </form>
+
+      <!-- VOLVER -->
+
+      <a
+
+        href="/"
+
+        class="back"
+
+      >
+
+        ← VOLVER A NOVAGUET
+
+      </a>
+
+      <!-- SEGURIDAD -->
+
+      <div class="security">
+
+        <span class="security-dot"></span>
+
+        Área segura de administración NOVAGUET
 
       </div>
 
-    </section>
+    </div>
 
-    <a
-
-      href="/"
-
-      class="back-button"
-
-    >
-
-      ← VOLVER A NOVAGUET
-
-    </a>
-
-  </main>
+  </div>
 
   <script>
 
-    const productForm =
+    const loginForm =
 
-      document.getElementById("productForm");
+      document.getElementById("loginForm");
 
-    const adminProducts =
+    const password =
 
-      document.getElementById("adminProducts");
+      document.getElementById("password");
 
-    const formMessage =
+    const togglePassword =
 
-      document.getElementById("formMessage");
+      document.getElementById("togglePassword");
 
-    /* =========================
+    const errorMessage =
 
-       CARGAR PRODUCTOS
-
-    ========================= */
-
-    async function cargarProductosAdmin() {
-
-      try {
-
-        const respuesta =
-
-          await fetch("/api/productos");
-
-        if (!respuesta.ok) {
-
-          throw new Error(
-
-            "No se pudieron cargar los productos"
-
-          );
-
-        }
-
-        const productos =
-
-          await respuesta.json();
-
-        mostrarProductosAdmin(productos);
-
-      } catch (error) {
-
-        console.error(error);
-
-        adminProducts.innerHTML =
-
-          "<p>No se pudieron cargar los productos.</p>";
-
-      }
-
-    }
+      document.getElementById("errorMessage");
 
     /* =========================
 
-       MOSTRAR PRODUCTOS
+       MOSTRAR / OCULTAR CONTRASEÑA
 
     ========================= */
 
-    function mostrarProductosAdmin(productos) {
+    togglePassword.addEventListener(
 
-      if (!productos.length) {
+      "click",
 
-        adminProducts.innerHTML =
+      () => {
 
-          "<p>No hay productos.</p>";
+        if (password.type === "password") {
 
-        return;
+          password.type = "text";
 
-      }
+          togglePassword.textContent = "🙈";
 
-      adminProducts.innerHTML =
+        } else {
 
-        productos.map(producto => {
+          password.type = "password";
 
-          const stock =
-
-            Number(producto.stock ?? 0);
-
-          const stockHTML =
-
-            stock > 0
-
-              ? `
-
-                <p class="stock-available">
-
-                  📦 Disponible:
-
-                  ${stock}
-
-                </p>
-
-              `
-
-              : `
-
-                <p class="stock-empty">
-
-                  ❌ AGOTADO
-
-                </p>
-
-              `;
-
-          return `
-
-            <div class="admin-product">
-
-              <img
-
-                src="${producto.imagen}"
-
-                alt="${producto.nombre}"
-
-              >
-
-              <h4>
-
-                ${producto.nombre}
-
-              </h4>
-
-              <p>
-
-                Precio:
-
-                HNL ${producto.precio}
-
-              </p>
-
-              <p>
-
-                Categoría:
-
-                ${producto.categoria}
-
-              </p>
-
-              <p>
-
-                Talla:
-
-                ${producto.talla || "N/A"}
-
-              </p>
-
-              ${stockHTML}
-
-              <button
-
-                class="edit-button"
-
-                onclick="editarProducto(${producto.id})"
-
-              >
-
-                ✏️ EDITAR PRODUCTO
-
-              </button>
-
-              <button
-
-                class="delete-button"
-
-                onclick="eliminarProducto(${producto.id})"
-
-              >
-
-                🗑️ ELIMINAR PRODUCTO
-
-              </button>
-
-            </div>
-
-          `;
-
-        }).join("");
-
-    }
-
-    /* =========================
-
-       EDITAR PRODUCTO
-
-    ========================= */
-
-    async function editarProducto(id) {
-
-      const respuesta =
-
-        await fetch("/api/productos");
-
-      const productos =
-
-        await respuesta.json();
-
-      const producto =
-
-        productos.find(
-
-          producto =>
-
-            String(producto.id) === String(id)
-
-        );
-
-      if (!producto) {
-
-        alert("No se encontró el producto.");
-
-        return;
-
-      }
-
-      document.getElementById("nombre").value =
-
-        producto.nombre || "";
-
-      document.getElementById("precio").value =
-
-        producto.precio || "";
-
-      document.getElementById("stock").value =
-
-        producto.stock ?? 0;
-
-      document.getElementById("categoria").value =
-
-        producto.categoria || "";
-
-      document.getElementById("talla").value =
-
-        producto.talla || "";
-
-      document.getElementById("descripcion").value =
-
-        producto.descripcion || "";
-
-      window.productoEditandoId =
-
-        producto.id;
-
-      const boton =
-
-        productForm.querySelector(".add-button");
-
-      boton.textContent =
-
-        "💾 GUARDAR CAMBIOS";
-
-      formMessage.textContent =
-
-        "✏️ Editando: " + producto.nombre;
-
-      productForm.scrollIntoView({
-
-        behavior: "smooth"
-
-      });
-
-    }
-
-    /* =========================
-
-       ELIMINAR PRODUCTO
-
-    ========================= */
-
-    async function eliminarProducto(id) {
-
-      const confirmar =
-
-        confirm(
-
-          "¿Seguro que quieres eliminar este producto?"
-
-        );
-
-      if (!confirmar) return;
-
-      try {
-
-        const respuesta =
-
-          await fetch(
-
-            "/api/productos/" + id,
-
-            {
-
-              method: "DELETE",
-
-              credentials: "include"
-
-            }
-
-          );
-
-        if (!respuesta.ok) {
-
-          const error =
-
-            await respuesta.text();
-
-          throw new Error(error);
-
-        }
-
-        alert(
-
-          "Producto eliminado correctamente."
-
-        );
-
-        cargarProductosAdmin();
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-
-          "No se pudo eliminar el producto."
-
-        );
-
-      }
-
-    }
-
-    /* =========================
-
-       AGREGAR / EDITAR PRODUCTO
-
-    ========================= */
-
-    productForm.addEventListener(
-
-      "submit",
-
-      async event => {
-
-        event.preventDefault();
-
-        const formData =
-
-          new FormData();
-
-        formData.append(
-
-          "nombre",
-
-          document.getElementById("nombre").value
-
-        );
-
-        formData.append(
-
-          "precio",
-
-          document.getElementById("precio").value
-
-        );
-
-        formData.append(
-
-          "stock",
-
-          document.getElementById("stock").value
-
-        );
-
-        formData.append(
-
-          "categoria",
-
-          document.getElementById("categoria").value
-
-        );
-
-        formData.append(
-
-          "talla",
-
-          document.getElementById("talla").value
-
-        );
-
-        formData.append(
-
-          "descripcion",
-
-          document.getElementById("descripcion").value
-
-        );
-
-        const imagen =
-
-          document.getElementById("imagen").files[0];
-
-        if (imagen) {
-
-          formData.append(
-
-            "imagen",
-
-            imagen
-
-          );
-
-        }
-
-        try {
-
-          const estaEditando =
-
-            window.productoEditandoId;
-
-          formMessage.textContent =
-
-            estaEditando
-
-              ? "Guardando cambios..."
-
-              : "Agregando producto...";
-
-          let url =
-
-            "/api/productos";
-
-          let metodo =
-
-            "POST";
-
-          if (estaEditando) {
-
-            url =
-
-              "/api/productos/" +
-
-              estaEditando;
-
-            metodo =
-
-              "PUT";
-
-          }
-
-          const respuesta =
-
-            await fetch(
-
-              url,
-
-              {
-
-                method: metodo,
-
-                credentials: "include",
-
-                body: formData
-
-              }
-
-            );
-
-          if (!respuesta.ok) {
-
-            const error =
-
-              await respuesta.text();
-
-            throw new Error(error);
-
-          }
-
-          formMessage.textContent =
-
-            estaEditando
-
-              ? "✅ Producto actualizado correctamente."
-
-              : "✅ Producto agregado correctamente.";
-
-          productForm.reset();
-
-          window.productoEditandoId =
-
-            null;
-
-          const boton =
-
-            productForm.querySelector(
-
-              ".add-button"
-
-            );
-
-          boton.textContent =
-
-            "AGREGAR PRODUCTO";
-
-          cargarProductosAdmin();
-
-        } catch (error) {
-
-          console.error(error);
-
-          formMessage.textContent =
-
-            "❌ No se pudo guardar el producto.";
+          togglePassword.textContent = "👁️";
 
         }
 
@@ -1982,552 +1134,89 @@
 
     /* =========================
 
-       PEDIDOS
+       LOGIN
 
     ========================= */
 
-    async function cargarPedidosAdmin() {
+    loginForm.addEventListener(
 
-      const adminOrders =
+      "submit",
 
-        document.getElementById("adminOrders");
+      async (e) => {
 
-      const deliveredOrders =
+        e.preventDefault();
 
-        document.getElementById("deliveredOrders");
+        errorMessage.style.display = "none";
 
-      if (!adminOrders || !deliveredOrders) return;
+        const username =
 
-      try {
+          document.getElementById("username").value.trim();
 
-        const respuesta = await fetch(
+        const passwordValue =
 
-          "/api/pedidos",
+          password.value;
 
-          {
+        try {
 
-            credentials: "include"
+          const response =
 
-          }
+            await fetch(
 
-        );
+              "/api/login",
 
-        if (!respuesta.ok) {
+              {
 
-          throw new Error(
+                method: "POST",
 
-            "No se pudieron cargar los pedidos."
+                headers: {
 
-          );
+                  "Content-Type": "application/json"
 
-        }
+                },
 
-        const pedidos =
+                credentials: "include",
 
-          await respuesta.json();
+                body: JSON.stringify({
 
-        mostrarPedidosAdmin(pedidos);
+                  username: username,
 
-      } catch (error) {
+                  password: passwordValue
 
-        console.error(error);
-
-        adminOrders.innerHTML =
-
-          "<p>No se pudieron cargar los pedidos.</p>";
-
-        deliveredOrders.innerHTML =
-
-          "<p>No se pudo cargar el historial.</p>";
-
-      }
-
-    }
-
-    /* =========================
-
-       MOSTRAR PEDIDOS
-
-    ========================= */
-
-    function mostrarPedidosAdmin(pedidos) {
-
-      const adminOrders =
-
-        document.getElementById("adminOrders");
-
-      const deliveredOrders =
-
-        document.getElementById("deliveredOrders");
-
-      const pendingOrdersCount =
-
-        document.getElementById("pendingOrdersCount");
-
-      const deliveredOrdersCount =
-
-        document.getElementById("deliveredOrdersCount");
-
-      if (!adminOrders || !deliveredOrders) return;
-
-      /* =========================
-
-         SEPARAR PEDIDOS
-
-      ========================= */
-
-      const pedidosPendientes =
-
-        pedidos.filter(
-
-          pedido =>
-
-            pedido.estado !== "Entregado"
-
-        );
-
-      const pedidosEntregados =
-
-        pedidos.filter(
-
-          pedido =>
-
-            pedido.estado === "Entregado"
-
-        );
-
-      /* =========================
-
-         CONTADORES
-
-      ========================= */
-
-      if (pendingOrdersCount) {
-
-        pendingOrdersCount.textContent =
-
-          `📦 ${pedidosPendientes.length} pedido${
-
-            pedidosPendientes.length === 1
-
-              ? ""
-
-              : "s"
-
-          } pendiente${
-
-            pedidosPendientes.length === 1
-
-              ? ""
-
-              : "s"
-
-          }`;
-
-      }
-
-      if (deliveredOrdersCount) {
-
-        deliveredOrdersCount.textContent =
-
-          `✅ ${pedidosEntregados.length} pedido${
-
-            pedidosEntregados.length === 1
-
-              ? ""
-
-              : "s"
-
-          } entregado${
-
-            pedidosEntregados.length === 1
-
-              ? ""
-
-              : "s"
-
-          }`;
-
-      }
-
-      /* =========================
-
-         MOSTRAR PENDIENTES
-
-      ========================= */
-
-      if (!pedidosPendientes.length) {
-
-        adminOrders.innerHTML =
-
-          "<p>🎉 No hay pedidos pendientes.</p>";
-
-      } else {
-
-        adminOrders.innerHTML =
-
-          pedidosPendientes
-
-            .map(pedido =>
-
-              crearTarjetaPedido(pedido)
-
-            )
-
-            .join("");
-
-      }
-
-      /* =========================
-
-         MOSTRAR ENTREGADOS
-
-      ========================= */
-
-      if (!pedidosEntregados.length) {
-
-        deliveredOrders.innerHTML =
-
-          "<p>No hay pedidos entregados todavía.</p>";
-
-      } else {
-
-        deliveredOrders.innerHTML =
-
-          pedidosEntregados
-
-            .map(pedido =>
-
-              crearTarjetaPedido(pedido)
-
-            )
-
-            .join("");
-
-      }
-
-    }
-
-    /* =========================
-
-       CREAR TARJETA DE PEDIDO
-
-    ========================= */
-
-    function crearTarjetaPedido(pedido) {
-
-      const cliente =
-
-        pedido.cliente || {};
-
-      const productos =
-
-        pedido.productos || [];
-
-      const fecha =
-
-        new Date(pedido.fecha);
-
-      const fechaTexto =
-
-        fecha.toLocaleString(
-
-          "es-HN",
-
-          {
-
-            dateStyle: "medium",
-
-            timeStyle: "short"
-
-          }
-
-        );
-
-      const productosHTML =
-
-        productos.map(item => {
-
-          return `
-
-            <p>
-
-              • ${item.nombre}
-
-              — ${item.cantidad} ×
-
-              HNL ${Number(
-
-                item.precio
-
-              ).toFixed(2)}
-
-              ${
-
-                item.talla
-
-                  ? ` — Talla: ${item.talla}`
-
-                  : ""
+                })
 
               }
 
-            </p>
+            );
 
-          `;
+          if (response.ok) {
 
-        }).join("");
+            window.location.href =
 
-      return `
+              "/admin.html";
 
-        <article class="order-card">
+          } else {
 
-          <div class="order-header">
+            errorMessage.style.display =
 
-            <strong>
+              "block";
 
-              Pedido ${pedido.id}
+          }
 
-            </strong>
+        } catch (error) {
 
-            <span>
+          errorMessage.textContent =
 
-              ${fechaTexto}
+            "No se pudo conectar con el servidor.";
 
-            </span>
+          errorMessage.style.display =
 
-          </div>
-
-          <p>
-
-            <strong>Cliente:</strong>
-
-            ${cliente.nombre || ""}
-
-          </p>
-
-          <p>
-
-            <strong>Teléfono:</strong>
-
-            ${cliente.telefono || ""}
-
-          </p>
-
-          <p>
-
-            <strong>Dirección:</strong>
-
-            ${cliente.direccion || ""}
-
-          </p>
-
-          <p>
-
-            <strong>Ciudad:</strong>
-
-            ${cliente.ciudad || ""}
-
-          </p>
-
-          <p>
-
-            <strong>Departamento:</strong>
-
-            ${cliente.departamento || ""}
-
-          </p>
-
-          <div class="order-items">
-
-            <strong>
-
-              Productos:
-
-            </strong>
-
-            ${productosHTML}
-
-          </div>
-
-          <p class="order-total">
-
-            Total:
-
-            HNL ${
-
-              Number(
-
-                pedido.total || 0
-
-              ).toFixed(2)
-
-            }
-
-          </p>
-
-          <div class="order-actions">
-
-            <label>
-
-              Estado del pedido:
-
-            </label>
-
-            <select
-
-              onchange="cambiarEstadoPedido(
-
-                '${pedido.id}',
-
-                this.value
-
-              )"
-
-            >
-
-              ${[
-
-                "Pendiente",
-
-                "Confirmado",
-
-                "Preparando",
-
-                "Enviado",
-
-                "Entregado",
-
-                "Cancelado"
-
-              ].map(estado => `
-
-                <option
-
-                  value="${estado}"
-
-                  ${
-
-                    pedido.estado === estado
-
-                      ? "selected"
-
-                      : ""
-
-                  }
-
-                >
-
-                  ${estado}
-
-                </option>
-
-              `).join("")}
-
-            </select>
-
-          </div>
-
-        </article>
-
-      `;
-
-    }
-
-    /* =========================
-
-       CAMBIAR ESTADO
-
-    ========================= */
-
-    async function cambiarEstadoPedido(
-
-      id,
-
-      estado
-
-    ) {
-
-     try {
-
-  const respuesta = await fetch(
-
-    "/api/pedidos/" + encodeURIComponent(id) + "/estado",
-
-    {
-
-      method: "PATCH",
-
-      headers: {
-
-        "Content-Type": "application/json"
-
-      },
-
-      credentials: "include",
-
-      body: JSON.stringify({
-
-        estado: estado
-
-      })
-
-    }
-
-  );
-        const resultado =
-
-          await respuesta.json();
-
-        if (!respuesta.ok) {
-
-          alert(
-
-            resultado.error ||
-
-            "No se pudo actualizar el estado."
-
-          );
-
-          cargarPedidosAdmin();
-
-          return;
+            "block";
 
         }
 
-        /* =========================
-
-           RECARGAR PEDIDOS
-
-        ========================= */
-
-        cargarPedidosAdmin();
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-
-          "No se pudo actualizar el estado del pedido."
-
-        );
-
-        cargarPedidosAdmin();
-
       }
 
-    }
-
-    /* =========================
-
-       INICIAR
-
-    ========================= */
-
-    cargarProductosAdmin();
-
-    cargarPedidosAdmin();
+    );
 
   </script>
 
