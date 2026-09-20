@@ -2258,84 +2258,100 @@ if (departmentSelect) {
 
   }
 
+/* =====================================================
+   MOSTRAR CAMPOS DE PAGO
+===================================================== */
 
-  /* =====================================================
-     MOSTRAR CAMPOS DE PAGO
-  ===================================================== */
+function actualizarPago() {
 
-  function actualizarPago() {
+  paymentMethod =
+    obtenerMetodoPago();
 
-    paymentMethod =
-      obtenerMetodoPago();
+  const bankBox =
+    document.getElementById(
+      "bankBox"
+    );
 
-    const transferBox =
-      document.getElementById(
-        "transferBox"
-      );
+  const cardBox =
+    document.getElementById(
+      "cardBox"
+    );
 
-    const cardBox =
-      document.getElementById(
-        "cardBox"
-      );
+  const cashBox =
+    document.getElementById(
+      "cashBox"
+    );
 
-    const cashBox =
-      document.getElementById(
-        "cashBox"
-      );
+  /* =========================================
+     TRANSFERENCIA
+  ========================================= */
 
-    if (transferBox) {
+  if (bankBox) {
 
-      transferBox.style.display =
-        paymentMethod ===
-        "transferencia"
-          ? "block"
-          : "none";
-
-    }
-
-    if (cardBox) {
-
-      cardBox.style.display =
-        paymentMethod ===
-        "tarjeta"
-          ? "block"
-          : "none";
-
-    }
-
-    if (cashBox) {
-
-      cashBox.style.display =
-        paymentMethod ===
-        "efectivo"
-          ? "block"
-          : "none";
-
-    }
-
-  }
-if (bankDetails) {
-
-  if (paymentMethod === "transferencia") {
-
-    bankDetails.style.display =
-
-      bank && bank.value
-
+    bankBox.style.display =
+      paymentMethod ===
+      "transferencia"
         ? "block"
-
         : "none";
 
-  } else {
+  }
 
-    bankDetails.style.display =
+  /* =========================================
+     TARJETA
+  ========================================= */
 
-      "none";
+  if (cardBox) {
+
+    cardBox.style.display =
+      paymentMethod ===
+      "tarjeta"
+        ? "block"
+        : "none";
+
+  }
+
+  /* =========================================
+     EFECTIVO
+  ========================================= */
+
+  if (cashBox) {
+
+    cashBox.style.display =
+      paymentMethod ===
+      "efectivo"
+        ? "block"
+        : "none";
+
+  }
+
+  /* =========================================
+     DATOS DE LA CUENTA
+  ========================================= */
+
+  if (bankDetails) {
+
+    if (
+      paymentMethod ===
+      "transferencia" &&
+      bank &&
+      bank.value
+    ) {
+
+      bankDetails.style.display =
+        "block";
+
+    } else {
+
+      bankDetails.style.display =
+        "none";
+
+    }
 
   }
 
 }
-
+  
+    
   if (transferPayment) {
 
     transferPayment.addEventListener(
