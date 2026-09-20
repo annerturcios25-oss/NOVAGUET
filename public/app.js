@@ -250,14 +250,19 @@ paymentSound.volume = 0.8;
 
   } catch (error) {
 
-    console.error(
-      "Error cargando carrito:",
-      error
-    );
+  sonidoError();
 
-    carrito = [];
+  console.error(
+    "Error creando pedido:",
+    error
+  );
 
-  }
+  alert(
+    error.message ||
+    "No se pudo procesar el pedido."
+  );
+
+}
 /* =====================================================
 
    SONIDO DE ERROR
