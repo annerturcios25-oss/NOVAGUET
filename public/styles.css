@@ -2213,3 +2213,24 @@ footer {
   padding: 30px 20px;
   box-sizing: border-box;
 }
+#stepResult {
+  width: 100%;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+#paymentResult {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.payment-success {
+  width: 100%;
+  text-align: center;
+  padding: 30px 20px;
+  box-sizing: border-box;
+}
