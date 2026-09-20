@@ -932,21 +932,19 @@ const errorMessage =
 
   document.getElementById("errorMessage");
 
-/* MOSTRAR / OCULTAR CONTRASEÑA */
-
 togglePassword.addEventListener(
 
   "click",
 
   () => {
 
-    if(password.type === "password"){
+    if (password.type === "password") {
 
       password.type = "text";
 
       togglePassword.textContent = "🙈";
 
-    }else{
+    } else {
 
       password.type = "password";
 
@@ -957,8 +955,6 @@ togglePassword.addEventListener(
   }
 
 );
-
-/* LOGIN */
 
 loginForm.addEventListener(
 
@@ -972,45 +968,67 @@ loginForm.addEventListener(
 
     const username =
 
-      document.getElementById("username").value.trim();
+      document
+
+        .getElementById("username")
+
+        .value
+
+        .trim();
 
     const passwordValue =
 
       password.value;
 
-    try{
+    try {
+
+      const credenciales =
+
+        btoa(
+
+          username +
+
+          ":" +
+
+          passwordValue
+
+        );
 
       const response =
 
-        await fetch("/api/login", {
+        await fetch(
 
-          method:"POST",
+          "/admin.html",
 
-          headers:{
+          {
 
-            "Content-Type":"application/json"
+            method: "GET",
 
-          },
+            headers: {
 
-          credentials:"include",
+              "Authorization":
 
-          body:JSON.stringify({
+                "Basic " +
 
-            username:username,
+                credenciales
 
-            password:passwordValue
+            }
 
-          })
+          }
 
-        });
+        );
 
-      if(response.ok){
+      if (response.ok) {
 
         window.location.href =
 
           "/admin.html";
 
-      }else{
+      } else {
+
+        errorMessage.textContent =
+
+          "Usuario o contraseña incorrectos.";
 
         errorMessage.style.display =
 
@@ -1018,7 +1036,7 @@ loginForm.addEventListener(
 
       }
 
-    }catch(error){
+    } catch (error) {
 
       errorMessage.textContent =
 
