@@ -188,6 +188,18 @@ if (bank) {
 
   const paymentResult =
     document.getElementById("paymentResult");
+    
+    /* =====================================================
+
+   SONIDO DE PAGO
+
+===================================================== */
+
+const paymentSound =
+
+  new Audio("/sounds/payment-success.mp3");
+
+paymentSound.volume = 0.8;
 
   const categoryButtons =
     document.querySelectorAll("[data-category]");
@@ -246,7 +258,51 @@ if (bank) {
     carrito = [];
 
   }
+/* =====================================================
 
+   SONIDO DE ERROR
+
+===================================================== */
+
+function sonidoError() {
+
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  const oscillator = audioContext.createOscillator();
+
+  const gainNode = audioContext.createGain();
+
+  oscillator.type = "sine";
+
+  oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+
+  oscillator.frequency.exponentialRampToValueAtTime(
+
+    120,
+
+    audioContext.currentTime + 0.25
+
+  );
+
+  gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+
+  gainNode.gain.exponentialRampToValueAtTime(
+
+    0.01,
+
+    audioContext.currentTime + 0.25
+
+  );
+
+  oscillator.connect(gainNode);
+
+  gainNode.connect(audioContext.destination);
+
+  oscillator.start();
+
+  oscillator.stop(audioContext.currentTime + 0.25);
+
+}
 
   /* =====================================================
      GUARDAR CARRITO
