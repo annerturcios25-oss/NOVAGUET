@@ -4,1007 +4,1037 @@
 
 <head>
 
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>NOVAGUET | Administración</title>
+<title>NOVAGUET | Administración</title>
 
-  <style>
+<style>
 
-    * {
+*{
 
-      box-sizing: border-box;
+  box-sizing:border-box;
 
-      margin: 0;
+  margin:0;
 
-      padding: 0;
+  padding:0;
 
-    }
+}
 
-    :root {
+:root{
 
-      --celeste: #00BFFF;
+  --celeste:#00BFFF;
 
-      --dorado: #D4AF37;
+  --dorado:#D4AF37;
 
-      --negro: #050505;
+  --negro:#050505;
 
-      --gris: #111111;
+  --gris:#111111;
 
-    }
+}
 
-    body {
+html,
 
-      min-height: 100vh;
+body{
 
-      font-family: Arial, Helvetica, sans-serif;
+  width:100%;
 
-      color: white;
+  min-height:100%;
 
-      background:
+}
 
-        radial-gradient(circle at 50% 20%, rgba(0,191,255,0.10), transparent 32%),
+body{
 
-        radial-gradient(circle at 50% 100%, rgba(212,175,55,0.08), transparent 35%),
+  min-height:100vh;
 
-        #020202;
+  font-family:Arial,Helvetica,sans-serif;
 
-      display: flex;
+  color:white;
 
-      align-items: center;
+  background:
 
-      justify-content: center;
+    radial-gradient(
 
-      padding: 25px;
+      circle at 50% 20%,
 
-      overflow-x: hidden;
+      rgba(0,191,255,.10),
 
-    }
+      transparent 32%
 
-    /* Decoración de fondo */
+    ),
 
-    body::before {
+    radial-gradient(
 
-      content: "";
+      circle at 50% 100%,
 
-      position: fixed;
+      rgba(212,175,55,.08),
 
-      width: 420px;
+      transparent 35%
 
-      height: 420px;
+    ),
 
-      border-radius: 50%;
+    #020202;
 
-      border: 1px solid rgba(0,191,255,0.08);
+  display:flex;
 
-      top: -180px;
+  align-items:center;
 
-      left: -180px;
+  justify-content:center;
 
-      pointer-events: none;
+  padding:25px;
 
-    }
+  overflow-x:hidden;
 
-    body::after {
+}
 
-      content: "";
+/* DECORACIÓN */
 
-      position: fixed;
+body::before{
 
-      width: 500px;
+  content:"";
 
-      height: 500px;
+  position:fixed;
 
-      border-radius: 50%;
+  width:420px;
 
-      border: 1px solid rgba(212,175,55,0.06);
+  height:420px;
 
-      bottom: -250px;
+  border-radius:50%;
 
-      right: -220px;
+  border:1px solid rgba(0,191,255,.08);
 
-      pointer-events: none;
+  top:-180px;
 
-    }
+  left:-180px;
 
-    .login-container {
+  pointer-events:none;
 
-      width: 100%;
+}
 
-      max-width: 430px;
+body::after{
 
-      position: relative;
+  content:"";
 
-      z-index: 2;
+  position:fixed;
 
-    }
+  width:500px;
 
-    /* Tarjeta principal */
+  height:500px;
 
-    .login-box {
+  border-radius:50%;
 
-      position: relative;
+  border:1px solid rgba(212,175,55,.06);
 
-      background:
+  bottom:-250px;
 
-        linear-gradient(
+  right:-220px;
 
-          145deg,
+  pointer-events:none;
 
-          rgba(22,22,22,0.98),
+}
 
-          rgba(7,7,7,0.98)
+/* CONTENEDOR */
 
-        );
+.login-container{
 
-      border: 1px solid rgba(0,191,255,0.25);
+  width:100%;
 
-      border-radius: 26px;
+  max-width:430px;
 
-      padding: 42px 34px 30px;
+  position:relative;
 
-      box-shadow:
+  z-index:2;
 
-        0 0 0 1px rgba(212,175,55,0.04),
+}
 
-        0 0 50px rgba(0,191,255,0.08),
+/* TARJETA */
 
-        0 30px 80px rgba(0,0,0,0.85);
+.login-box{
 
-      overflow: hidden;
+  position:relative;
 
-    }
+  background:
 
-    .login-box::before {
+    linear-gradient(
 
-      content: "";
+      145deg,
 
-      position: absolute;
+      rgba(22,22,22,.98),
 
-      top: 0;
+      rgba(7,7,7,.98)
 
-      left: 0;
+    );
 
-      right: 0;
+  border:1px solid rgba(0,191,255,.25);
 
-      height: 3px;
+  border-radius:26px;
 
-      background: linear-gradient(
+  padding:42px 34px 30px;
 
-        90deg,
+  box-shadow:
 
-        transparent,
+    0 0 0 1px rgba(212,175,55,.04),
 
-        var(--celeste),
+    0 0 50px rgba(0,191,255,.08),
 
-        var(--dorado),
+    0 30px 80px rgba(0,0,0,.85);
 
-        var(--celeste),
+  overflow:hidden;
 
-        transparent
+  animation:panelAppear .6s ease-out;
 
-      );
+}
 
-    }
+/* LÍNEA SUPERIOR */
 
-    /* Marca */
+.login-box::before{
 
-    .brand {
+  content:"";
 
-      text-align: center;
+  position:absolute;
 
-      margin-bottom: 30px;
+  top:0;
 
-    }
+  left:0;
 
-    .brand h1 {
+  right:0;
 
-      font-size: 43px;
+  height:3px;
 
-      font-weight: 900;
+  background:
 
-      letter-spacing: 5px;
+    linear-gradient(
 
-      line-height: 1;
+      90deg,
 
-    }
+      transparent,
 
-    .brand-nova {
+      var(--celeste),
 
-      color: var(--celeste);
+      var(--dorado),
 
-    }
+      var(--celeste),
 
-    .brand-guet {
+      transparent
 
-      color: var(--dorado);
+    );
 
-    }
+}
 
-    .brand-line {
+/* LOGO */
 
-      width: 70px;
+.brand{
 
-      height: 3px;
+  text-align:center;
 
-      margin: 13px auto 13px;
+  margin-bottom:30px;
 
-      border-radius: 20px;
+}
 
-      background: linear-gradient(
+.brand h1{
 
-        90deg,
+  font-size:43px;
 
-        var(--celeste),
+  font-weight:900;
 
-        var(--dorado)
+  letter-spacing:5px;
 
-      );
+  line-height:1;
 
-      box-shadow: 0 0 12px rgba(0,191,255,0.25);
+}
 
-    }
+.brand-nova{
 
-    .brand p {
+  color:var(--celeste);
 
-      color: #888;
+}
 
-      font-size: 13px;
+.brand-guet{
 
-      letter-spacing: 1px;
+  color:var(--dorado);
 
-    }
+}
 
-    /* Título */
+.brand-line{
 
-    .admin-heading {
+  width:70px;
 
-      text-align: center;
+  height:3px;
 
-      margin-bottom: 28px;
+  margin:13px auto;
 
-    }
+  border-radius:20px;
 
-    .admin-icon {
+  background:
 
-      width: 48px;
+    linear-gradient(
 
-      height: 48px;
+      90deg,
 
-      margin: 0 auto 13px;
+      var(--celeste),
 
-      border-radius: 14px;
+      var(--dorado)
 
-      display: flex;
+    );
 
-      align-items: center;
+  box-shadow:
 
-      justify-content: center;
+    0 0 12px rgba(0,191,255,.25);
 
-      background: rgba(0,191,255,0.08);
+}
 
-      border: 1px solid rgba(0,191,255,0.20);
+.brand p{
 
-      font-size: 23px;
+  color:#888;
 
-    }
+  font-size:13px;
 
-    .admin-heading h2 {
+  letter-spacing:1px;
 
-      font-size: 21px;
+}
 
-      font-weight: 800;
+/* ENCABEZADO */
 
-      letter-spacing: 0.5px;
+.admin-heading{
 
-      margin-bottom: 7px;
+  text-align:center;
 
-    }
+  margin-bottom:28px;
 
-    .admin-heading p {
+}
 
-      color: #777;
+.admin-icon{
 
-      font-size: 13px;
+  width:48px;
 
-    }
+  height:48px;
 
-    /* Campos */
+  margin:0 auto 13px;
 
-    .input-group {
+  border-radius:14px;
 
-      margin-bottom: 19px;
+  display:flex;
 
-    }
+  align-items:center;
 
-    .input-group label {
+  justify-content:center;
 
-      display: block;
+  background:rgba(0,191,255,.08);
 
-      color: #bdbdbd;
+  border:1px solid rgba(0,191,255,.20);
 
-      font-size: 12px;
+  font-size:23px;
 
-      font-weight: 700;
+}
 
-      letter-spacing: 0.7px;
+.admin-heading h2{
 
-      margin-bottom: 8px;
+  font-size:21px;
 
-      text-transform: uppercase;
+  font-weight:800;
 
-    }
+  letter-spacing:.5px;
 
-    .input-wrapper {
+  margin-bottom:7px;
 
-      position: relative;
+}
 
-    }
+.admin-heading p{
 
-    .input-wrapper input {
+  color:#777;
 
-      width: 100%;
+  font-size:13px;
 
-      height: 52px;
+}
 
-      padding: 0 48px 0 16px;
+/* CAMPOS */
 
-      border-radius: 13px;
+.input-group{
 
-      border: 1px solid #292929;
+  margin-bottom:19px;
 
-      outline: none;
+}
 
-      background: #090909;
+.input-group label{
 
-      color: white;
+  display:block;
 
-      font-size: 15px;
+  color:#bdbdbd;
 
-      transition: 0.25s ease;
+  font-size:12px;
 
-    }
+  font-weight:700;
 
-    .input-wrapper input::placeholder {
+  letter-spacing:.7px;
 
-      color: #505050;
+  margin-bottom:8px;
 
-    }
+  text-transform:uppercase;
 
-    .input-wrapper input:hover {
+}
 
-      border-color: #3a3a3a;
+.input-wrapper{
 
-    }
+  position:relative;
 
-    .input-wrapper input:focus {
+}
 
-      border-color: var(--celeste);
+.input-wrapper input{
 
-      background: #0b0b0b;
+  width:100%;
 
-      box-shadow:
+  height:52px;
 
-        0 0 0 3px rgba(0,191,255,0.08),
+  padding:0 48px 0 44px;
 
-        0 0 18px rgba(0,191,255,0.06);
+  border-radius:13px;
 
-    }
+  border:1px solid #292929;
 
-    .input-icon {
+  outline:none;
 
-      position: absolute;
+  background:#090909;
 
-      left: 15px;
+  color:white;
 
-      top: 50%;
+  font-size:15px;
 
-      transform: translateY(-50%);
+  transition:.25s ease;
 
-      color: #666;
+}
 
-      font-size: 17px;
+.input-wrapper input::placeholder{
 
-      pointer-events: none;
+  color:#505050;
 
-    }
+}
 
-    .input-wrapper.with-icon input {
+.input-wrapper input:hover{
 
-      padding-left: 44px;
+  border-color:#3a3a3a;
 
-    }
+}
 
-    .eye {
+.input-wrapper input:focus{
 
-      position: absolute;
+  border-color:var(--celeste);
 
-      right: 15px;
+  background:#0b0b0b;
 
-      top: 50%;
+  box-shadow:
 
-      transform: translateY(-50%);
+    0 0 0 3px rgba(0,191,255,.08),
 
-      color: #666;
+    0 0 18px rgba(0,191,255,.06);
 
-      font-size: 17px;
+}
 
-      cursor: pointer;
+/* ICONOS */
 
-      user-select: none;
+.input-icon{
 
-      transition: 0.2s;
+  position:absolute;
 
-    }
+  left:15px;
 
-    .eye:hover {
+  top:50%;
 
-      color: var(--celeste);
+  transform:translateY(-50%);
 
-    }
+  color:#666;
 
-    /* Botón */
+  font-size:17px;
 
-    .login-button {
+  pointer-events:none;
 
-      position: relative;
+}
 
-      width: 100%;
+/* OJO */
 
-      height: 52px;
+.eye{
 
-      margin-top: 5px;
+  position:absolute;
 
-      border: none;
+  right:15px;
 
-      border-radius: 13px;
+  top:50%;
 
-      background: linear-gradient(
+  transform:translateY(-50%);
 
-        135deg,
+  color:#666;
 
-        #00BFFF,
+  font-size:17px;
 
-        #008fd0
+  cursor:pointer;
 
-      );
+  user-select:none;
 
-      color: #001016;
+  transition:.2s;
 
-      font-size: 14px;
+}
 
-      font-weight: 900;
+.eye:hover{
 
-      letter-spacing: 1px;
+  color:var(--celeste);
 
-      cursor: pointer;
+}
 
-      overflow: hidden;
+/* BOTÓN */
 
-      transition: 0.25s ease;
+.login-button{
 
-      box-shadow:
+  position:relative;
 
-        0 8px 25px rgba(0,191,255,0.16);
+  width:100%;
 
-    }
+  height:52px;
 
-    .login-button::before {
+  margin-top:5px;
 
-      content: "";
+  border:none;
 
-      position: absolute;
+  border-radius:13px;
 
-      top: 0;
+  background:
 
-      left: -100%;
+    linear-gradient(
 
-      width: 60%;
+      135deg,
 
-      height: 100%;
+      #00BFFF,
 
-      background: rgba(255,255,255,0.20);
+      #008fd0
 
-      transform: skewX(-20deg);
+    );
 
-      transition: 0.5s;
+  color:#001016;
 
-    }
+  font-size:14px;
 
-    .login-button:hover {
+  font-weight:900;
 
-      transform: translateY(-2px);
+  letter-spacing:1px;
 
-      box-shadow:
+  cursor:pointer;
 
-        0 12px 30px rgba(0,191,255,0.25);
+  overflow:hidden;
 
-    }
+  transition:.25s ease;
 
-    .login-button:hover::before {
+  box-shadow:
 
-      left: 130%;
+    0 8px 25px rgba(0,191,255,.16);
 
-    }
+}
 
-    .login-button:active {
+.login-button::before{
 
-      transform: translateY(0);
+  content:"";
 
-    }
+  position:absolute;
 
-    /* Error */
+  top:0;
 
-    .error {
+  left:-100%;
 
-      display: none;
+  width:60%;
 
-      margin-top: 15px;
+  height:100%;
 
-      padding: 12px 14px;
+  background:rgba(255,255,255,.20);
 
-      border-radius: 11px;
+  transform:skewX(-20deg);
 
-      background: rgba(255,60,60,0.07);
+  transition:.5s;
 
-      border: 1px solid rgba(255,60,60,0.20);
+}
 
-      color: #ff7070;
+.login-button:hover{
 
-      text-align: center;
+  transform:translateY(-2px);
 
-      font-size: 12px;
+  box-shadow:
 
-    }
+    0 12px 30px rgba(0,191,255,.25);
 
-    /* Volver */
+}
 
-    .back {
+.login-button:hover::before{
 
-      display: block;
+  left:130%;
 
-      text-align: center;
+}
 
-      margin-top: 23px;
+.login-button:active{
 
-      color: #666;
+  transform:translateY(0);
 
-      text-decoration: none;
+}
 
-      font-size: 12px;
+/* ERROR */
 
-      transition: 0.2s;
+.error{
 
-    }
+  display:none;
 
-    .back:hover {
+  margin-top:15px;
 
-      color: var(--celeste);
+  padding:12px 14px;
 
-    }
+  border-radius:11px;
 
-    /* Seguridad */
+  background:rgba(255,60,60,.07);
 
-    .security {
+  border:1px solid rgba(255,60,60,.20);
 
-      display: flex;
+  color:#ff7070;
 
-      align-items: center;
+  text-align:center;
 
-      justify-content: center;
+  font-size:12px;
 
-      gap: 7px;
+}
 
-      margin-top: 23px;
+/* VOLVER */
 
-      padding-top: 20px;
+.back{
 
-      border-top: 1px solid #191919;
+  display:block;
 
-      color: #4f4f4f;
+  text-align:center;
 
-      font-size: 10px;
+  margin-top:23px;
 
-      letter-spacing: 0.4px;
+  color:#666;
 
-    }
+  text-decoration:none;
 
-    .security-dot {
+  font-size:12px;
 
-      width: 6px;
+  transition:.2s;
 
-      height: 6px;
+}
 
-      border-radius: 50%;
+.back:hover{
 
-      background: #35c759;
+  color:var(--celeste);
 
-      box-shadow: 0 0 8px rgba(53,199,89,0.5);
+}
 
-    }
+/* SEGURIDAD */
 
-    /* Animación */
+.security{
 
-    .login-box {
+  display:flex;
 
-      animation: panelAppear 0.6s ease-out;
+  align-items:center;
 
-    }
+  justify-content:center;
 
-    @keyframes panelAppear {
+  gap:7px;
 
-      from {
+  margin-top:23px;
 
-        opacity: 0;
+  padding-top:20px;
 
-        transform: translateY(18px) scale(0.98);
+  border-top:1px solid #191919;
 
-      }
+  color:#4f4f4f;
 
-      to {
+  font-size:10px;
 
-        opacity: 1;
+  letter-spacing:.4px;
 
-        transform: translateY(0) scale(1);
+}
 
-      }
+.security-dot{
 
-    }
+  width:6px;
 
-    /* Teléfono */
+  height:6px;
 
-    @media (max-width: 480px) {
+  border-radius:50%;
 
-      body {
+  background:#35c759;
 
-        padding: 16px;
+  box-shadow:
 
-      }
+    0 0 8px rgba(53,199,89,.5);
 
-      .login-box {
+}
 
-        padding: 36px 22px 27px;
+/* ANIMACIÓN */
 
-        border-radius: 22px;
+@keyframes panelAppear{
 
-      }
+  from{
 
-      .brand h1 {
+    opacity:0;
 
-        font-size: 34px;
+    transform:translateY(18px) scale(.98);
 
-        letter-spacing: 4px;
+  }
 
-      }
+  to{
 
-      .admin-heading h2 {
+    opacity:1;
 
-        font-size: 19px;
+    transform:translateY(0) scale(1);
 
-      }
+  }
 
-      .input-wrapper input {
+}
 
-        height: 50px;
+/* CELULAR */
 
-      }
+@media(max-width:480px){
 
-      .login-button {
+  body{
 
-        height: 50px;
+    padding:16px;
 
-      }
+  }
 
-    }
+  .login-box{
 
-  </style>
+    padding:36px 22px 27px;
+
+    border-radius:22px;
+
+  }
+
+  .brand h1{
+
+    font-size:34px;
+
+    letter-spacing:4px;
+
+  }
+
+  .admin-heading h2{
+
+    font-size:19px;
+
+  }
+
+  .input-wrapper input{
+
+    height:50px;
+
+  }
+
+  .login-button{
+
+    height:50px;
+
+  }
+
+}
+
+</style>
 
 </head>
 
 <body>
 
-  <div class="login-container">
+<div class="login-container">
 
-    <div class="login-box">
+  <div class="login-box">
 
-      <!-- MARCA -->
+    <!-- LOGO -->
 
-      <div class="brand">
+    <div class="brand">
 
-        <h1>
+      <h1>
 
-          <span class="brand-nova">NOVA</span><span class="brand-guet">GUET</span>
+        <span class="brand-nova">NOVA</span><span class="brand-guet">GUET</span>
 
-        </h1>
+      </h1>
 
-        <div class="brand-line"></div>
+      <div class="brand-line"></div>
 
-        <p>Moda que habla por ti.</p>
+      <p>Moda que habla por ti.</p>
+
+    </div>
+
+    <!-- ENCABEZADO -->
+
+    <div class="admin-heading">
+
+      <div class="admin-icon">⚙️</div>
+
+      <h2>Panel de Administración</h2>
+
+      <p>
+
+        Acceso exclusivo para administrar NOVAGUET
+
+      </p>
+
+    </div>
+
+    <!-- LOGIN -->
+
+    <form id="loginForm">
+
+      <!-- USUARIO -->
+
+      <div class="input-group">
+
+        <label for="username">
+
+          Usuario
+
+        </label>
+
+        <div class="input-wrapper">
+
+          <span class="input-icon">👤</span>
+
+          <input
+
+            type="text"
+
+            id="username"
+
+            placeholder="Ingresa tu usuario"
+
+            autocomplete="username"
+
+            required
+
+          >
+
+        </div>
 
       </div>
 
-      <!-- TÍTULO -->
+      <!-- CONTRASEÑA -->
 
-      <div class="admin-heading">
+      <div class="input-group">
 
-        <div class="admin-icon">
+        <label for="password">
 
-          ⚙️
+          Contraseña
+
+        </label>
+
+        <div class="input-wrapper">
+
+          <span class="input-icon">🔒</span>
+
+          <input
+
+            type="password"
+
+            id="password"
+
+            placeholder="Ingresa tu contraseña"
+
+            autocomplete="current-password"
+
+            required
+
+          >
+
+          <span
+
+            class="eye"
+
+            id="togglePassword"
+
+            aria-label="Mostrar contraseña"
+
+          >
+
+            👁️
+
+          </span>
 
         </div>
-
-        <h2>Panel de Administración</h2>
-
-        <p>Acceso exclusivo para administrar NOVAGUET</p>
 
       </div>
 
-      <!-- LOGIN -->
+      <!-- BOTÓN -->
 
-      <form id="loginForm">
+      <button
 
-        <div class="input-group">
+        type="submit"
 
-          <label for="username">
-
-            Usuario
-
-          </label>
-
-          <div class="input-wrapper with-icon">
-
-            <span class="input-icon">👤</span>
-
-            <input
-
-              type="text"
-
-              id="username"
-
-              placeholder="Ingresa tu usuario"
-
-              autocomplete="username"
-
-              required
-
-            >
-
-          </div>
-
-        </div>
-
-        <div class="input-group">
-
-          <label for="password">
-
-            Contraseña
-
-          </label>
-
-          <div class="input-wrapper with-icon">
-
-            <span class="input-icon">🔒</span>
-
-            <input
-
-              type="password"
-
-              id="password"
-
-              placeholder="Ingresa tu contraseña"
-
-              autocomplete="current-password"
-
-              required
-
-            >
-
-            <span
-
-              class="eye"
-
-              id="togglePassword"
-
-              aria-label="Mostrar contraseña"
-
-            >👁️</span>
-
-          </div>
-
-        </div>
-
-        <button
-
-          type="submit"
-
-          class="login-button"
-
-        >
-
-          INGRESAR AL PANEL
-
-        </button>
-
-        <div
-
-          class="error"
-
-          id="errorMessage"
-
-        >
-
-          Usuario o contraseña incorrectos.
-
-        </div>
-
-      </form>
-
-      <!-- VOLVER -->
-
-      <a
-
-        href="/"
-
-        class="back"
+        class="login-button"
 
       >
 
-        ← Volver a NOVAGUET
+        INGRESAR AL PANEL
 
-      </a>
+      </button>
 
-      <!-- SEGURIDAD -->
+      <!-- ERROR -->
 
-      <div class="security">
+      <div
 
-        <span class="security-dot"></span>
+        class="error"
 
-        Área segura de administración NOVAGUET
+        id="errorMessage"
+
+      >
+
+        Usuario o contraseña incorrectos.
 
       </div>
+
+    </form>
+
+    <!-- VOLVER -->
+
+    <a
+
+      href="/"
+
+      class="back"
+
+    >
+
+      ← Volver a NOVAGUET
+
+    </a>
+
+    <!-- SEGURIDAD -->
+
+    <div class="security">
+
+      <span class="security-dot"></span>
+
+      Área segura de administración NOVAGUET
 
     </div>
 
   </div>
 
-  <script>
+</div>
 
-    const loginForm =
+<script>
 
-      document.getElementById("loginForm");
+const loginForm =
 
-    const password =
+  document.getElementById("loginForm");
 
-      document.getElementById("password");
+const password =
 
-    const togglePassword =
+  document.getElementById("password");
 
-      document.getElementById("togglePassword");
+const togglePassword =
 
-    const errorMessage =
+  document.getElementById("togglePassword");
 
-      document.getElementById("errorMessage");
+const errorMessage =
 
-    /* Mostrar / ocultar contraseña */
+  document.getElementById("errorMessage");
 
-    togglePassword.addEventListener(
+/* MOSTRAR / OCULTAR CONTRASEÑA */
 
-      "click",
+togglePassword.addEventListener(
 
-      () => {
+  "click",
 
-        if (password.type === "password") {
+  () => {
 
-          password.type = "text";
+    if(password.type === "password"){
 
-          togglePassword.textContent = "🙈";
+      password.type = "text";
 
-        } else {
+      togglePassword.textContent = "🙈";
 
-          password.type = "password";
+    }else{
 
-          togglePassword.textContent = "👁️";
+      password.type = "password";
 
-        }
+      togglePassword.textContent = "👁️";
+
+    }
+
+  }
+
+);
+
+/* LOGIN */
+
+loginForm.addEventListener(
+
+  "submit",
+
+  async (e) => {
+
+    e.preventDefault();
+
+    errorMessage.style.display = "none";
+
+    const username =
+
+      document.getElementById("username").value.trim();
+
+    const passwordValue =
+
+      password.value;
+
+    try{
+
+      const response =
+
+        await fetch("/api/login", {
+
+          method:"POST",
+
+          headers:{
+
+            "Content-Type":"application/json"
+
+          },
+
+          credentials:"include",
+
+          body:JSON.stringify({
+
+            username:username,
+
+            password:passwordValue
+
+          })
+
+        });
+
+      if(response.ok){
+
+        window.location.href =
+
+          "/admin.html";
+
+      }else{
+
+        errorMessage.style.display =
+
+          "block";
 
       }
 
-    );
+    }catch(error){
 
-    /* Inicio de sesión */
+      errorMessage.textContent =
 
-    loginForm.addEventListener(
+        "No se pudo conectar con el servidor.";
 
-      "submit",
+      errorMessage.style.display =
 
-      async (e) => {
+        "block";
 
-        e.preventDefault();
+    }
 
-        errorMessage.style.display = "none";
+  }
 
-        const username =
+);
 
-          document
-
-            .getElementById("username")
-
-            .value
-
-            .trim();
-
-        const passwordValue =
-
-          password.value;
-
-        try {
-
-          const response =
-
-            await fetch(
-
-              "/api/login",
-
-              {
-
-                method: "POST",
-
-                headers: {
-
-                  "Content-Type":
-
-                    "application/json"
-
-                },
-
-                credentials: "include",
-
-                body: JSON.stringify({
-
-                  username,
-
-                  password:
-
-                    passwordValue
-
-                })
-
-              }
-
-            );
-
-          if (response.ok) {
-
-            window.location.href =
-
-              "/admin.html";
-
-          } else {
-
-            errorMessage.style.display =
-
-              "block";
-
-          }
-
-        } catch (error) {
-
-          errorMessage.textContent =
-
-            "No se pudo conectar con el servidor.";
-
-          errorMessage.style.display =
-
-            "block";
-
-        }
-
-      }
-
-    );
-
-  </script>
+</script>
 
 </body>
 
