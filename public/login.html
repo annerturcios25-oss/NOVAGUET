@@ -913,145 +913,54 @@ body::after{
   </div>
 
 </div>
-
 <script>
+const loginForm = document.getElementById("loginForm");
+const password = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const errorMessage = document.getElementById("errorMessage");
 
-const loginForm =
+togglePassword.addEventListener("click", () => {
+  if (password.type === "password") {
+    password.type = "text";
+    togglePassword.textContent = "🙈";
+  } else {
+    password.type = "password";
+    togglePassword.textContent = "👁️";
+  }
+});
 
-  document.getElementById("loginForm");
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-const password =
+  errorMessage.style.display = "none";
 
-  document.getElementById("password");
+  const username = document.getElementById("username").value.trim();
+  const passwordValue = password.value;
 
-const togglePassword =
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        username: username,
+        password: passwordValue
+      })
+    });
 
-  document.getElementById("togglePassword");
-
-const errorMessage =
-
-  document.getElementById("errorMessage");
-
-togglePassword.addEventListener(
-
-  "click",
-
-  () => {
-
-    if (password.type === "password") {
-
-      password.type = "text";
-
-      togglePassword.textContent = "🙈";
-
+    if (response.ok) {
+      window.location.href = "/admin.html";
     } else {
-
-      password.type = "password";
-
-      togglePassword.textContent = "👁️";
-
+      errorMessage.textContent = "Usuario o contraseña incorrectos.";
+      errorMessage.style.display = "block";
     }
-
+  } catch (error) {
+    errorMessage.textContent = "No se pudo conectar con el servidor.";
+    errorMessage.style.display = "block";
   }
-
-);
-
-loginForm.addEventListener(
-
-  "submit",
-
-  async (e) => {
-
-    e.preventDefault();
-
-    errorMessage.style.display = "none";
-
-    const username =
-
-      document
-
-        .getElementById("username")
-
-        .value
-
-        .trim();
-
-    const passwordValue =
-
-      password.value;
-
-    try {
-
-      const credenciales =
-
-        btoa(
-
-          username +
-
-          ":" +
-
-          passwordValue
-
-        );
-
-      const response =
-
-        await fetch(
-
-          "/admin.html",
-
-          {
-
-            method: "GET",
-
-            headers: {
-
-              "Authorization":
-
-                "Basic " +
-
-                credenciales
-
-            }
-
-          }
-
-        );
-
-      if (response.ok) {
-
-        window.location.href =
-
-          "/admin.html";
-
-      } else {
-
-        errorMessage.textContent =
-
-          "Usuario o contraseña incorrectos.";
-
-        errorMessage.style.display =
-
-          "block";
-
-      }
-
-    } catch (error) {
-
-      errorMessage.textContent =
-
-        "No se pudo conectar con el servidor.";
-
-      errorMessage.style.display =
-
-        "block";
-
-    }
-
-  }
-
-);
-
+});
 </script>
 
 </body>
