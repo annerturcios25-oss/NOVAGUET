@@ -2017,3 +2017,199 @@ footer {
     width: 100%;
   }
 }
+.checkout-navigation {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.checkout-navigation button {
+  flex: 1;
+}
+
+.checkout-back-button {
+  display: block;
+  padding: 14px;
+  background: #00BFFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+/* =====================================
+   CONFIRMACIÓN DEL PEDIDO
+===================================== */
+
+.payment-success {
+  text-align: center;
+  padding: 35px 15px;
+  animation: confirmationAppear 0.7s ease-out;
+}
+
+.confirmation-check {
+  width: 75px;
+  height: 75px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #00bfff;
+  color: white;
+  font-size: 55px;
+  font-weight: bold;
+  line-height: 75px;
+  animation:
+    checkAppear 0.6s ease-out,
+    checkPulse 2s ease-in-out 0.8s infinite;
+}
+
+.payment-success h2 {
+  margin: 10px 0 5px;
+  font-size: 25px;
+  color: white;
+  font-weight: 800;
+}
+
+.novaguet-confirmed {
+  margin: 15px 0;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #00bfff;
+  text-shadow:
+    0 0 8px rgba(0, 191, 255, 0.6),
+    0 0 18px rgba(0, 191, 255, 0.4);
+  animation: novaguetMotion 2.5s ease-in-out infinite;
+}
+
+.payment-success p {
+  color: white;
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+.confirmation-small {
+  opacity: 0.75;
+  font-size: 13px !important;
+}
+
+
+/* ENTRADA */
+
+@keyframes confirmationAppear {
+
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+}
+
+
+/* PALOMITA */
+
+@keyframes checkAppear {
+
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  70% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+  }
+
+}
+
+
+/* BRILLO DE LA PALOMITA */
+
+@keyframes checkPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+
+}
+
+
+/* MOVIMIENTO DE NOVAGUET */
+
+@keyframes novaguetMotion {
+
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  25% {
+    transform: translateY(-5px) scale(1.03);
+  }
+
+  50% {
+    transform: translateY(0) scale(1.06);
+  }
+
+  75% {
+    transform: translateY(5px) scale(1.03);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+}
+
+.novaguet-confirmed {
+  margin: 15px 0;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  animation: novaguetMotion 5s ease-in-out infinite;
+}
+
+.nova-confirmed {
+  color: #00BFFF;
+}
+
+.guet-confirmed {
+  color: #D4AF37;
+}
+/* =====================================
+   PEDIDO CONFIRMADO - CENTRADO
+===================================== */
+
+#stepResult {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#paymentResult {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.payment-success {
+  width: 100%;
+  text-align: center;
+  padding: 30px 20px;
+  box-sizing: border-box;
+}

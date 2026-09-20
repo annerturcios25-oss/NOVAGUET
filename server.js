@@ -259,7 +259,41 @@ const productsFile =
     __dirname,
     "products.json"
   );
+/* =========================
 
+   ARCHIVO DE PEDIDOS
+
+========================= */
+
+const ordersFile =
+
+  path.join(
+
+    __dirname,
+
+    "orders.json"
+
+  );
+
+if (!fs.existsSync(ordersFile)) {
+
+  fs.writeFileSync(
+
+    ordersFile,
+
+    JSON.stringify(
+
+      [],
+
+      null,
+
+      2
+
+    )
+
+  );
+
+}
 /* =========================
    CREAR PRODUCTOS INICIALES
 ========================= */
@@ -772,6 +806,340 @@ app.delete(
     }
 
   }
+);
+/* =========================
+
+   CREAR PEDIDO
+
+========================= */
+
+app.post(
+
+  "/api/pedidos",
+
+  (req, res) => {
+console.log("PEDIDO RECIBIDO EN EL SERVIDOR");
+    try {
+
+      const productos =
+
+        JSON.parse(
+
+          fs.readFileSync(
+
+            productsFile,
+
+            "utf8"
+
+          )
+
+        );
+
+      const pedidos =
+
+        JSON.parse(
+
+          fs.readFileSync(
+
+            ordersFile,
+
+            "utf8"
+
+          )
+
+        );
+
+      const datos =
+
+        req.body || {};
+
+      const items =
+
+        Array.isArray(datos.productos)
+
+          ? datos.productos
+
+          : Array.isArray(datos.carrito)
+
+            ? datos.carrito
+
+            : [];
+
+      if (!items.length) {
+
+        return res.status(400).json({
+
+          error:
+
+            "El carrito está vacío."
+
+        });
+
+      }
+
+      /* =========================
+
+         VERIFICAR STOCK
+
+      ========================= */
+
+      for (const item of items) {
+
+        const producto =
+
+          productos.find(
+
+            p =>
+
+              String(p.id) ===
+
+              String(item.id)
+
+          );
+
+        if (!producto) {
+
+          return res.status(400).json({
+
+            error:
+
+              "Uno de los productos ya no está disponible."
+
+          });
+
+        }
+
+        const cantidad =
+
+          Number(
+
+            item.cantidad ||
+
+            item.quantity ||
+
+            1
+
+          );
+
+        const stock =
+
+          Number(
+
+            producto.stock || 0
+
+          );
+
+        if (
+
+          !Number.isFinite(cantidad) ||
+
+          cantidad <= 0
+
+        ) {
+
+          return res.status(400).json({
+
+            error:
+
+              "Cantidad de producto inválida."
+
+          });
+
+        }
+
+       
+      }
+
+      /* =========================
+
+         DESCONTAR STOCK
+
+      ========================= */
+
+      for (const item of items) {
+
+        const producto =
+
+          productos.find(
+
+            p =>
+
+              String(p.id) ===
+
+              String(item.id)
+
+          );
+
+        const cantidad =
+
+          Number(
+
+            item.cantidad ||
+
+            item.quantity ||
+
+            1
+
+          );
+
+        producto.stock =
+
+          Math.max(
+
+            0,
+
+            Number(producto.stock || 0) -
+
+            cantidad
+
+          );
+
+      }
+
+      /* =========================
+
+         CREAR PEDIDO
+
+      ========================= */
+const nuevoPedido = {
+
+  id:
+    Date.now(),
+
+  fecha:
+    new Date().toISOString(),
+
+  nombre:
+    datos.cliente?.nombre || "",
+
+  telefono:
+    datos.cliente?.telefono || "",
+
+  direccion:
+    "",
+
+  referencia:
+    "",
+
+  departamento:
+    datos.entrega?.departamento || "",
+
+  municipio:
+    datos.entrega?.municipio || "",
+
+  metodoEntrega:
+    datos.entrega?.metodo || "",
+
+  metodoPago:
+    datos.pago?.metodo || "",
+
+  banco:
+    datos.pago?.banco || "",
+
+  productos:
+    items,
+
+  subtotal:
+    Number(datos.subtotal || 0),
+
+  descuento:
+    Number(datos.descuento || 0),
+
+  total:
+    Number(datos.total || 0),
+
+  codigoPromocional:
+    datos.promocion?.codigo || "",
+
+  estado:
+    "Pendiente"
+
+};
+  
+      /* =========================
+
+         GUARDAR PEDIDO
+
+      ========================= */
+
+      pedidos.push(
+
+        nuevoPedido
+
+      );
+
+      fs.writeFileSync(
+
+        ordersFile,
+
+        JSON.stringify(
+
+          pedidos,
+
+          null,
+
+          2
+
+        )
+
+      );
+
+      /* =========================
+
+         GUARDAR STOCK ACTUALIZADO
+
+      ========================= */
+
+      fs.writeFileSync(
+
+        productsFile,
+
+        JSON.stringify(
+
+          productos,
+
+          null,
+
+          2
+
+        )
+
+      );
+
+      res.status(201).json({
+
+        mensaje:
+
+          "Pedido creado correctamente",
+
+        pedido:
+
+          nuevoPedido
+
+      });
+
+    } catch (error) {
+
+      console.error(
+
+        "ERROR CREANDO PEDIDO:",
+
+        error
+
+      );
+
+      res.status(500).json({
+
+        error:
+
+          "No se pudo crear el pedido"
+
+      });
+
+    }
+
+  }
+
 );
 
 /* =========================

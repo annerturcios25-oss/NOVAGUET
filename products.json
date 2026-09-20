@@ -7,7 +7,7 @@
     "talla": "4T",
     "descripcion": "camisa diseño paw patrol",
     "imagen": "/images/1789193530401-1789193234564-camisa-paw-patrol.jpeg",
-    "stock": 4
+    "stock": 0
   },
   {
     "id": 1789213258405,
@@ -17,6 +17,6 @@
     "talla": "5",
     "descripcion": "Sandalias bancas de niña, con moñitos.",
     "imagen": "/images/1789213258402-sandalias-de-ni-a.jpeg",
-    "stock": 1
+    "stock": 0
   }
 ]

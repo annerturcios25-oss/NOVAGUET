@@ -4,164 +4,92 @@ document.addEventListener("DOMContentLoaded", () => {
      ELEMENTOS
   ===================================================== */
 
-  const productsContainer =
-    document.getElementById("productsContainer");
+  const productsContainer = document.getElementById("productsContainer");
 
-  const searchButton =
-    document.getElementById("searchButton");
+  const searchButton = document.getElementById("searchButton");
+  const searchBox = document.getElementById("searchBox");
+  const searchInput = document.getElementById("searchInput");
+  const closeSearch = document.getElementById("closeSearch");
 
-  const searchBox =
-    document.getElementById("searchBox");
+  const cartButton = document.getElementById("cartButton");
+  const cartBox = document.getElementById("cartBox");
+  const closeCart = document.getElementById("closeCart");
 
-  const searchInput =
-    document.getElementById("searchInput");
+  const cartItems = document.getElementById("cartItems");
+  const cartEmpty = document.getElementById("cartEmpty");
+  const cartCount = document.getElementById("cartCount");
 
-  const closeSearch =
-    document.getElementById("closeSearch");
+  const cartSubtotal = document.getElementById("cartSubtotal");
+  const cartTotal = document.getElementById("cartTotal");
+  const cartSummary = document.querySelector(".cart-summary");
 
-  const cartButton =
-    document.getElementById("cartButton");
+  const promoCode = document.getElementById("promoCode");
+  const applyPromo = document.getElementById("applyPromo");
+  const promoMessage = document.getElementById("promoMessage");
 
-  const cartCount =
-    document.getElementById("cartCount");
-    const promoCode =
-  document.getElementById("promoCode");
+  const checkoutButton = document.getElementById("checkoutButton");
+  const checkoutContainer = document.getElementById("checkoutContainer");
+  const closeCheckout = document.getElementById("closeCheckout");
 
-const applyPromo =
-  document.getElementById("applyPromo");
+  const stepCustomer = document.getElementById("stepCustomer");
 
-const promoMessage =
-  document.getElementById("promoMessage");
-
-let descuentoPromocional = 0;
-let codigoPromocionalAplicado = "";
-
-  const cartBox =
-    document.getElementById("cartBox");
-
-  const closeCart =
-    document.getElementById("closeCart");
-
-  const cartItems =
-    document.getElementById("cartItems");
-
-  const cartSubtotal =
-    document.getElementById("cartSubtotal");
-
-  const cartTotal =
-    document.getElementById("cartTotal");
-
-  const cartEmpty =
-    document.getElementById("cartEmpty");
-
-  const checkoutButton =
-    document.getElementById("checkoutButton");
-
-
-  /* =====================================================
-     CHECKOUT
-  ===================================================== */
-
-  const checkoutContainer =
-    document.getElementById("checkoutContainer");
-
-  const stepCustomer =
-    document.getElementById("stepCustomer");
-
-  const stepDelivery =
-    document.getElementById("stepDelivery");
-
-  const stepPayment =
-    document.getElementById("stepPayment");
-
-  const stepSummary =
-    document.getElementById("stepSummary");
-
-  const stepResult =
-    document.getElementById("stepResult");
+  const customerName = document.getElementById("customerName");
+  const customerPhone = document.getElementById("customerPhone");
+  const customerAddress = document.getElementById("customerAddress");
+  const deliveryReference = document.getElementById("deliveryReference");
 
   const confirmCustomerButton =
     document.getElementById("confirmCustomerButton");
 
+  const homeDelivery = document.getElementById("homeDelivery");
+  const storePickup = document.getElementById("storePickup");
+
+  const departmentBox = document.getElementById("departmentBox");
+  const pickupBox = document.getElementById("pickupBox");
+
+  const departmentSelect = document.getElementById("department");
+
+  const municipality = document.getElementById("municipality");
+  const municipalityBox = document.getElementById("municipalityBox");
+
   const continueDeliveryButton =
     document.getElementById("continueDeliveryButton");
-
-  const continuePaymentButton =
-    document.getElementById("continuePaymentButton");
-
-  const confirmOrderButton =
-    document.getElementById("confirmOrderButton");
-
-  const orderSummary =
-    document.getElementById("orderSummary");
-
-  const paymentResult =
-    document.getElementById("paymentResult");
-
-
-  /* =====================================================
-     CLIENTE
-  ===================================================== */
-
-  const customerName =
-    document.getElementById("customerName");
-
-  const customerPhone =
-    document.getElementById("customerPhone");
-
-  const customerAddress =
-    document.getElementById("customerAddress");
-
-  const customerCity =
-    document.getElementById("customerCity");
-
-  const deliveryReference =
-    document.getElementById("deliveryReference");
-
-
-  /* =====================================================
-     ENTREGA
-  ===================================================== */
-
-  const homeDelivery =
-    document.getElementById("homeDelivery");
-
-  const storePickup =
-    document.getElementById("storePickup");
-
-  const departmentBox =
-    document.getElementById("departmentBox");
-
-  const pickupBox =
-    document.getElementById("pickupBox");
-
-  const departmentSelect =
-    document.getElementById("department");
-
-
-  /* =====================================================
-     PAGO
-  ===================================================== */
 
   const transferPayment =
     document.getElementById("transferPayment");
 
+  const cardPayment =
+    document.getElementById("cardPayment");
+
   const cashPayment =
     document.getElementById("cashPayment");
 
-  const bankBox =
-    document.getElementById("bankBox");
+  const bank = document.getElementById("bank");
+  const bankDetails = document.getElementById("bankDetails");
 
-  const bankSelect =
-    document.getElementById("bank");
+  const selectedBankName =
+    document.getElementById("selectedBankName");
 
+  const selectedAccountNumber =
+    document.getElementById("selectedAccountNumber");
 
-  /* =====================================================
-     OTROS
-  ===================================================== */
+  const continuePaymentButton =
+    document.getElementById("continuePaymentButton");
+
+  const orderSummary =
+    document.getElementById("orderSummary");
+
+  const confirmOrderButton =
+    document.getElementById("confirmOrderButton");
+
+  const stepResult =
+    document.getElementById("stepResult");
+
+  const paymentResult =
+    document.getElementById("paymentResult");
 
   const categoryButtons =
-    document.querySelectorAll(".category-button");
+    document.querySelectorAll("[data-category]");
 
   const nosotrosButton =
     document.getElementById("nosotrosButton");
@@ -171,15 +99,196 @@ let codigoPromocionalAplicado = "";
 
 
   /* =====================================================
-     VARIABLES
+     DATOS
   ===================================================== */
 
   let productos = [];
+  let carrito = [];
 
-  let carrito =
-    JSON.parse(
-      localStorage.getItem("novaguetCarrito")
-    ) || [];
+  let descuentoPromocional = 0;
+  let codigoPromocionalAplicado = "";
+
+  let deliveryMethod = "";
+  let paymentMethod = "";
+
+  let orderData = {};
+
+
+  /* =====================================================
+     SONIDO DE ERROR
+  ===================================================== */
+
+  function sonidoError() {
+
+    try {
+
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if (!AudioContext) return;
+
+      const audioContext =
+        new AudioContext();
+
+      const oscillator =
+        audioContext.createOscillator();
+
+      const gainNode =
+        audioContext.createGain();
+
+      oscillator.type = "sine";
+
+      oscillator.frequency.setValueAtTime(
+        220,
+        audioContext.currentTime
+      );
+
+      oscillator.frequency.exponentialRampToValueAtTime(
+        120,
+        audioContext.currentTime + 0.25
+      );
+
+      gainNode.gain.setValueAtTime(
+        0.25,
+        audioContext.currentTime
+      );
+
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.25
+      );
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.start();
+
+      oscillator.stop(
+        audioContext.currentTime + 0.25
+      );
+
+    } catch (error) {
+
+      console.warn(
+        "No se pudo reproducir el sonido:",
+        error
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     SONIDO DE ÉXITO
+  ===================================================== */
+
+ function sonidoExito() {
+
+  try {
+
+    const audioContext =
+      new (window.AudioContext ||
+        window.webkitAudioContext)();
+
+    const oscillator =
+      audioContext.createOscillator();
+
+    const gainNode =
+      audioContext.createGain();
+
+    oscillator.type = "sine";
+
+    oscillator.frequency.setValueAtTime(
+      523,
+      audioContext.currentTime
+    );
+
+    oscillator.frequency.setValueAtTime(
+      659,
+      audioContext.currentTime + 0.12
+    );
+
+    oscillator.frequency.setValueAtTime(
+      784,
+      audioContext.currentTime + 0.24
+    );
+
+    gainNode.gain.setValueAtTime(
+      0.25,
+      audioContext.currentTime
+    );
+
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.01,
+      audioContext.currentTime + 0.45
+    );
+
+    oscillator.connect(gainNode);
+
+    gainNode.connect(
+      audioContext.destination
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+      audioContext.currentTime + 0.45
+    );
+
+  } catch (error) {
+
+    console.error(
+      "No se pudo reproducir el sonido:",
+      error
+    );
+
+  }
+
+}
+
+  /* =====================================================
+     CARGAR CARRITO
+  ===================================================== */
+
+  try {
+
+    const carritoGuardado =
+      localStorage.getItem("novaguet_carrito");
+
+    if (carritoGuardado) {
+
+      const carritoParseado =
+        JSON.parse(carritoGuardado);
+
+      if (Array.isArray(carritoParseado)) {
+
+        carrito =
+          carritoParseado.map(item => ({
+
+            ...item,
+
+            cantidad:
+              Math.max(
+                1,
+                Number(item.cantidad) || 1
+              )
+
+          }));
+
+      }
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Error cargando carrito:",
+      error
+    );
+
+  }
 
 
   /* =====================================================
@@ -188,16 +297,49 @@ let codigoPromocionalAplicado = "";
 
   function guardarCarrito() {
 
-    localStorage.setItem(
-      "novaguetCarrito",
-      JSON.stringify(carrito)
+    try {
+
+      localStorage.setItem(
+        "novaguet_carrito",
+        JSON.stringify(carrito)
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Error guardando carrito:",
+        error
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     FORMATO DE PRECIO
+  ===================================================== */
+
+  function formatoPrecio(precio) {
+
+    const numero =
+      Number(precio) || 0;
+
+    return (
+      "HNL " +
+      numero.toLocaleString(
+        "es-HN",
+        {
+          maximumFractionDigits: 0
+        }
+      )
     );
 
   }
 
 
   /* =====================================================
-     CONTADOR DEL CARRITO
+     CONTADOR
   ===================================================== */
 
   function actualizarContadorCarrito() {
@@ -207,208 +349,114 @@ let codigoPromocionalAplicado = "";
     const cantidad =
       carrito.reduce(
         (total, producto) =>
-          total +
-          (Number(producto.cantidad) || 0),
+          total + Number(producto.cantidad || 0),
         0
       );
 
-    cartCount.textContent = cantidad;
+    cartCount.textContent =
+      cantidad;
 
   }
 
 
   /* =====================================================
-     OBTENER TALLAS
-  ===================================================== */
-
-  function obtenerTallas(producto) {
-
-    if (
-      Array.isArray(producto.tallas) &&
-      producto.tallas.length > 0
-    ) {
-
-      return producto.tallas
-        .map(talla => String(talla))
-        .filter(talla => talla.trim() !== "");
-
-    }
-
-
-    if (producto.talla) {
-
-      return [
-        String(producto.talla)
-      ];
-
-    }
-
-
-    return [];
-
-  }
-
-
-  /* =====================================================
-     OBTENER STOCK
-  ===================================================== */
-
-  function obtenerStock(
-    producto,
-    talla = ""
-  ) {
-
-    /*
-     * Si existe stock por talla:
-     *
-     * stockPorTalla: {
-     *   "2T": 2,
-     *   "3T": 4,
-     *   "4T": 3
-     * }
-     */
-
-    if (
-      producto &&
-      producto.stockPorTalla &&
-      typeof producto.stockPorTalla === "object"
-    ) {
-
-      const stockTalla =
-        producto.stockPorTalla[talla];
-
-      if (
-        stockTalla !== undefined &&
-        stockTalla !== null
-      ) {
-
-        return Number(stockTalla);
-
-      }
-
-    }
-
-
-    /*
-     * Si no hay stock por talla,
-     * usamos el stock general.
-     */
-
-    if (
-      producto &&
-      producto.stock !== undefined &&
-      producto.stock !== null
-    ) {
-
-      return Number(producto.stock);
-
-    }
-
-
-    /*
-     * Si el producto no tiene stock
-     * definido, no limitamos.
-     */
-
-    return Infinity;
-
-  }
-
-
-  /* =====================================================
-     CARGAR PRODUCTOS
+     PRODUCTOS
   ===================================================== */
 
   async function cargarProductos() {
 
+    if (!productsContainer) return;
+
     try {
 
-      const respuesta =
-        await fetch("/api/productos");
+      productsContainer.innerHTML = "";
 
+      const respuesta =
+        await fetch(
+          "/api/productos",
+          {
+            method: "GET",
+            cache: "no-store"
+          }
+        );
 
       if (!respuesta.ok) {
 
         throw new Error(
-          "No se pudieron cargar los productos"
+          "Error HTTP " +
+          respuesta.status
         );
 
       }
 
-
-      productos =
+      const datos =
         await respuesta.json();
 
+      if (!Array.isArray(datos)) {
 
-      /*
-       * Actualizar stock guardado en el carrito
-       * con la información actual del servidor.
-       */
-
-      carrito =
-        carrito.filter(item => {
-
-          const productoActual =
-            productos.find(
-              producto =>
-                Number(producto.id) ===
-                Number(item.id)
-            );
-
-          return !!productoActual;
-
-        });
-
-
-      carrito.forEach(item => {
-
-        const productoActual =
-          productos.find(
-            producto =>
-              Number(producto.id) ===
-              Number(item.id)
-          );
-
-
-        if (!productoActual) return;
-
-
-        const stockActual =
-          obtenerStock(
-            productoActual,
-            item.talla || ""
-          );
-
-
-        if (
-          stockActual !== Infinity &&
-          Number(item.cantidad) > stockActual
-        ) {
-
-          item.cantidad =
-            Math.max(
-              0,
-              stockActual
-            );
-
-        }
-
-      });
-
-
-      carrito =
-        carrito.filter(
-          item =>
-            Number(item.cantidad) > 0
+        throw new Error(
+          "La respuesta de productos no es válida."
         );
 
+      }
+
+      productos = datos;
+
+      carrito =
+        carrito
+          .map(item => ({
+
+            ...item,
+
+            cantidad:
+              Math.max(
+                1,
+                Number(item.cantidad) || 1
+              )
+
+          }))
+          .filter(item => {
+
+            const producto =
+              productos.find(
+                p =>
+                  String(p.id) ===
+                  String(item.id)
+              );
+
+            if (!producto) {
+              return false;
+            }
+
+            const stock =
+              Number(producto.stock);
+
+            if (
+              Number.isFinite(stock) &&
+              stock <= 0
+            ) {
+
+              return false;
+
+            }
+
+            if (
+              Number.isFinite(stock) &&
+              Number(item.cantidad) > stock
+            ) {
+
+              item.cantidad = stock;
+
+            }
+
+            return true;
+
+          });
 
       guardarCarrito();
 
       mostrarProductos(productos);
-
       mostrarCarrito();
-
 
     } catch (error) {
 
@@ -417,16 +465,11 @@ let codigoPromocionalAplicado = "";
         error
       );
 
-
-      if (productsContainer) {
-
-        productsContainer.innerHTML = `
-          <p style="text-align:center;">
-            No se pudieron cargar los productos.
-          </p>
-        `;
-
-      }
+      productsContainer.innerHTML = `
+        <p style="text-align:center;">
+          No se pudieron cargar los productos.
+        </p>
+      `;
 
     }
 
@@ -441,12 +484,10 @@ let codigoPromocionalAplicado = "";
 
     if (!productsContainer) return;
 
-
     productsContainer.innerHTML = "";
 
-
     if (
-      !lista ||
+      !Array.isArray(lista) ||
       lista.length === 0
     ) {
 
@@ -460,328 +501,154 @@ let codigoPromocionalAplicado = "";
 
     }
 
-
     lista.forEach(producto => {
 
       const card =
         document.createElement("div");
 
-
       card.className =
         "product-card";
 
+      const imagen =
+        producto.imagen || "";
 
-      const tallas =
-        obtenerTallas(producto);
+      const nombre =
+        producto.nombre || "Producto";
 
+      const precio =
+        Number(producto.precio) || 0;
 
-      const tallaInicial =
-        tallas.length > 0
-          ? tallas[0]
-          : "";
+      const categoria =
+        producto.categoria || "";
 
+      const talla =
+        producto.talla || "";
+
+      const descripcion =
+        producto.descripcion || "";
+
+      const stock =
+        Number(producto.stock);
+
+      const agotado =
+        Number.isFinite(stock) &&
+        stock <= 0;
+
+      let opcionesTalla = "";
+
+      if (talla) {
+
+        opcionesTalla = `
+          <div class="product-size">
+            <span>Talla:</span>
+            <strong>${talla}</strong>
+          </div>
+        `;
+
+      }
 
       card.innerHTML = `
 
         <div class="product-image-container">
 
-          <img
-            src="${producto.imagen || "/images/logo.png"}"
-            alt="${producto.nombre}"
-            class="product-image"
-          >
-
-        </div>
-
-
-        <div class="product-info">
-
-          <h3>
-            ${producto.nombre}
-          </h3>
-
-
-          <p class="product-price">
-            HNL ${Number(producto.precio).toLocaleString("es-HN")}
-          </p>
-
-
           ${
-            tallas.length > 0
+            imagen
               ? `
-
-                <div class="product-size-selector">
-
-                  <span class="product-size-title">
-                    Talla:
-                  </span>
-
-
-                  <div class="size-options">
-
-                    ${
-                      tallas
-                        .map(
-                          (talla, index) => `
-
-                            <button
-                              type="button"
-                              class="size-option ${
-                                index === 0
-                                  ? "selected"
-                                  : ""
-                              }"
-                              data-size="${talla}"
-                            >
-                              ${talla}
-                            </button>
-
-                          `
-                        )
-                        .join("")
-                    }
-
-                  </div>
-
-                </div>
-
+                <img
+                  src="${imagen}"
+                  alt="${nombre}"
+                  class="product-image"
+                  loading="lazy"
+                  onerror="this.style.display='none';"
+                >
               `
               : ""
           }
 
+        </div>
+
+        <div class="product-info">
+
+          <h3>${nombre}</h3>
+
+          ${
+            categoria
+              ? `
+                <p class="product-category">
+                  ${categoria}
+                </p>
+              `
+              : ""
+          }
+
+          ${
+            descripcion
+              ? `
+                <p class="product-description">
+                  ${descripcion}
+                </p>
+              `
+              : ""
+          }
+
+          ${opcionesTalla}
+
+          <div class="product-price">
+            ${formatoPrecio(precio)}
+          </div>
+
+         ${
+  Number.isFinite(stock)
+    ? `
+      <div class="product-stock">
+        ${
+          agotado
+            ? "Agotado"
+            : "Disponible: " + stock
+        }
+      </div>
+    `
+    : ""
+}
 
           <button
+            type="button"
             class="add-to-cart"
             data-id="${producto.id}"
-            type="button"
+            ${agotado ? "disabled" : ""}
           >
-            Agregar al carrito
+            ${
+              agotado
+                ? "AGOTADO"
+                : "Agregar al carrito"
+            }
           </button>
 
         </div>
 
       `;
 
-
       productsContainer.appendChild(card);
 
-
-      /* =================================================
-         SELECCIÓN DE TALLA
-      ================================================= */
-
-      const sizeButtons =
-        card.querySelectorAll(
-          ".size-option"
-        );
+    });
 
 
-      let tallaSeleccionada =
-        tallaInicial;
+    productsContainer
+      .querySelectorAll(".add-to-cart")
+      .forEach(button => {
 
-
-      sizeButtons.forEach(
-        sizeButton => {
-
-          sizeButton.addEventListener(
-            "click",
-            () => {
-
-              sizeButtons.forEach(
-                button => {
-
-                  button.classList.remove(
-                    "selected"
-                  );
-
-                }
-              );
-
-
-              sizeButton.classList.add(
-                "selected"
-              );
-
-
-              tallaSeleccionada =
-                sizeButton.dataset.size;
-
-            }
-          );
-
-        }
-      );
-
-
-      /* =================================================
-         BOTÓN AGREGAR
-      ================================================= */
-
-      const addButton =
-        card.querySelector(
-          ".add-to-cart"
-        );
-
-
-      if (addButton) {
-
-        addButton.addEventListener(
+        button.addEventListener(
           "click",
           () => {
 
-            const id =
-              Number(
-                addButton.dataset.id
-              );
-
-
             agregarAlCarrito(
-              id,
-              tallaSeleccionada
+              button.dataset.id
             );
 
           }
         );
 
-      }
-
-    });
-
-  }
-
-
-  /* =====================================================
-     BUSCAR
-  ===================================================== */
-
-  function realizarBusqueda() {
-
-    if (!searchInput) return;
-
-
-    const texto =
-      searchInput.value
-        .toLowerCase()
-        .trim();
-
-
-    if (!texto) {
-
-      mostrarProductos(
-        productos
-      );
-
-      return;
-
-    }
-
-
-    const resultados =
-      productos.filter(
-        producto => {
-
-          const nombre =
-            String(
-              producto.nombre || ""
-            ).toLowerCase();
-
-
-          const categoria =
-            String(
-              producto.categoria || ""
-            ).toLowerCase();
-
-
-          const talla =
-            obtenerTallas(producto)
-              .join(" ")
-              .toLowerCase();
-
-
-          return (
-            nombre.includes(texto) ||
-            categoria.includes(texto) ||
-            talla.includes(texto)
-          );
-
-        }
-      );
-
-
-    mostrarProductos(
-      resultados
-    );
-
-  }
-
-
-  /* =====================================================
-     BUSCADOR
-  ===================================================== */
-
-  if (
-    searchButton &&
-    searchBox
-  ) {
-
-    searchButton.addEventListener(
-      "click",
-      () => {
-
-        searchBox.classList.add(
-          "show"
-        );
-
-
-        if (searchInput) {
-
-          searchInput.focus();
-
-        }
-
-      }
-    );
-
-  }
-
-
-  if (
-    closeSearch &&
-    searchBox
-  ) {
-
-    closeSearch.addEventListener(
-      "click",
-      () => {
-
-        searchBox.classList.remove(
-          "show"
-        );
-
-
-        if (searchInput) {
-
-          searchInput.value = "";
-
-        }
-
-
-        mostrarProductos(
-          productos
-        );
-
-      }
-    );
-
-  }
-
-
-  if (searchInput) {
-
-    searchInput.addEventListener(
-      "input",
-      realizarBusqueda
-    );
+      });
 
   }
 
@@ -790,149 +657,91 @@ let codigoPromocionalAplicado = "";
      AGREGAR AL CARRITO
   ===================================================== */
 
-  function agregarAlCarrito(
-    id,
-    tallaSeleccionada = ""
-  ) {
+  function agregarAlCarrito(id) {
 
     const producto =
       productos.find(
-        item =>
-          Number(item.id) ===
-          Number(id)
+        p =>
+          String(p.id) ===
+          String(id)
       );
-
 
     if (!producto) return;
 
-
-    const tallas =
-      obtenerTallas(producto);
-
-
-    /*
-     * Si solo existe una talla,
-     * la seleccionamos automáticamente.
-     */
+    const stock =
+      Number(producto.stock);
 
     if (
-      !tallaSeleccionada &&
-      tallas.length === 1
+      Number.isFinite(stock) &&
+      stock <= 0
     ) {
 
-      tallaSeleccionada =
-        tallas[0];
-
-    }
-
-
-    /*
-     * Si existen varias tallas
-     * pero no hay una seleccionada.
-     */
-
-    if (
-      tallas.length > 1 &&
-      !tallaSeleccionada
-    ) {
+      sonidoError();
 
       alert(
-        "Selecciona una talla antes de agregar el producto."
+        "Este producto está agotado."
       );
 
       return;
 
     }
 
-
-    const stockDisponible =
-      obtenerStock(
-        producto,
-        tallaSeleccionada
-      );
-
-
-    const productoExistente =
+    const existente =
       carrito.find(
         item =>
-          Number(item.id) ===
-            Number(id) &&
-          String(item.talla || "") ===
-            String(tallaSeleccionada || "")
+          String(item.id) ===
+          String(id)
       );
 
+    if (existente) {
 
-    if (productoExistente) {
+      existente.cantidad =
+        Number(existente.cantidad) || 1;
 
       if (
-        stockDisponible !== Infinity &&
-        Number(productoExistente.cantidad) >=
-          stockDisponible
+        Number.isFinite(stock) &&
+        existente.cantidad >= stock
       ) {
 
+        sonidoError();
+
         alert(
-          "No hay más unidades disponibles de esta talla."
+          "No hay más unidades disponibles."
         );
 
         return;
 
       }
 
-
-      productoExistente.cantidad++;
+      existente.cantidad =
+        existente.cantidad + 1;
 
     } else {
 
-      /*
-       * Si ya no hay stock.
-       */
-
-      if (
-        stockDisponible !== Infinity &&
-        stockDisponible <= 0
-      ) {
-
-        alert(
-          "Esta talla no está disponible."
-        );
-
-        return;
-
-      }
-
-
       carrito.push({
 
-        id:
-          producto.id,
+        id: producto.id,
 
         nombre:
-          producto.nombre,
+          producto.nombre || "",
 
         precio:
-          Number(producto.precio),
+          Number(producto.precio) || 0,
 
         imagen:
-          producto.imagen,
+          producto.imagen || "",
 
         talla:
-          tallaSeleccionada,
+          producto.talla || "",
 
         categoria:
           producto.categoria || "",
 
-        cantidad:
-          1,
-
-        stock:
-          stockDisponible !== Infinity
-            ? stockDisponible
-            : undefined
+        cantidad: 1
 
       });
 
     }
-
 
     guardarCarrito();
 
@@ -951,11 +760,10 @@ let codigoPromocionalAplicado = "";
 
     if (!cartItems) return;
 
-
     cartItems.innerHTML = "";
 
-
     if (
+      !carrito ||
       carrito.length === 0
     ) {
 
@@ -966,29 +774,13 @@ let codigoPromocionalAplicado = "";
 
       }
 
-
-      if (cartSubtotal) {
-
-        cartSubtotal.textContent =
-          "HNL 0";
-
-      }
-
-
-      if (cartTotal) {
-
-        cartTotal.textContent =
-          "HNL 0";
-
-      }
-
+      actualizarTotales();
 
       actualizarContadorCarrito();
 
       return;
 
     }
-
 
     if (cartEmpty) {
 
@@ -997,100 +789,85 @@ let codigoPromocionalAplicado = "";
 
     }
 
+    carrito.forEach(item => {
 
-    let subtotal = 0;
-
-
-    carrito.forEach(producto => {
-
-      const cantidad =
-        Number(producto.cantidad) || 1;
-
-
-      const precio =
-        Number(producto.precio) || 0;
-
-
-      subtotal +=
-        precio * cantidad;
-
-
-      const item =
-        document.createElement(
-          "div"
+      item.cantidad =
+        Math.max(
+          1,
+          Number(item.cantidad) || 1
         );
 
+      const cartProduct =
+        document.createElement("div");
 
-      item.className =
+      cartProduct.className =
         "cart-product";
 
+      cartProduct.innerHTML = `
 
-      item.innerHTML = `
+        <div class="cart-product-image">
 
-        <img
-          src="${producto.imagen || "/images/logo.png"}"
-          alt="${producto.nombre}"
-          class="cart-product-image"
-        >
+          ${
+            item.imagen
+              ? `
+                <img
+                  src="${item.imagen}"
+                  alt="${item.nombre}"
+                >
+              `
+              : ""
+          }
 
+        </div>
 
         <div class="cart-product-info">
 
-          <h4>
-            ${producto.nombre}
-          </h4>
-
+          <strong>
+            ${item.nombre}
+          </strong>
 
           ${
-            producto.talla
+            item.talla
               ? `
                 <small>
-                  Talla: ${producto.talla}
+                  Talla: ${item.talla}
                 </small>
               `
               : ""
           }
 
-
-          <p>
-            HNL ${precio.toLocaleString("es-HN")}
-          </p>
-
+          <span>
+            ${formatoPrecio(item.precio)}
+          </span>
 
           <div class="cart-quantity">
 
             <button
-              class="quantity-minus"
-              data-id="${producto.id}"
-              data-talla="${producto.talla || ""}"
               type="button"
+              class="quantity-minus"
+              data-id="${item.id}"
             >
               −
             </button>
 
-
             <span>
-              ${cantidad}
+              ${item.cantidad}
             </span>
 
-
             <button
-              class="quantity-plus"
-              data-id="${producto.id}"
-              data-talla="${producto.talla || ""}"
               type="button"
+              class="quantity-plus"
+              data-id="${item.id}"
             >
               +
             </button>
 
           </div>
 
-
           <button
-            class="remove-product"
-            data-id="${producto.id}"
-            data-talla="${producto.talla || ""}"
             type="button"
+            class="remove-product"
+            data-id="${item.id}"
           >
             Eliminar
           </button>
@@ -1099,1212 +876,223 @@ let codigoPromocionalAplicado = "";
 
       `;
 
-
-      cartItems.appendChild(
-        item
-      );
+      cartItems.appendChild(cartProduct);
 
     });
 
-const descuento =
-  subtotal * descuentoPromocional;
 
-const totalConDescuento =
-  subtotal - descuento;
+    cartItems
+      .querySelectorAll(".quantity-minus")
+      .forEach(button => {
 
-const totalFormateado =
-  "HNL " +
-  totalConDescuento.toLocaleString(
-    "es-HN"
-  );
+        button.addEventListener(
+          "click",
+          () => {
 
-if (cartSubtotal) {
+            cambiarCantidad(
+              button.dataset.id,
+              -1
+            );
 
-  cartSubtotal.textContent =
-    "HNL " +
-    subtotal.toLocaleString("es-HN");
+          }
+        );
 
-}
+      });
 
-if (cartTotal) {
 
-  cartTotal.textContent =
-    totalFormateado;
+    cartItems
+      .querySelectorAll(".quantity-plus")
+      .forEach(button => {
 
-}
+        button.addEventListener(
+          "click",
+          () => {
+
+            cambiarCantidad(
+              button.dataset.id,
+              1
+            );
+
+          }
+        );
+
+      });
+
+
+    cartItems
+      .querySelectorAll(".remove-product")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            eliminarDelCarrito(
+              button.dataset.id
+            );
+
+          }
+        );
+
+      });
+
+    actualizarTotales();
+    actualizarContadorCarrito();
+
+  }
+
+
+  /* =====================================================
+     CAMBIAR CANTIDAD
+  ===================================================== */
+
+  function cambiarCantidad(id, cambio) {
+
+    const item =
+      carrito.find(
+        producto =>
+          String(producto.id) ===
+          String(id)
+      );
+
+    if (!item) return;
+
+    item.cantidad =
+      Math.max(
+        1,
+        Number(item.cantidad) || 1
+      );
+
+    const producto =
+      productos.find(
+        p =>
+          String(p.id) ===
+          String(id)
+      );
+
+    const stock =
+      producto
+        ? Number(producto.stock)
+        : NaN;
+
+    const nuevaCantidad =
+      item.cantidad +
+      Number(cambio);
+
+    if (nuevaCantidad <= 0) {
+
+      eliminarDelCarrito(id);
+
+      return;
+
+    }
+
+    if (
+      Number.isFinite(stock) &&
+      nuevaCantidad > stock
+    ) {
+
+      sonidoError();
+
+      alert(
+        "No hay más unidades disponibles."
+      );
+
+      return;
+
+    }
+
+    item.cantidad =
+      nuevaCantidad;
+
+    guardarCarrito();
+
+    mostrarCarrito();
+
+  }
+
+
+  /* =====================================================
+     ELIMINAR
+  ===================================================== */
+
+  function eliminarDelCarrito(id) {
+
+    carrito =
+      carrito.filter(
+        item =>
+          String(item.id) !==
+          String(id)
+      );
+
+    guardarCarrito();
+
+    mostrarCarrito();
 
     actualizarContadorCarrito();
 
-
-    /* =================================================
-       AUMENTAR
-    ================================================= */
-
-    cartItems
-      .querySelectorAll(
-        ".quantity-plus"
-      )
-      .forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            const id =
-              Number(
-                button.dataset.id
-              );
+  }
 
 
-            const talla =
-              String(
-                button.dataset.talla || ""
-              );
+  /* =====================================================
+     SUBTOTAL
+  ===================================================== */
 
+  function calcularSubtotal() {
 
-            const producto =
-              carrito.find(
-                item =>
-                  Number(item.id) ===
-                    id &&
-                  String(
-                    item.talla || ""
-                  ) === talla
-              );
+    return carrito.reduce(
+      (total, item) => {
 
-
-            if (!producto) return;
-
-
-            /*
-             * Buscamos el producto actual
-             * en el servidor.
-             */
-
-            const productoActual =
-              productos.find(
-                item =>
-                  Number(item.id) ===
-                  id
-              );
-
-
-            let stockDisponible =
-              producto.stock;
-
-
-            if (productoActual) {
-
-              stockDisponible =
-                obtenerStock(
-                  productoActual,
-                  talla
-                );
-
-            }
-
-
-            if (
-              stockDisponible !== undefined &&
-              stockDisponible !== null &&
-              stockDisponible !== Infinity &&
-              Number(producto.cantidad) >=
-                Number(stockDisponible)
-            ) {
-
-              alert(
-                "No hay más unidades disponibles de esta talla."
-              );
-
-              return;
-
-            }
-
-
-            producto.cantidad++;
-
-
-            guardarCarrito();
-
-            mostrarCarrito();
-
-          }
+        return (
+          total +
+          (
+            Number(item.precio) || 0
+          ) *
+          (
+            Number(item.cantidad) || 0
+          )
         );
-
-      });
-
-
-    /* =================================================
-       DISMINUIR
-    ================================================= */
-
-    cartItems
-      .querySelectorAll(
-        ".quantity-minus"
-      )
-      .forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            const id =
-              Number(
-                button.dataset.id
-              );
-
-
-            const talla =
-              String(
-                button.dataset.talla || ""
-              );
-
-
-            const producto =
-              carrito.find(
-                item =>
-                  Number(item.id) ===
-                    id &&
-                  String(
-                    item.talla || ""
-                  ) === talla
-              );
-
-
-            if (!producto) return;
-
-
-            if (
-              Number(producto.cantidad) >
-              1
-            ) {
-
-              producto.cantidad--;
-
-            } else {
-
-              carrito =
-                carrito.filter(
-                  item =>
-                    !(
-                      Number(item.id) ===
-                        id &&
-                      String(
-                        item.talla || ""
-                      ) === talla
-                    )
-                );
-
-            }
-
-
-            guardarCarrito();
-
-            mostrarCarrito();
-
-          }
-        );
-
-      });
-
-
-    /* =================================================
-       ELIMINAR
-    ================================================= */
-
-    cartItems
-      .querySelectorAll(
-        ".remove-product"
-      )
-      .forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            const id =
-              Number(
-                button.dataset.id
-              );
-
-
-            const talla =
-              String(
-                button.dataset.talla || ""
-              );
-
-
-            carrito =
-              carrito.filter(
-                item =>
-                  !(
-                    Number(item.id) ===
-                      id &&
-                    String(
-                      item.talla || ""
-                    ) === talla
-                  )
-              );
-
-
-            guardarCarrito();
-
-            mostrarCarrito();
-
-          }
-        );
-
-      });
-
-  }
-
-
-  /* =====================================================
-     ABRIR CARRITO
-  ===================================================== */
-
-  if (
-    cartButton &&
-    cartBox
-  ) {
-
-    cartButton.addEventListener(
-      "click",
-      () => {
-
-        cartBox.classList.add(
-          "show"
-        );
-
-
-        mostrarCarrito();
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     CERRAR CARRITO
-  ===================================================== */
-
-  if (
-    closeCart &&
-    cartBox
-  ) {
-
-    closeCart.addEventListener(
-      "click",
-      () => {
-
-        cartBox.classList.remove(
-          "show"
-        );
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     MOSTRAR SOLO UN PASO
-  ===================================================== */
-
-  function mostrarPaso(paso) {
-
-    const pasos = [
-
-      stepCustomer,
-
-      stepDelivery,
-
-      stepPayment,
-
-      stepSummary,
-
-      stepResult
-
-    ];
-
-
-    pasos.forEach(
-      step => {
-
-        if (step) {
-
-          step.style.display =
-            "none";
-
-        }
-
-      }
-    );
-
-
-    if (paso) {
-
-      paso.style.display =
-        "block";
-
-
-      paso.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-
-    }
-
-  }
-
-
-  /* =====================================================
-     REINICIAR CHECKOUT
-  ===================================================== */
-
-  function reiniciarCheckout() {
-
-    if (checkoutContainer) {
-
-      checkoutContainer.style.display =
-        "none";
-
-    }
-
-
-    mostrarPaso(null);
-
-  }
-
-
-  /* =====================================================
-     BOTÓN PAGAR
-  ===================================================== */
-
-  if (checkoutButton) {
-
-    checkoutButton.addEventListener(
-      "click",
-      () => {
-
-        if (
-          carrito.length === 0
-        ) {
-
-          alert(
-            "Tu carrito está vacío."
-          );
-
-          return;
-
-        }
-
-
-        if (checkoutContainer) {
-
-          checkoutContainer.style.display =
-            "block";
-
-        }
-
-
-        mostrarPaso(
-          stepCustomer
-        );
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     PASO 1
-     CONFIRMAR INFORMACIÓN
-  ===================================================== */
-
-  if (
-    confirmCustomerButton
-  ) {
-
-    confirmCustomerButton.addEventListener(
-      "click",
-      () => {
-
-        const nombre =
-          customerName
-            ? customerName.value.trim()
-            : "";
-
-
-        const telefono =
-          customerPhone
-            ? customerPhone.value.trim()
-            : "";
-
-
-        if (!nombre) {
-
-          alert(
-            "Escribe tu nombre completo."
-          );
-
-
-          if (customerName) {
-
-            customerName.focus();
-
-          }
-
-
-          return;
-
-        }
-
-
-        if (!telefono) {
-
-          alert(
-            "Escribe tu número de teléfono."
-          );
-
-
-          if (customerPhone) {
-
-            customerPhone.focus();
-
-          }
-
-
-          return;
-
-        }
-
-
-        mostrarPaso(
-          stepDelivery
-        );
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     MÉTODO DE ENTREGA
-  ===================================================== */
-
-  if (homeDelivery) {
-
-    homeDelivery.addEventListener(
-      "change",
-      () => {
-
-        if (
-          !homeDelivery.checked
-        ) return;
-
-
-        if (departmentBox) {
-
-          departmentBox.classList.add(
-            "show"
-          );
-
-        }
-
-
-        if (pickupBox) {
-
-          pickupBox.classList.remove(
-            "show"
-          );
-
-        }
-
-      }
-    );
-
-  }
-
-
-  if (storePickup) {
-
-    storePickup.addEventListener(
-      "change",
-      () => {
-
-        if (
-          !storePickup.checked
-        ) return;
-
-
-        if (departmentBox) {
-
-          departmentBox.classList.remove(
-            "show"
-          );
-
-        }
-
-
-        if (pickupBox) {
-
-          pickupBox.classList.add(
-            "show"
-          );
-
-        }
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     PASO 2
-     CONTINUAR ENTREGA
-  ===================================================== */
-
-  if (
-    continueDeliveryButton
-  ) {
-
-    continueDeliveryButton.addEventListener(
-      "click",
-      () => {
-
-        const deliveryRadio =
-          document.querySelector(
-            'input[name="deliveryMethod"]:checked'
-          );
-
-
-        if (!deliveryRadio) {
-
-          alert(
-            "Selecciona un método de entrega."
-          );
-
-          return;
-
-        }
-
-
-        if (
-          deliveryRadio.value ===
-          "delivery"
-        ) {
-
-          if (
-            !departmentSelect ||
-            !departmentSelect.value
-          ) {
-
-            alert(
-              "Selecciona tu departamento."
-            );
-
-
-            if (departmentSelect) {
-
-              departmentSelect.focus();
-
-            }
-
-
-            return;
-
-          }
-
-        }
-
-
-        mostrarPaso(
-          stepPayment
-        );
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     FORMA DE PAGO
-  ===================================================== */
-
-  if (
-    transferPayment
-  ) {
-
-    transferPayment.addEventListener(
-      "change",
-      () => {
-
-        if (
-          !transferPayment.checked
-        ) return;
-
-
-        if (bankBox) {
-
-          bankBox.classList.add(
-            "show"
-          );
-
-        }
-
-
-        mostrarDatosTransferencia();
-
-      }
-    );
-
-  }
-
-
-  if (cashPayment) {
-
-    cashPayment.addEventListener(
-      "change",
-      () => {
-
-        if (
-          !cashPayment.checked
-        ) return;
-
-
-        if (bankBox) {
-
-          bankBox.classList.remove(
-            "show"
-          );
-
-        }
-
-
-        if (bankSelect) {
-
-          bankSelect.value = "";
-
-        }
-
-
-        const transferInfo =
-          document.getElementById(
-            "transferInfo"
-          );
-
-
-        if (transferInfo) {
-
-          transferInfo.remove();
-
-        }
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     DATOS PARA TRANSFERENCIA
-  ===================================================== */
-
-  function mostrarDatosTransferencia() {
-
-    if (!bankBox) return;
-
-
-    let transferInfo =
-      document.getElementById(
-        "transferInfo"
-      );
-
-
-    if (!transferInfo) {
-
-      transferInfo =
-        document.createElement(
-          "div"
-        );
-
-
-      transferInfo.id =
-        "transferInfo";
-
-
-      bankBox.appendChild(
-        transferInfo
-      );
-
-    }
-
-
-    transferInfo.innerHTML = `
-
-      <div class="transfer-bank-card">
-
-        <div class="transfer-title">
-          🏦 DATOS PARA REALIZAR LA TRANSFERENCIA
-        </div>
-
-
-        <div id="bankAccountData">
-
-          <p>
-            Selecciona un banco para ver los datos de la cuenta.
-          </p>
-
-        </div>
-
-
-        <button
-          type="button"
-          id="continueBankButton"
-          class="checkout-button"
-        >
-          CONTINUAR
-        </button>
-
-      </div>
-
-    `;
-
-
-    actualizarDatosBanco();
-
-
-    const continueBankButton =
-      document.getElementById(
-        "continueBankButton"
-      );
-
-
-    if (
-      continueBankButton
-    ) {
-
-      continueBankButton.addEventListener(
-        "click",
-        () => {
-
-          if (
-            !bankSelect ||
-            !bankSelect.value
-          ) {
-
-            alert(
-              "Selecciona un banco para continuar."
-            );
-
-
-            if (bankSelect) {
-
-              bankSelect.focus();
-
-            }
-
-
-            return;
-
-          }
-
-
-          mostrarDatosTransferenciaCliente();
-
-        }
-      );
-
-    }
-
-  }
-
-
-  /* =====================================================
-     DATOS DE LAS CUENTAS
-  ===================================================== */
-
-  function actualizarDatosBanco() {
-
-    const bankAccountData =
-      document.getElementById(
-        "bankAccountData"
-      );
-
-
-    if (
-      !bankAccountData ||
-      !bankSelect
-    ) {
-
-      return;
-
-    }
-
-
-    const banco =
-      bankSelect.value;
-
-
-    const cuentas = {
-
-      atlantida: {
-
-        banco:
-          "Banco Atlántida",
-
-        titular:
-          "NOVAGUET",
-
-        numero:
-          "000000000000",
-
-        tipo:
-          "Cuenta de Ahorros"
 
       },
-
-
-      ficohsa: {
-
-        banco:
-          "Ficohsa",
-
-        titular:
-          "NOVAGUET",
-
-        numero:
-          "111111111111",
-
-        tipo:
-          "Cuenta de Ahorros"
-
-      },
-
-
-      bac: {
-
-        banco:
-          "BAC Credomatic",
-
-        titular:
-          "NOVAGUET",
-
-        numero:
-          "222222222222",
-
-        tipo:
-          "Cuenta de Ahorros"
-
-      }
-
-    };
-
-
-    if (
-      !banco ||
-      !cuentas[banco]
-    ) {
-
-      bankAccountData.innerHTML = `
-
-        <p>
-          Selecciona un banco para ver los datos de la cuenta.
-        </p>
-
-      `;
-
-
-      return;
-
-    }
-
-
-    const cuenta =
-      cuentas[banco];
-
-
-    bankAccountData.innerHTML = `
-
-      <div class="bank-data-row">
-
-        <span>Banco</span>
-
-        <strong>
-          ${cuenta.banco}
-        </strong>
-
-      </div>
-
-
-      <div class="bank-data-row">
-
-        <span>Titular</span>
-
-        <strong>
-          ${cuenta.titular}
-        </strong>
-
-      </div>
-
-
-      <div class="bank-account-number">
-
-        <span>
-          NÚMERO DE CUENTA
-        </span>
-
-        <strong>
-          ${cuenta.numero}
-        </strong>
-
-      </div>
-
-
-      <div class="bank-data-row">
-
-        <span>Tipo de cuenta</span>
-
-        <strong>
-          ${cuenta.tipo}
-        </strong>
-
-      </div>
-
-
-      <p class="transfer-instruction">
-        💡 Realiza la transferencia por el monto total de tu pedido.
-      </p>
-
-    `;
-
-  }
-
-
-  /* =====================================================
-     CAMBIO DE BANCO
-  ===================================================== */
-
-  if (bankSelect) {
-
-    bankSelect.addEventListener(
-      "change",
-      () => {
-
-        actualizarDatosBanco();
-
-      }
+      0
     );
 
   }
 
 
   /* =====================================================
-     DATOS DE TU TRANSFERENCIA
+     TOTALES
   ===================================================== */
 
-  function mostrarDatosTransferenciaCliente() {
+  function actualizarTotales() {
 
-    const transferInfo =
-      document.getElementById(
-        "transferInfo"
+    const subtotal =
+      calcularSubtotal();
+
+    let descuento =
+      Number(descuentoPromocional) || 0;
+
+    if (descuento > subtotal) {
+      descuento = subtotal;
+    }
+
+    const total =
+      Math.max(
+        0,
+        subtotal - descuento
       );
 
+    if (cartSubtotal) {
 
-    if (!transferInfo) return;
+      cartSubtotal.textContent =
+        formatoPrecio(subtotal);
 
+    }
 
-    transferInfo.innerHTML = `
+    if (cartTotal) {
 
-      <div class="transfer-client-card">
-
-        <div class="transfer-title">
-          🧾 DATOS DE TU TRANSFERENCIA
-        </div>
-
-
-        <label for="transferName">
-          👤 Nombre de quien realizó la transferencia
-        </label>
-
-
-        <input
-          type="text"
-          id="transferName"
-          placeholder="Nombre completo"
-          autocomplete="name"
-        >
-
-
-        <label for="transferAmount">
-          💰 Monto transferido
-        </label>
-
-
-        <input
-          type="number"
-          id="transferAmount"
-          placeholder="Ejemplo: 700"
-          min="0"
-          step="0.01"
-        >
-
-
-        <label for="transferReference">
-          🧾 Número de referencia
-        </label>
-
-
-        <input
-          type="text"
-          id="transferReference"
-          placeholder="Escribe el número de referencia"
-        >
-
-
-        <button
-          type="button"
-          id="confirmTransferDataButton"
-          class="checkout-button"
-        >
-          CONFIRMAR Y PAGAR
-        </button>
-
-      </div>
-
-    `;
-
-
-    const confirmTransferDataButton =
-      document.getElementById(
-        "confirmTransferDataButton"
-      );
-
-
-    if (
-      confirmTransferDataButton
-    ) {
-
-      confirmTransferDataButton.addEventListener(
-        "click",
-        () => {
-
-          const transferName =
-            document.getElementById(
-              "transferName"
-            );
-
-
-          const transferAmount =
-            document.getElementById(
-              "transferAmount"
-            );
-
-
-          const transferReference =
-            document.getElementById(
-              "transferReference"
-            );
-
-
-          if (
-            !transferName ||
-            !transferName.value.trim()
-          ) {
-
-            alert(
-              "Escribe el nombre de quien realizó la transferencia."
-            );
-
-
-            if (transferName) {
-
-              transferName.focus();
-
-            }
-
-
-            return;
-
-          }
-
-
-          if (
-            !transferAmount ||
-            !transferAmount.value
-          ) {
-
-            alert(
-              "Escribe el monto transferido."
-            );
-
-
-            if (transferAmount) {
-
-              transferAmount.focus();
-
-            }
-
-
-            return;
-
-          }
-
-
-          if (
-            Number(
-              transferAmount.value
-            ) <= 0
-          ) {
-
-            alert(
-              "El monto transferido debe ser mayor que 0."
-            );
-
-
-            transferAmount.focus();
-
-            return;
-
-          }
-
-
-          if (
-            !transferReference ||
-            !transferReference.value.trim()
-          ) {
-
-            alert(
-              "Escribe el número de referencia de la transferencia."
-            );
-
-
-            if (transferReference) {
-
-              transferReference.focus();
-
-            }
-
-
-            return;
-
-          }
-
-
-          mostrarResumen();
-
-          mostrarPaso(
-            stepSummary
-          );
-
-        }
-      );
+      cartTotal.textContent =
+        formatoPrecio(total);
 
     }
 
@@ -2312,1098 +1100,7 @@ if (cartTotal) {
 
 
   /* =====================================================
-     CONTINUAR PAGO - EFECTIVO
-  ===================================================== */
-
-  if (
-    continuePaymentButton
-  ) {
-
-    continuePaymentButton.addEventListener(
-      "click",
-      () => {
-
-        const paymentRadio =
-          document.querySelector(
-            'input[name="paymentMethod"]:checked'
-          );
-
-
-        if (!paymentRadio) {
-
-          alert(
-            "Selecciona una forma de pago."
-          );
-
-          return;
-
-        }
-
-
-        /*
-         * TRANSFERENCIA
-         */
-
-        if (
-          paymentRadio.value ===
-          "transfer"
-        ) {
-
-          if (
-            !bankSelect ||
-            !bankSelect.value
-          ) {
-
-            alert(
-              "Selecciona el banco para realizar la transferencia."
-            );
-
-
-            if (bankSelect) {
-
-              bankSelect.focus();
-
-            }
-
-
-            return;
-
-          }
-
-
-          mostrarDatosTransferencia();
-
-          return;
-
-        }
-
-
-        /*
-         * EFECTIVO
-         */
-
-        mostrarResumen();
-
-        mostrarPaso(
-          stepSummary
-        );
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     CREAR RESUMEN
-  ===================================================== */
-
-  function mostrarResumen() {
-
-    if (!orderSummary) return;
-
-
-    const deliveryRadio =
-      document.querySelector(
-        'input[name="deliveryMethod"]:checked'
-      );
-
-
-    const paymentRadio =
-      document.querySelector(
-        'input[name="paymentMethod"]:checked'
-      );
-
-
-    const nombre =
-      customerName
-        ? customerName.value.trim()
-        : "";
-
-
-    const telefono =
-      customerPhone
-        ? customerPhone.value.trim()
-        : "";
-
-
-    const direccion =
-      customerAddress
-        ? customerAddress.value.trim()
-        : "";
-
-
-    const ciudad =
-      customerCity
-        ? customerCity.value.trim()
-        : "";
-
-
-    const referencia =
-      deliveryReference
-        ? deliveryReference.value.trim()
-        : "";
-
-
-    let subtotal = 0;
-
-
-    carrito.forEach(
-      producto => {
-
-        subtotal +=
-          Number(producto.precio) *
-          Number(producto.cantidad);
-
-      }
-    );
-
-
-    let entregaTexto = "";
-
-
-    if (
-      deliveryRadio &&
-      deliveryRadio.value ===
-      "delivery"
-    ) {
-
-      let departamentoTexto = "";
-
-
-      if (
-        departmentSelect &&
-        departmentSelect.selectedIndex >= 0
-      ) {
-
-        departamentoTexto =
-          departmentSelect.options[
-            departmentSelect.selectedIndex
-          ].text;
-
-      }
-
-
-      entregaTexto = `
-
-        🚚 Envío a domicilio<br>
-
-        🇭🇳 ${departamentoTexto}<br>
-
-        🏙️ ${ciudad}<br>
-
-        🏠 ${direccion}
-
-      `;
-
-    } else {
-
-      entregaTexto = `
-
-        🏪 Recoger en tienda<br>
-
-        📍 Comayagua, Honduras
-
-      `;
-
-    }
-
-
-    let pagoTexto = "";
-
-
-    if (
-      paymentRadio &&
-      paymentRadio.value ===
-      "transfer"
-    ) {
-
-      const transferName =
-        document.getElementById(
-          "transferName"
-        )?.value.trim() || "";
-
-
-      const transferAmount =
-        document.getElementById(
-          "transferAmount"
-        )?.value || "";
-
-
-      const transferReference =
-        document.getElementById(
-          "transferReference"
-        )?.value.trim() || "";
-
-
-      const bancoTexto =
-        bankSelect &&
-        bankSelect.selectedIndex >= 0
-          ? bankSelect.options[
-              bankSelect.selectedIndex
-            ].text
-          : "";
-
-
-      pagoTexto = `
-
-        🏦 Transferencia bancaria<br>
-
-        Banco:
-        ${bancoTexto}
-
-        <br>
-
-        👤 Transferencia realizada por:
-        ${transferName}
-
-        <br>
-
-        💰 Monto transferido:
-        HNL ${Number(
-          transferAmount
-        ).toLocaleString("es-HN")}
-
-        <br>
-
-        🧾 Referencia:
-        ${transferReference}
-
-      `;
-
-    } else {
-
-      pagoTexto = `
-
-        💵 Pago en efectivo
-
-      `;
-
-    }
-
-
-    let productosHTML = "";
-
-
-    carrito.forEach(
-      producto => {
-
-        const cantidad =
-          Number(
-            producto.cantidad
-          );
-
-
-        const precio =
-          Number(
-            producto.precio
-          );
-
-
-        productosHTML += `
-
-          <div style="margin-bottom:10px;">
-
-            <strong>
-              ${producto.nombre}
-            </strong>
-
-            <br>
-
-            ${
-              producto.talla
-                ? `
-                  Talla:
-                  ${producto.talla}
-                  <br>
-                `
-                : ""
-            }
-
-            Cantidad:
-            ${cantidad}
-
-            <br>
-
-            HNL
-            ${(precio * cantidad)
-              .toLocaleString("es-HN")}
-
-          </div>
-
-        `;
-
-      }
-    );
-
-
-    orderSummary.innerHTML = `
-
-      <div style="margin-bottom:15px;">
-
-        <strong>
-          👤 Cliente
-        </strong>
-
-        <br>
-
-        ${nombre}
-
-        <br>
-
-        📞 ${telefono}
-
-      </div>
-
-
-      ${
-        deliveryRadio &&
-        deliveryRadio.value ===
-        "delivery"
-          ? `
-
-            <div style="margin-bottom:15px;">
-
-              <strong>
-                📍 Referencia
-              </strong>
-
-              <br>
-
-              ${referencia || "No especificada"}
-
-            </div>
-
-          `
-          : ""
-      }
-
-
-      <div style="margin-bottom:15px;">
-
-        <strong>
-          🚚 Entrega
-        </strong>
-
-        <br>
-
-        ${entregaTexto}
-
-      </div>
-
-
-      <div style="margin-bottom:15px;">
-
-        <strong>
-          💳 Pago
-        </strong>
-
-        <br>
-
-        ${pagoTexto}
-
-      </div>
-
-
-      <div style="margin-bottom:15px;">
-
-        <strong>
-          🛍️ Productos
-        </strong>
-
-        <br><br>
-
-        ${productosHTML}
-
-      </div>
-
-
-     <div>
-
-  <strong>
-    TOTAL:
-    HNL ${(subtotal - (subtotal * descuentoPromocional)).toLocaleString("es-HN")}
-  </strong>
-
-</div>
-
-    `;
-
-  }
-
-
-  /* =====================================================
-     CONFIRMAR PEDIDO
-  ===================================================== */
-
-  if (
-    confirmOrderButton
-  ) {
-
-    confirmOrderButton.addEventListener(
-      "click",
-      () => {
-
-        try {
-
-          if (
-            carrito.length === 0
-          ) {
-
-            mostrarResultadoError(
-              "Tu carrito está vacío."
-            );
-
-            return;
-
-          }
-
-
-          const deliveryRadio =
-            document.querySelector(
-              'input[name="deliveryMethod"]:checked'
-            );
-
-
-          const paymentRadio =
-            document.querySelector(
-              'input[name="paymentMethod"]:checked'
-            );
-
-
-          if (!deliveryRadio) {
-
-            mostrarResultadoError(
-              "No se seleccionó un método de entrega."
-            );
-
-            return;
-
-          }
-
-
-          if (!paymentRadio) {
-
-            mostrarResultadoError(
-              "No se seleccionó una forma de pago."
-            );
-
-            return;
-
-          }
-
-
-          const deliveryMethod =
-            deliveryRadio.value;
-
-
-          const paymentMethod =
-            paymentRadio.value;
-
-
-          let bancoSeleccionado =
-            "";
-
-
-          if (
-            paymentMethod ===
-              "transfer" &&
-            bankSelect
-          ) {
-
-            bancoSeleccionado =
-              bankSelect.options[
-                bankSelect.selectedIndex
-              ]?.text || "";
-
-          }
-
-
-          const total =
-            carrito.reduce(
-              (suma, producto) =>
-                suma +
-                (
-                  Number(
-                    producto.precio
-                  ) *
-                  Number(
-                    producto.cantidad
-                  )
-                ),
-              0
-            );
-
-
-          const numeroPedido =
-            "NV-" +
-            Date.now()
-              .toString()
-              .slice(-8);
-
-
-          const pedido = {
-
-            id:
-              numeroPedido,
-
-
-            fecha:
-              new Date().toISOString(),
-
-
-            cliente: {
-
-              nombre:
-                customerName
-                  ? customerName.value.trim()
-                  : "",
-
-              telefono:
-                customerPhone
-                  ? customerPhone.value.trim()
-                  : "",
-
-              direccion:
-                deliveryMethod ===
-                "delivery"
-                  ? (
-                      customerAddress
-                        ? customerAddress.value.trim()
-                        : ""
-                    )
-                  : "",
-
-              ciudad:
-                deliveryMethod ===
-                "delivery"
-                  ? (
-                      customerCity
-                        ? customerCity.value.trim()
-                        : ""
-                    )
-                  : "",
-
-              departamento:
-                deliveryMethod ===
-                  "delivery" &&
-                departmentSelect
-                  ? departmentSelect.value
-                  : "",
-
-              referencia:
-                deliveryMethod ===
-                "delivery"
-                  ? (
-                      deliveryReference
-                        ? deliveryReference.value.trim()
-                        : ""
-                    )
-                  : ""
-
-            },
-
-
-            entrega: {
-
-              metodo:
-                deliveryMethod ===
-                "delivery"
-                  ? "Envío a domicilio"
-                  : "Recoger en tienda",
-
-              puntoRecogida:
-                deliveryMethod ===
-                "pickup"
-                  ? "Comayagua, Honduras"
-                  : ""
-
-            },
-
-
-            pago: {
-
-              metodo:
-                paymentMethod ===
-                "transfer"
-                  ? "Transferencia bancaria"
-                  : "Pago en efectivo",
-
-              banco:
-                bancoSeleccionado,
-
-              nombreTransferencia:
-                paymentMethod ===
-                "transfer"
-                  ? (
-                      document.getElementById(
-                        "transferName"
-                      )?.value.trim() || ""
-                    )
-                  : "",
-
-              montoTransferencia:
-                paymentMethod ===
-                "transfer"
-                  ? Number(
-                      document.getElementById(
-                        "transferAmount"
-                      )?.value || 0
-                    )
-                  : 0,
-
-              referenciaTransferencia:
-                paymentMethod ===
-                "transfer"
-                  ? (
-                      document.getElementById(
-                        "transferReference"
-                      )?.value.trim() || ""
-                    )
-                  : ""
-
-            },
-
-
-            productos:
-              carrito.map(
-                producto => ({
-
-                  id:
-                    producto.id,
-
-                  nombre:
-                    producto.nombre,
-
-                  precio:
-                    Number(
-                      producto.precio
-                    ),
-
-                  cantidad:
-                    Number(
-                      producto.cantidad
-                    ),
-
-                  talla:
-                    producto.talla || "",
-
-                  imagen:
-                    producto.imagen || ""
-
-                })
-              ),
-
-
-            total
-
-          };
-
-
-          /* =============================================
-             GUARDAR PEDIDO
-          ============================================= */
-
-          const pedidosGuardados =
-            JSON.parse(
-              localStorage.getItem(
-                "novaguetPedidos"
-              )
-            ) || [];
-
-
-          pedidosGuardados.push(
-            pedido
-          );
-
-
-          localStorage.setItem(
-            "novaguetPedidos",
-            JSON.stringify(
-              pedidosGuardados
-            )
-          );
-
-
-          /* =============================================
-             MOSTRAR ÉXITO
-          ============================================= */
-
-          mostrarResultadoExito(
-            numeroPedido,
-            paymentMethod
-          );
-
-
-          /* =============================================
-             LIMPIAR CARRITO
-          ============================================= */
-
-          carrito = [];
-
-
-          guardarCarrito();
-
-
-          mostrarCarrito();
-
-        } catch (error) {
-
-          console.error(
-            "Error procesando pedido:",
-            error
-          );
-
-
-          mostrarResultadoError(
-            "No pudimos procesar tu pedido. Intenta nuevamente."
-          );
-
-        }
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     SONIDO DE COMPRA CONFIRMADA
-  ===================================================== */
-
-  function reproducirSonidoConfirmacion() {
-
-    try {
-
-      const AudioContext =
-        window.AudioContext ||
-        window.webkitAudioContext;
-
-
-      if (!AudioContext) return;
-
-
-      const audioContext =
-        new AudioContext();
-
-
-      const ahora =
-        audioContext.currentTime;
-
-
-      const oscilador =
-        audioContext.createOscillator();
-
-
-      const ganancia =
-        audioContext.createGain();
-
-
-      oscilador.type =
-        "sine";
-
-
-      oscilador.frequency.setValueAtTime(
-        950,
-        ahora
-      );
-
-
-      oscilador.frequency.exponentialRampToValueAtTime(
-        1250,
-        ahora + 0.15
-      );
-
-
-      ganancia.gain.setValueAtTime(
-        0.0001,
-        ahora
-      );
-
-
-      ganancia.gain.exponentialRampToValueAtTime(
-        0.30,
-        ahora + 0.02
-      );
-
-
-      ganancia.gain.exponentialRampToValueAtTime(
-        0.0001,
-        ahora + 0.65
-      );
-
-
-      oscilador.connect(
-        ganancia
-      );
-
-
-      ganancia.connect(
-        audioContext.destination
-      );
-
-
-      oscilador.start(
-        ahora
-      );
-
-
-      oscilador.stop(
-        ahora + 0.65
-      );
-
-    } catch (error) {
-
-      console.log(
-        "No se pudo reproducir el sonido de confirmación.",
-        error
-      );
-
-    }
-
-  }
-
-
-  /* =====================================================
-     RESULTADO EXITOSO
-  ===================================================== */
-
-  function mostrarResultadoExito(
-    numeroPedido,
-    paymentMethod
-  ) {
-
-    if (!paymentResult) return;
-
-
-    let mensajePago = "";
-
-
-    if (
-      paymentMethod ===
-      "transfer"
-    ) {
-
-      mensajePago = `
-
-        Tu pedido fue confirmado correctamente.
-
-        <br>
-
-        Hemos registrado la transferencia como forma de pago.
-
-      `;
-
-    } else {
-
-      mensajePago = `
-
-        Tu pedido fue confirmado correctamente.
-
-        <br>
-
-        El pago en efectivo quedó registrado.
-
-      `;
-
-    }
-
-
-    paymentResult.innerHTML = `
-
-      <div class="success-circle">
-
-        <svg
-          class="success-check"
-          viewBox="0 0 52 52"
-        >
-
-          <circle
-            class="success-circle-line"
-            cx="26"
-            cy="26"
-            r="24"
-          >
-          </circle>
-
-
-          <path
-            class="success-check-line"
-            d="M14 27 L22 35 L39 17"
-          >
-          </path>
-
-        </svg>
-
-      </div>
-
-
-      <h2>
-        Pedido confirmado ✅
-      </h2>
-
-
-      <p class="success-message">
-
-        Gracias por comprar en
-        <strong>NOVAGUET</strong>
-
-      </p>
-
-
-      <p class="success-order-number">
-
-        Número de pedido:
-        ${numeroPedido}
-
-      </p>
-
-
-      <p>
-
-        ${mensajePago}
-
-      </p>
-
-
-      <button
-        type="button"
-        class="checkout-button"
-        id="backToStoreButton"
-      >
-
-        VOLVER A LA TIENDA
-
-      </button>
-
-    `;
-
-
-    mostrarPaso(
-      stepResult
-    );
-
-
-    reproducirSonidoConfirmacion();
-
-
-    const backToStoreButton =
-      document.getElementById(
-        "backToStoreButton"
-      );
-
-
-    if (
-      backToStoreButton
-    ) {
-
-      backToStoreButton.addEventListener(
-        "click",
-        () => {
-
-          if (stepResult) {
-
-            stepResult.style.display =
-              "none";
-
-          }
-
-
-          if (checkoutContainer) {
-
-            checkoutContainer.style.display =
-              "none";
-
-          }
-
-
-          window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-          });
-
-        }
-      );
-
-    }
-
-  }
-
-
-  /* =====================================================
-     RESULTADO ERROR
-  ===================================================== */
-
-  function mostrarResultadoError(
-    mensaje
-  ) {
-
-    if (!paymentResult) return;
-
-
-    paymentResult.innerHTML = `
-
-      <div style="font-size:60px;">
-        ❌
-      </div>
-
-
-      <h2>
-        NO SE PUDO PROCESAR
-      </h2>
-
-
-      <p>
-        ${mensaje}
-      </p>
-
-
-      <button
-        type="button"
-        class="checkout-button"
-        id="retryCheckoutButton"
-      >
-
-        INTENTAR NUEVAMENTE
-
-      </button>
-
-    `;
-
-
-    mostrarPaso(
-      stepResult
-    );
-
-
-    const retryButton =
-      document.getElementById(
-        "retryCheckoutButton"
-      );
-
-
-    if (retryButton) {
-
-      retryButton.addEventListener(
-        "click",
-        () => {
-
-          mostrarPaso(
-            stepCustomer
-          );
-
-        }
-      );
-
-    }
-
-  }
-
-/* =====================================================
-     CÓDIGO PROMOCIONAL NOVA15
+     PROMOCIÓN
   ===================================================== */
 
   if (applyPromo) {
@@ -3414,23 +1111,50 @@ if (cartTotal) {
 
         const codigo =
           promoCode
-            ? promoCode.value.trim().toUpperCase()
+            ? promoCode.value
+                .trim()
+                .toUpperCase()
             : "";
 
-        if (codigo === "NOVA15") {
+        if (!codigo) {
 
-          descuentoPromocional = 0.15;
-          codigoPromocionalAplicado = "NOVA15";
+          descuentoPromocional = 0;
+          codigoPromocionalAplicado = "";
 
           if (promoMessage) {
 
             promoMessage.textContent =
-              "✓ Código NOVA15 aplicado: 15% de descuento";
-
-            promoMessage.style.color =
-              "#008000";
+              "Ingresa un código promocional.";
 
           }
+
+          actualizarTotales();
+
+          sonidoError();
+
+          return;
+
+        }
+
+        if (codigo === "NOVAGUET10") {
+
+          const subtotal =
+            calcularSubtotal();
+
+          descuentoPromocional =
+            subtotal * 0.10;
+
+          codigoPromocionalAplicado =
+            codigo;
+
+          if (promoMessage) {
+
+            promoMessage.textContent =
+              "✓ Código aplicado correctamente.";
+
+          }
+
+          actualizarTotales();
 
         } else {
 
@@ -3442,12 +1166,35 @@ if (cartTotal) {
             promoMessage.textContent =
               "Código promocional no válido.";
 
-            promoMessage.style.color =
-              "#cc0000";
-
           }
 
+          actualizarTotales();
+
+          sonidoError();
+
         }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     CARRITO
+  ===================================================== */
+
+  if (cartButton) {
+
+    cartButton.addEventListener(
+      "click",
+      () => {
+
+        if (!cartBox) return;
+
+        cartBox.classList.toggle(
+          "show"
+        );
 
         mostrarCarrito();
 
@@ -3456,53 +1203,192 @@ if (cartTotal) {
 
   }
 
+
+  if (closeCart) {
+
+    closeCart.addEventListener(
+      "click",
+      () => {
+
+        if (cartBox) {
+
+          cartBox.classList.remove(
+            "show"
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     BUSCADOR
+  ===================================================== */
+
+  if (searchButton) {
+
+    searchButton.addEventListener(
+      "click",
+      () => {
+
+        if (!searchBox) return;
+
+        searchBox.classList.toggle(
+          "show"
+        );
+
+        if (
+          searchBox.classList.contains(
+            "show"
+          ) &&
+          searchInput
+        ) {
+
+          setTimeout(
+            () => searchInput.focus(),
+            100
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  if (closeSearch) {
+
+    closeSearch.addEventListener(
+      "click",
+      () => {
+
+        if (searchBox) {
+
+          searchBox.classList.remove(
+            "show"
+          );
+
+        }
+
+        if (searchInput) {
+
+          searchInput.value = "";
+
+        }
+
+        mostrarProductos(productos);
+
+      }
+    );
+
+  }
+
+
+  if (searchInput) {
+
+    searchInput.addEventListener(
+      "input",
+      () => {
+
+        const texto =
+          searchInput.value
+            .trim()
+            .toLowerCase();
+
+        if (!texto) {
+
+          mostrarProductos(productos);
+
+          return;
+
+        }
+
+        const resultados =
+          productos.filter(
+            producto => {
+
+              const nombre =
+                String(
+                  producto.nombre || ""
+                ).toLowerCase();
+
+              const categoria =
+                String(
+                  producto.categoria || ""
+                ).toLowerCase();
+
+              const descripcion =
+                String(
+                  producto.descripcion || ""
+                ).toLowerCase();
+
+              return (
+                nombre.includes(texto) ||
+                categoria.includes(texto) ||
+                descripcion.includes(texto)
+              );
+
+            }
+          );
+
+        mostrarProductos(
+          resultados
+        );
+
+      }
+    );
+
+  }
+
+
   /* =====================================================
      CATEGORÍAS
   ===================================================== */
 
-  categoryButtons.forEach(
-    button => {
+  categoryButtons.forEach(button => {
 
-      button.addEventListener(
-        "click",
-        () => {
+    button.addEventListener(
+      "click",
+      event => {
 
-          const categoria =
-            button.dataset.category;
+        event.preventDefault();
 
+        const categoria =
+          button.dataset.category;
 
-          if (!categoria) {
+        if (
+          !categoria ||
+          categoria.toLowerCase() ===
+          "todos"
+        ) {
 
-            mostrarProductos(
-              productos
-            );
+          mostrarProductos(productos);
 
-            return;
-
-          }
-
-
-          const resultados =
-            productos.filter(
-              producto =>
-                String(
-                  producto.categoria || ""
-                ).toLowerCase() ===
-                String(
-                  categoria
-                ).toLowerCase()
-            );
-
-
-          mostrarProductos(
-            resultados
-          );
+          return;
 
         }
-      );
 
-    }
-  );
+        const resultados =
+          productos.filter(
+            producto =>
+              String(
+                producto.categoria || ""
+              ).toLowerCase() ===
+              categoria.toLowerCase()
+          );
+
+        mostrarProductos(
+          resultados
+        );
+
+      }
+    );
+
+  });
 
 
   /* =====================================================
@@ -3520,7 +1406,6 @@ if (cartTotal) {
 
         event.preventDefault();
 
-
         nosotrosCloud.classList.toggle(
           "show"
         );
@@ -3531,21 +1416,21 @@ if (cartTotal) {
   }
 
 
-  /* =====================================================
-     CERRAR NOSOTROS AL TOCAR OTRA PARTE
-  ===================================================== */
-
   document.addEventListener(
     "click",
     event => {
 
       if (
         nosotrosCloud &&
+        nosotrosButton &&
         nosotrosCloud.classList.contains(
           "show"
         ) &&
-        !event.target.closest(
-          ".nosotros-menu"
+        !nosotrosCloud.contains(
+          event.target
+        ) &&
+        !nosotrosButton.contains(
+          event.target
         )
       ) {
 
@@ -3560,35 +1445,2177 @@ if (cartTotal) {
 
 
   /* =====================================================
-     IDIOMA
+     CHECKOUT - ABRIR
   ===================================================== */
 
-  window.changeLanguage =
-    function(idioma) {
+  if (checkoutButton) {
 
-      document.documentElement
-        .setAttribute(
-          "lang",
-          idioma
+    checkoutButton.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+
+        if (carrito.length === 0) {
+
+          sonidoError();
+
+          alert(
+            "Tu carrito está vacío."
+          );
+
+          return;
+
+        }
+
+        if (cartBox) {
+
+          cartBox.classList.add(
+            "show"
+          );
+
+        }
+
+        if (cartItems) {
+
+          cartItems.style.display =
+            "none";
+
+        }
+
+        if (cartEmpty) {
+
+          cartEmpty.style.display =
+            "none";
+
+        }
+
+        if (cartSummary) {
+
+          cartSummary.style.display =
+            "none";
+
+        }
+
+        if (checkoutContainer) {
+
+          checkoutContainer.style.display =
+            "block";
+
+        }
+
+        document
+          .querySelectorAll(
+            ".checkout-step"
+          )
+          .forEach(
+            paso =>
+              paso.style.display = "none"
+          );
+
+        if (stepCustomer) {
+
+          stepCustomer.style.display =
+            "block";
+
+        }
+
+        if (stepResult) {
+
+          stepResult.style.display =
+            "none";
+
+        }
+
+        if (paymentResult) {
+
+          paymentResult.innerHTML = "";
+
+        }
+
+        deliveryMethod = "";
+        paymentMethod = "";
+        orderData = {};
+
+        if (homeDelivery) {
+          homeDelivery.checked = false;
+        }
+
+        if (storePickup) {
+          storePickup.checked = false;
+        }
+
+        if (departmentSelect) {
+          departmentSelect.value = "";
+        }
+
+        if (municipality) {
+
+          municipality.innerHTML = `
+            <option value="">
+              Selecciona un municipio
+            </option>
+          `;
+
+        }
+
+        if (municipalityBox) {
+
+          municipalityBox.style.display =
+            "none";
+
+        }
+
+        if (departmentBox) {
+
+          departmentBox.style.display =
+            "none";
+
+        }
+
+        if (pickupBox) {
+
+          pickupBox.style.display =
+            "none";
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     CHECKOUT - CERRAR
+  ===================================================== */
+
+  if (closeCheckout) {
+
+    closeCheckout.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+
+        if (checkoutContainer) {
+
+          checkoutContainer.style.display =
+            "none";
+
+        }
+
+        if (cartItems) {
+
+          cartItems.style.display =
+            "block";
+
+        }
+
+        if (
+          cartEmpty &&
+          carrito.length === 0
+        ) {
+
+          cartEmpty.style.display =
+            "block";
+
+        }
+
+        if (cartSummary) {
+
+          cartSummary.style.display =
+            "block";
+
+        }
+
+        mostrarCarrito();
+
+      }
+    );
+
+  }
+
+/* =====================================================
+
+   CLIENTE
+
+===================================================== */
+
+if (confirmCustomerButton) {
+
+  confirmCustomerButton.addEventListener(
+
+    "click",
+
+    () => {
+
+      const nombre =
+
+        customerName
+
+          ? customerName.value.trim()
+
+          : "";
+
+      const telefono =
+
+        customerPhone
+
+          ? customerPhone.value.replace(/\D/g, "")
+
+          : "";
+
+      if (!nombre) {
+
+        sonidoError();
+
+        alert(
+
+          "Ingresa tu nombre completo."
+
         );
 
+        return;
 
-      document
-        .querySelectorAll(
-          "[data-es][data-en]"
-        )
-        .forEach(
-          elemento => {
+      }
 
-            elemento.textContent =
-              elemento.dataset[
-                idioma
-              ];
+      if (telefono.length !== 8) {
+
+        sonidoError();
+
+        alert(
+
+          "Ingresa un número de teléfono válido de Honduras de 8 dígitos."
+
+        );
+
+        return;
+
+      }
+
+      orderData.nombre =
+
+        nombre;
+
+      orderData.telefono =
+
+        telefono;
+
+      // La dirección se agregará en ENTREGA
+
+      orderData.direccion =
+
+        "";
+
+      orderData.referencia =
+
+        "";
+
+      avanzarCheckout(
+
+        "customer",
+
+        "delivery"
+
+      );
+
+    }
+
+  );
+
+}
+/* =====================================================
+   BOTÓN ATRÁS - CLIENTE
+===================================================== */
+
+const backCustomerButton =
+  document.getElementById(
+    "backCustomerButton"
+  );
+
+if (backCustomerButton) {
+
+  backCustomerButton.addEventListener(
+    "click",
+    () => {
+
+      if (stepCustomer) {
+        stepCustomer.style.display = "none";
+      }
+
+      if (cartBox) {
+        cartBox.classList.add("show");
+      }
+
+      if (cartItems) {
+        cartItems.style.display = "";
+      }
+
+      if (cartSummary) {
+        cartSummary.style.display = "";
+      }
+
+    }
+  );
+
+}
+
+  /* =====================================================
+     ENTREGA A DOMICILIO
+  ===================================================== */
+
+  if (homeDelivery) {
+
+    homeDelivery.addEventListener(
+      "change",
+      () => {
+
+        if (!homeDelivery.checked) return;
+
+        deliveryMethod =
+          "delivery";
+
+        if (departmentBox) {
+
+          departmentBox.style.display =
+            "block";
+
+        }
+
+        if (municipalityBox) {
+
+          municipalityBox.style.display =
+            departmentSelect &&
+            departmentSelect.value
+              ? "block"
+              : "none";
+
+        }
+
+        if (pickupBox) {
+
+          pickupBox.style.display =
+            "none";
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     RECOGER EN TIENDA
+  ===================================================== */
+
+  if (storePickup) {
+
+    storePickup.addEventListener(
+      "change",
+      () => {
+
+        if (!storePickup.checked) return;
+
+        deliveryMethod =
+          "pickup";
+
+        orderData.departamento =
+          "";
+
+        orderData.municipio =
+          "";
+
+        orderData.referencia =
+          "";
+
+        orderData.direccion =
+          "";
+
+        if (departmentBox) {
+
+          departmentBox.style.display =
+            "none";
+
+        }
+
+        if (municipalityBox) {
+
+          municipalityBox.style.display =
+            "none";
+
+        }
+
+        if (pickupBox) {
+
+          pickupBox.style.display =
+            "block";
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     MUNICIPIOS DE HONDURAS
+  ===================================================== */
+
+  const municipiosHonduras = {
+
+    "Atlántida": [
+      "La Ceiba",
+      "El Porvenir",
+      "Esparta",
+      "Jutiapa",
+      "La Masica",
+      "San Francisco",
+      "Tela",
+      "Arizona"
+    ],
+
+    "Colón": [
+      "Trujillo",
+      "Balfate",
+      "Bonito Oriental",
+      "Iriona",
+      "Limón",
+      "Sabá",
+      "Santa Fe",
+      "Santa Rosa de Aguán",
+      "Sonaguera"
+    ],
+
+    "Comayagua": [
+      "Comayagua",
+      "Ajuterique",
+      "El Rosario",
+      "Esquías",
+      "Humuya",
+      "La Libertad",
+      "Lamaní",
+      "La Trinidad",
+      "Lejamaní",
+      "Meámbar",
+      "Minas de Oro",
+      "Ojos de Agua",
+      "San Jerónimo",
+      "San José de Comayagua",
+      "San Luis",
+      "San Sebastián",
+      "Siguatepeque",
+      "Villa de San Antonio"
+    ],
+
+    "Copán": [
+      "Santa Rosa de Copán",
+      "Cabañas",
+      "Concepción",
+      "Copán Ruinas",
+      "Corquín",
+      "Cucuyagua",
+      "Dolores",
+      "Dulce Nombre",
+      "El Paraíso",
+      "Florida",
+      "La Jigua",
+      "La Unión",
+      "Nueva Arcadia",
+      "San Agustín",
+      "San Antonio",
+      "San Jerónimo",
+      "San José",
+      "San Juan de Opoa",
+      "San Nicolás",
+      "Trinidad de Copán"
+    ],
+
+    "Cortés": [
+      "San Pedro Sula",
+      "Choloma",
+      "La Lima",
+      "Omoa",
+      "Pimienta",
+      "Potrerillos",
+      "Puerto Cortés",
+      "San Antonio de Cortés",
+      "San Francisco de Yojoa",
+      "San Manuel",
+      "Santa Cruz de Yojoa",
+      "Villanueva"
+    ],
+
+    "Choluteca": [
+      "Choluteca",
+      "Apacilagua",
+      "Concepción de María",
+      "Duyure",
+      "El Corpus",
+      "El Triunfo",
+      "Marcovia",
+      "Morolica",
+      "Namasigüe",
+      "Orocuina",
+      "Pespire",
+      "San Antonio de Flores",
+      "San Isidro",
+      "San José",
+      "San Marcos de Colón",
+      "Santa Ana de Yusguare"
+    ],
+
+    "El Paraíso": [
+      "Yuscarán",
+      "Alauca",
+      "Danlí",
+      "El Paraíso",
+      "Güinope",
+      "Jacaleapa",
+      "Liure",
+      "Morocelí",
+      "Oropolí",
+      "Potrerillos",
+      "San Antonio de Flores",
+      "San Lucas",
+      "San Matías",
+      "Soledad",
+      "Teupasenti",
+      "Texiguat",
+      "Trojes",
+      "Vado Ancho"
+    ],
+
+    "Francisco Morazán": [
+      "Distrito Central",
+      "Alubarén",
+      "Cedros",
+      "Curarén",
+      "El Porvenir",
+      "Guaimaca",
+      "La Libertad",
+      "La Venta",
+      "Lepaterique",
+      "Maraita",
+      "Marale",
+      "Nueva Armenia",
+      "Ojojona",
+      "Orica",
+      "Reitoca",
+      "Sabanagrande",
+      "San Antonio de Oriente",
+      "San Buenaventura",
+      "San Ignacio",
+      "San Juan de Flores",
+      "San Miguelito",
+      "Santa Ana",
+      "Santa Lucía",
+      "Talanga",
+      "Tatumbla",
+      "Valle de Ángeles",
+      "Villa de San Antonio",
+      "Villa de San Francisco"
+    ],
+
+    "Gracias a Dios": [
+      "Puerto Lempira",
+      "Brus Laguna",
+      "Ahuas",
+      "Juan Francisco Bulnes",
+      "Ramón Villeda Morales",
+      "Wampusirpi"
+    ],
+
+    "Intibucá": [
+      "La Esperanza",
+      "Camasca",
+      "Colomoncagua",
+      "Concepción",
+      "Dolores",
+      "Intibucá",
+      "Jesús de Otoro",
+      "Magdalena",
+      "Masaguara",
+      "San Antonio",
+      "San Francisco de Opalaca",
+      "San Isidro",
+      "San Juan",
+      "San Marcos de la Sierra",
+      "Santa Lucía"
+    ],
+
+    "La Paz": [
+      "La Paz",
+      "Aguanqueterique",
+      "Cabañas",
+      "Cane",
+      "Chinacla",
+      "Guajiquiro",
+      "Lauterique",
+      "Marcala",
+      "Mercedes de Oriente",
+      "Opatoro",
+      "San Antonio del Norte",
+      "San José",
+      "San Juan",
+      "San Pedro de Tutule",
+      "Santa Ana",
+      "Santa Elena",
+      "Santa María",
+      "Santiago de Puringla",
+      "Yarula"
+    ],
+
+    "Lempira": [
+      "Gracias",
+      "Belén",
+      "Candelaria",
+      "Cololaca",
+      "Erandique",
+      "Gualcince",
+      "Guarita",
+      "La Campa",
+      "La Iguala",
+      "Las Flores",
+      "La Unión",
+      "La Virtud",
+      "Mapulaca",
+      "Piraera",
+      "San Andrés",
+      "San Francisco",
+      "San Juan Guarita",
+      "San Manuel Colohete",
+      "San Marcos de Caiquín",
+      "Santa Cruz",
+      "Talgua",
+      "Tambla",
+      "Tomalá",
+      "Valladolid",
+      "Virginia"
+    ],
+
+    "Ocotepeque": [
+      "Nueva Ocotepeque",
+      "Belén Gualcho",
+      "Concepción",
+      "Dolores Merendón",
+      "Fraternidad",
+      "La Encarnación",
+      "La Labor",
+      "Lucerna",
+      "Mercedes",
+      "San Fernando",
+      "San Francisco del Valle",
+      "San Jorge",
+      "San Marcos",
+      "Santa Fe",
+      "Sensenti"
+    ],
+
+    "Olancho": [
+      "Juticalpa",
+      "Campamento",
+      "Catacamas",
+      "Concordia",
+      "Dulce Nombre de Culmí",
+      "El Rosario",
+      "Esquipulas del Norte",
+      "Gualaco",
+      "Guarizama",
+      "Guata",
+      "Guayape",
+      "Jano",
+      "La Unión",
+      "Mangulile",
+      "Manto",
+      "Patuca",
+      "Salamá",
+      "San Esteban",
+      "San Francisco de Becerra",
+      "San Francisco de la Paz",
+      "Santa María del Real",
+      "Silca",
+      "Yocón"
+    ],
+
+    "Santa Bárbara": [
+      "Santa Bárbara",
+      "Arada",
+      "Atima",
+      "Azacualpa",
+      "Ceguaca",
+      "Chinda",
+      "Concepción del Norte",
+      "Concepción del Sur",
+      "El Níspero",
+      "Gualala",
+      "Ilama",
+      "Las Vegas",
+      "Macuelizo",
+      "Naranjito",
+      "Nueva Frontera",
+      "Petoa",
+      "Protección",
+      "Quimistán",
+      "San Francisco de Ojuera",
+      "San José de Colinas",
+      "San Luis",
+      "San Marcos",
+      "San Nicolás",
+      "San Pedro Zacapa",
+      "Santa Rita",
+      "Trinidad"
+    ],
+
+    "Valle": [
+      "Nacaome",
+      "Alianza",
+      "Amapala",
+      "Aramecina",
+      "Caridad",
+      "Goascorán",
+      "Langue",
+      "San Francisco de Coray",
+      "San Lorenzo"
+    ],
+
+    "Yoro": [
+      "Yoro",
+      "Arenal",
+      "El Negrito",
+      "El Progreso",
+      "Jocón",
+      "Morazán",
+      "Olanchito",
+      "Santa Rita",
+      "Sulaco",
+      "Victoria",
+      "Yorito"
+    ]
+
+  };
+
+
+  /* =====================================================
+     DEPARTAMENTO → MUNICIPIO
+  ===================================================== */
+
+  if (departmentSelect) {
+
+    departmentSelect.addEventListener(
+      "change",
+      () => {
+
+        if (!municipality) return;
+
+        municipality.innerHTML = `
+          <option value="">
+            Selecciona un municipio
+          </option>
+        `;
+
+        const equivalencias = {
+
+          "atlantida": "Atlántida",
+          "choluteca": "Choluteca",
+          "colon": "Colón",
+          "comayagua": "Comayagua",
+          "copan": "Copán",
+          "cortes": "Cortés",
+          "el-paraiso": "El Paraíso",
+          "francisco-morazan": "Francisco Morazán",
+          "gracias-a-dios": "Gracias a Dios",
+          "intibuca": "Intibucá",
+          "la-paz": "La Paz",
+          "lempira": "Lempira",
+          "ocotepeque": "Ocotepeque",
+          "olancho": "Olancho",
+          "santa-barbara": "Santa Bárbara",
+          "valle": "Valle",
+          "yoro": "Yoro"
+
+        };
+
+        const clave =
+          equivalencias[
+            departmentSelect.value
+          ];
+
+        const municipios =
+          municipiosHonduras[clave] || [];
+
+        municipios.forEach(
+          nombreMunicipio => {
+
+            const option =
+              document.createElement("option");
+
+            option.value =
+              nombreMunicipio;
+
+            option.textContent =
+              nombreMunicipio;
+
+            municipality.appendChild(
+              option
+            );
 
           }
         );
 
+        if (municipalityBox) {
+
+          municipalityBox.style.display =
+            municipios.length
+              ? "block"
+              : "none";
+
+        }
+
+      }
+    );
+
+  }
+
+/* =====================================================
+   CONTINUAR ENTREGA
+===================================================== */
+
+if (continueDeliveryButton) {
+
+  continueDeliveryButton.addEventListener(
+    "click",
+    () => {
+
+      if (!deliveryMethod) {
+
+        sonidoError();
+
+        alert(
+          "Selecciona un método de entrega."
+        );
+
+        return;
+
+      }
+if (deliveryMethod === "delivery") {
+
+  if (
+    !departmentSelect ||
+    !departmentSelect.value
+  ) {
+
+    sonidoError();
+
+    alert(
+      "Selecciona tu departamento."
+    );
+
+    return;
+
+  }
+
+  if (
+    !municipality ||
+    !municipality.value
+  ) {
+
+    sonidoError();
+
+    alert(
+      "Selecciona tu municipio."
+    );
+
+    return;
+
+  }
+
+  orderData.departamento =
+    departmentSelect.value;
+
+  orderData.municipio =
+    municipality.value;
+
+  orderData.direccion = "";
+
+  orderData.referencia = "";
+
+} else {
+
+  orderData.departamento = "";
+
+  orderData.municipio = "";
+
+  orderData.referencia = "";
+
+  orderData.direccion = "";
+
+}
+
+      orderData.metodoEntrega =
+        deliveryMethod;
+
+      avanzarCheckout(
+        "delivery",
+        "payment"
+      );
+
+    }
+  );
+
+}
+/* =====================================================
+
+   BOTÓN ATRÁS - ENTREGA
+
+===================================================== */
+
+const backDeliveryButton =
+
+  document.getElementById(
+
+    "backDeliveryButton"
+
+  );
+
+if (backDeliveryButton) {
+
+  backDeliveryButton.addEventListener(
+
+    "click",
+
+    () => {
+
+      avanzarCheckout(
+
+        "delivery",
+
+        "customer"
+
+      );
+
+    }
+
+  );
+
+}
+
+/* =====================================================
+
+   BOTÓN ATRÁS - PAGO
+
+===================================================== */
+
+const backPaymentButton =
+
+  document.getElementById(
+
+    "backPaymentButton"
+
+  );
+
+if (backPaymentButton) {
+
+  backPaymentButton.addEventListener(
+
+    "click",
+
+    () => {
+
+      avanzarCheckout(
+
+        "payment",
+
+        "delivery"
+
+      );
+
+    }
+
+  );
+
+}
+ 
+  /* =====================================================
+     CUENTAS BANCARIAS
+  ===================================================== */
+
+  const cuentasBancarias = {
+
+    atlantida: {
+
+      nombre: "Banco Atlántida",
+      numero: "230000000"
+
+    },
+
+    ficohsa: {
+
+      nombre: "Ficohsa",
+      numero: "240000000"
+
+    },
+
+    bac: {
+
+      nombre: "BAC Credomatic",
+      numero: "250000000"
+
+    }
+
+  };
+
+
+  if (bank) {
+
+    bank.addEventListener(
+      "change",
+      () => {
+
+        const cuenta =
+          cuentasBancarias[
+            bank.value
+          ];
+
+        if (!cuenta) {
+
+          if (bankDetails) {
+
+            bankDetails.style.display =
+              "none";
+
+          }
+
+          return;
+
+        }
+
+        if (selectedBankName) {
+
+          selectedBankName.textContent =
+            cuenta.nombre;
+
+        }
+
+        if (selectedAccountNumber) {
+
+          selectedAccountNumber.textContent =
+            cuenta.numero;
+
+        }
+
+        if (bankDetails) {
+
+          bankDetails.style.display =
+            "block";
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     MÉTODO DE PAGO
+  ===================================================== */
+
+  function obtenerMetodoPago() {
+
+    if (
+      transferPayment &&
+      transferPayment.checked
+    ) {
+
+      return "transferencia";
+
+    }
+
+    if (
+      cardPayment &&
+      cardPayment.checked
+    ) {
+
+      return "tarjeta";
+
+    }
+
+    if (
+      cashPayment &&
+      cashPayment.checked
+    ) {
+
+      return "efectivo";
+
+    }
+
+    return "";
+
+  }
+
+
+  /* =====================================================
+     MOSTRAR PAGO
+  ===================================================== */
+
+  function actualizarPago() {
+
+    paymentMethod =
+      obtenerMetodoPago();
+
+    const bankBox =
+      document.getElementById(
+        "bankBox"
+      );
+
+    const cardBox =
+      document.getElementById(
+        "cardBox"
+      );
+
+    const cashBox =
+      document.getElementById(
+        "cashBox"
+      );
+
+    if (bankBox) {
+
+      bankBox.style.display =
+        paymentMethod ===
+        "transferencia"
+          ? "block"
+          : "none";
+
+    }
+
+    if (cardBox) {
+
+      cardBox.style.display =
+        paymentMethod ===
+        "tarjeta"
+          ? "block"
+          : "none";
+
+    }
+
+    if (cashBox) {
+
+      cashBox.style.display =
+        paymentMethod ===
+        "efectivo"
+          ? "block"
+          : "none";
+
+    }
+
+    if (
+      bankDetails &&
+      paymentMethod !== "transferencia"
+    ) {
+
+      bankDetails.style.display =
+        "none";
+
+    }
+
+  }
+
+
+  if (transferPayment) {
+
+    transferPayment.addEventListener(
+      "change",
+      actualizarPago
+    );
+
+  }
+
+  if (cardPayment) {
+
+    cardPayment.addEventListener(
+      "change",
+      actualizarPago
+    );
+
+  }
+
+  if (cashPayment) {
+
+    cashPayment.addEventListener(
+      "change",
+      actualizarPago
+    );
+
+  }
+
+
+  /* =====================================================
+     CONTINUAR PAGO
+  ===================================================== */
+
+  if (continuePaymentButton) {
+
+    continuePaymentButton.addEventListener(
+      "click",
+      () => {
+
+        paymentMethod =
+          obtenerMetodoPago();
+
+        if (!paymentMethod) {
+
+          sonidoError();
+
+          alert(
+            "Selecciona una forma de pago."
+          );
+
+          return;
+        }
+
+        if (
+          paymentMethod ===
+          "transferencia"
+        ) {
+
+          if (
+            !bank ||
+            !bank.value
+          ) {
+
+            sonidoError();
+
+            alert(
+              "Selecciona el banco."
+            );
+
+            return;
+
+          }
+
+        }
+
+        if (
+          paymentMethod ===
+          "tarjeta"
+        ) {
+
+          const cardName =
+            document.getElementById(
+              "cardName"
+            );
+
+          const cardNumber =
+            document.getElementById(
+              "cardNumber"
+            );
+
+          const cardExpiry =
+            document.getElementById(
+              "cardExpiry"
+            );
+
+          const cardCVV =
+            document.getElementById(
+              "cardCVV"
+            );
+
+          if (
+            !cardName ||
+            !cardName.value.trim()
+          ) {
+
+            sonidoError();
+
+            alert(
+              "Ingresa el nombre del titular de la tarjeta."
+            );
+
+            return;
+
+          }
+
+          const numeroTarjeta =
+            cardNumber
+              ? cardNumber.value.replace(/\D/g, "")
+              : "";
+
+          if (
+            numeroTarjeta.length < 13
+          ) {
+
+            sonidoError();
+
+            alert(
+              "Ingresa un número de tarjeta válido."
+            );
+
+            return;
+
+          }
+
+          if (
+            !cardExpiry ||
+            !cardExpiry.value.trim()
+          ) {
+
+            sonidoError();
+
+            alert(
+              "Ingresa la fecha de vencimiento."
+            );
+
+            return;
+
+          }
+
+          const cvv =
+            cardCVV
+              ? cardCVV.value.replace(/\D/g, "")
+              : "";
+
+          if (
+            cvv.length < 3
+          ) {
+
+            sonidoError();
+
+            alert(
+              "Ingresa el CVV."
+            );
+
+            return;
+
+          }
+
+        }
+
+        orderData.metodoPago =
+          paymentMethod;
+
+        orderData.banco =
+          paymentMethod === "transferencia" &&
+          bank
+            ? bank.value
+            : "";
+
+        mostrarResumen();
+
+        avanzarCheckout(
+          "payment",
+          "summary"
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     AVANZAR CHECKOUT
+  ===================================================== */
+
+  function avanzarCheckout(
+    actual,
+    siguiente
+  ) {
+
+    document
+      .querySelectorAll(
+        ".checkout-step"
+      )
+      .forEach(
+        paso => {
+
+          const id =
+            paso.id || "";
+
+          if (
+            id
+              .toLowerCase()
+              .includes(
+                siguiente.toLowerCase()
+              )
+          ) {
+
+            paso.style.display =
+              "block";
+
+          } else if (
+            id
+              .toLowerCase()
+              .includes(
+                actual.toLowerCase()
+              )
+          ) {
+
+            paso.style.display =
+              "none";
+
+          }
+
+        }
+      );
+
+    document
+      .querySelectorAll(
+        "[data-step]"
+      )
+      .forEach(
+        elemento => {
+
+          const step =
+            elemento.dataset.step;
+
+          if (step === siguiente) {
+
+            elemento.style.display =
+              "block";
+
+          } else if (step === actual) {
+
+            elemento.style.display =
+              "none";
+
+          }
+
+        }
+      );
+
+  }
+
+
+  /* =====================================================
+     MOSTRAR RESUMEN
+  ===================================================== */
+
+  function mostrarResumen() {
+
+    if (!orderSummary) return;
+
+    const subtotal =
+      calcularSubtotal();
+
+    const descuento =
+      Math.min(
+        Number(descuentoPromocional) || 0,
+        subtotal
+      );
+
+    const total =
+      Math.max(
+        0,
+        subtotal - descuento
+      );
+
+    let html = `
+
+      <div class="summary-section">
+
+        <h3>
+          Productos
+        </h3>
+
+    `;
+
+    carrito.forEach(item => {
+
+      const importe =
+        (
+          Number(item.precio) || 0
+        ) *
+        (
+          Number(item.cantidad) || 0
+        );
+
+      html += `
+
+        <div class="summary-product">
+
+          <span>
+            ${item.nombre} × ${item.cantidad}
+          </span>
+
+          <strong>
+            ${formatoPrecio(importe)}
+          </strong>
+
+        </div>
+
+      `;
+
+    });
+
+    html += `
+
+      </div>
+
+      <div class="summary-section">
+
+        <h3>
+          Cliente
+        </h3>
+
+        <p>
+          <strong>Nombre:</strong>
+          ${orderData.nombre || ""}
+        </p>
+
+        <p>
+          <strong>Teléfono:</strong>
+          +504 ${orderData.telefono || ""}
+        </p>
+
+        <p>
+          <strong>Dirección:</strong>
+          ${orderData.direccion || ""}
+        </p>
+
+      </div>
+
+      <div class="summary-section">
+
+        <h3>
+          Entrega
+        </h3>
+
+        <p>
+          ${
+            orderData.metodoEntrega ===
+            "delivery"
+              ? "🚚 Entrega a domicilio"
+              : "🏪 Recoger en tienda"
+          }
+        </p>
+
+    `;
+
+    if (
+      orderData.metodoEntrega ===
+      "delivery"
+    ) {
+
+      const departamentoNombre =
+        departmentSelect &&
+        departmentSelect.options[
+          departmentSelect.selectedIndex
+        ]
+          ? departmentSelect.options[
+              departmentSelect.selectedIndex
+            ].text
+          : orderData.departamento;
+
+      html += `
+
+        <p>
+          <strong>Departamento:</strong>
+          ${departamentoNombre || ""}
+        </p>
+
+        <p>
+          <strong>Municipio:</strong>
+          ${orderData.municipio || ""}
+        </p>
+
+        <p>
+          <strong>Referencia:</strong>
+          ${orderData.referencia || ""}
+        </p>
+
+      `;
+
+    } else {
+
+      html += `
+
+        <p>
+          <strong>Punto de recogida:</strong>
+          Comayagua, Honduras 🇭🇳
+        </p>
+
+      `;
+
+    }
+
+    html += `
+
+      </div>
+
+      <div class="summary-section">
+
+        <h3>
+          Pago
+        </h3>
+
+        <p>
+          ${
+            orderData.metodoPago ===
+            "transferencia"
+              ? "🏦 Transferencia bancaria"
+              : orderData.metodoPago ===
+                "tarjeta"
+                ? "💳 Tarjeta"
+                : "💵 Efectivo"
+          }
+        </p>
+
+    `;
+
+    if (
+      orderData.metodoPago ===
+      "transferencia"
+    ) {
+
+      const cuenta =
+        cuentasBancarias[
+          orderData.banco
+        ];
+
+      html += `
+
+        <p>
+          <strong>Banco:</strong>
+          ${
+            cuenta
+              ? cuenta.nombre
+              : ""
+          }
+        </p>
+
+      `;
+
+    }
+
+    html += `
+
+      </div>
+
+      <div class="summary-total">
+
+        <p>
+
+          <span>
+            Subtotal:
+          </span>
+
+          <strong>
+            ${formatoPrecio(subtotal)}
+          </strong>
+
+        </p>
+
+    `;
+
+    if (descuento > 0) {
+
+      html += `
+
+        <p>
+
+          <span>
+          Descuento ${
+  codigoPromocionalAplicado
+    ? "(" + codigoPromocionalAplicado + ")"
+    : ""
+}: 
+          </span>
+
+          <strong>
+            -${formatoPrecio(descuento)}
+          </strong>
+
+        </p>
+
+      `;
+
+    }
+
+    html += `
+
+        <p class="total-final">
+
+          <span>
+            Total:
+          </span>
+
+          <strong>
+            ${formatoPrecio(total)}
+          </strong>
+
+        </p>
+
+      </div>
+
+    `;
+
+    orderSummary.innerHTML =
+      html;
+
+  }
+
+
+  /* =====================================================
+     CONFIRMAR PEDIDO
+  ===================================================== */
+
+  if (confirmOrderButton) {
+
+    confirmOrderButton.addEventListener(
+      "click",
+      async () => {
+
+        if (carrito.length === 0) {
+
+          sonidoError();
+
+          alert(
+            "Tu carrito está vacío."
+          );
+
+          return;
+
+        }
+
+        const subtotal =
+          calcularSubtotal();
+
+        const descuento =
+          Math.min(
+            Number(descuentoPromocional) || 0,
+            subtotal
+          );
+
+        const total =
+          Math.max(
+            0,
+            subtotal - descuento
+          );
+
+        const pedido = {
+
+          cliente: {
+
+            nombre:
+              orderData.nombre || "",
+
+            telefono:
+              orderData.telefono || "",
+
+            direccion:
+              orderData.direccion || ""
+
+          },
+
+          productos:
+            carrito.map(
+              item => ({
+
+                id:
+                  item.id,
+
+                nombre:
+                  item.nombre,
+
+                precio:
+                  Number(item.precio) || 0,
+
+                cantidad:
+                  Number(item.cantidad) || 0,
+
+                talla:
+                  item.talla || "",
+
+                imagen:
+                  item.imagen || ""
+
+              })
+            ),
+
+          entrega: {
+
+            metodo:
+              orderData.metodoEntrega || "",
+
+            departamento:
+              orderData.departamento || "",
+
+            municipio:
+              orderData.municipio || "",
+
+            referencia:
+              orderData.referencia || "",
+
+            puntoRecogida:
+              orderData.metodoEntrega === "pickup"
+                ? "Comayagua, Honduras"
+                : ""
+
+          },
+
+          pago: {
+
+            metodo:
+              orderData.metodoPago || "",
+
+            banco:
+              orderData.banco || ""
+
+          },
+
+          promocion: {
+
+            codigo:
+              codigoPromocionalAplicado,
+
+            descuento:
+              descuento
+
+          },
+
+          subtotal:
+            subtotal,
+
+          descuento:
+            descuento,
+
+          total:
+            total,
+
+          fecha:
+            new Date().toISOString()
+
+        };
+
+console.log("PEDIDO A ENVIAR:", pedido);
+        try {
+
+          confirmOrderButton.disabled =
+            true;
+
+          confirmOrderButton.textContent =
+            "PROCESANDO...";
+
+
+          const respuesta =
+            await fetch(
+              "/api/pedidos",
+              {
+
+                method:
+                  "POST",
+
+                headers: {
+
+                  "Content-Type":
+                    "application/json"
+
+                },
+
+                body:
+                  JSON.stringify(pedido)
+
+              }
+            );
+
+
+          const resultado =
+            await respuesta
+              .json()
+              .catch(
+                () => ({})
+              );
+
+
+          if (!respuesta.ok) {
+
+            throw new Error(
+              resultado.error ||
+              "No se pudo crear el pedido."
+            );
+
+          }
+
+
+          /* =====================================
+             PEDIDO CORRECTO
+          ===================================== */
+
+          carrito = [];
+
+          descuentoPromocional =
+            0;
+
+          codigoPromocionalAplicado =
+            "";
+
+          guardarCarrito();
+
+          actualizarContadorCarrito();
+
+          mostrarCarrito();
+
+
+          /* Ocultar pasos */
+
+          document
+            .querySelectorAll(
+              ".checkout-step"
+            )
+            .forEach(
+              paso => {
+                paso.style.display =
+                  "none";
+              }
+            );
+
+
+          /* Mostrar resultado */
+
+          if (checkoutContainer) {
+
+            checkoutContainer.style.display =
+              "block";
+
+          }
+
+          if (stepResult) {
+
+            stepResult.style.display =
+              "block";
+
+          }
+if (paymentResult) {
+
+  paymentResult.innerHTML = `
+    <div class="payment-success">
+
+      <div class="confirmation-check">
+        ✓
+      </div>
+
+      <h2>
+        ¡PEDIDO CONFIRMADO!
+      </h2>
+
+     <div class="novaguet-confirmed">
+  <span class="nova-confirmed">NOVA</span><span class="guet-confirmed">GUET</span>
+</div>
+
+      <p>
+        Gracias por comprar con nosotros.
+      </p>
+
+      <p class="confirmation-small">
+        Tu pedido ha sido recibido correctamente.
+      </p>
+
+    </div>
+  `;
+
+  paymentResult.style.display =
+    "block";
+
+}
+
+          sonidoExito();
+          /* =====================================
+
+             VOLVER A LA PÁGINA PRINCIPAL
+
+          ===================================== */
+
+          setTimeout(() => {
+
+            if (checkoutContainer) {
+
+              checkoutContainer.style.display =
+
+                "none";
+
+            }
+
+            if (stepResult) {
+
+              stepResult.style.display =
+
+                "none";
+
+            }
+
+            if (cartBox) {
+
+              cartBox.style.display =
+
+                "none";
+
+            }
+
+            window.scrollTo({
+
+              top: 0,
+
+              behavior: "smooth"
+
+            });
+
+          }, 3000);
+
+          /* =====================================
+             OCULTAR CARRITO
+          ===================================== */
+
+          if (cartItems) {
+
+            cartItems.style.display =
+              "none";
+
+          }
+
+          if (cartSummary) {
+
+            cartSummary.style.display =
+              "none";
+
+          }
+
+          if (cartEmpty) {
+
+            cartEmpty.style.display =
+              "none";
+
+          }
+
+          if (confirmOrderButton) {
+
+            confirmOrderButton.style.display =
+              "none";
+
+          }
+
+        } catch (error) {
+
+          sonidoError();
+
+          console.error(
+            "Error creando pedido:",
+            error
+          );
+
+          alert(
+            error.message ||
+            "No se pudo procesar el pedido."
+          );
+
+        } finally {
+
+          if (confirmOrderButton) {
+
+            confirmOrderButton.disabled =
+              false;
+
+            confirmOrderButton.textContent =
+              "CONFIRMAR PEDIDO";
+
+          }
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     IDIOMA
+  ===================================================== */
+
+  window.changeLanguage =
+    function (idioma) {
+
+      document
+        .querySelectorAll("[data-es]")
+        .forEach(elemento => {
+
+          const texto =
+            elemento.getAttribute(
+              "data-" + idioma
+            );
+
+          if (texto !== null) {
+
+            elemento.textContent =
+              texto;
+
+          }
+
+        });
+
+      document.documentElement.lang =
+        idioma;
+
     };
+
+
+  /* =====================================================
+     VOLVER A LA TIENDA
+  ===================================================== */
+
+  const backToStoreButton =
+    document.getElementById(
+      "backToStoreButton"
+    );
+
+  if (backToStoreButton) {
+
+    backToStoreButton.addEventListener(
+      "click",
+      () => {
+
+        if (stepResult) {
+
+          stepResult.style.display =
+            "none";
+
+        }
+
+        if (paymentResult) {
+
+          paymentResult.innerHTML =
+            "";
+
+        }
+
+        if (checkoutContainer) {
+
+          checkoutContainer.style.display =
+            "none";
+
+        }
+
+        if (cartBox) {
+
+          cartBox.classList.remove(
+            "show"
+          );
+
+        }
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+        cargarProductos();
+
+      }
+    );
+
+  }
 
 
   /* =====================================================
@@ -3598,6 +3625,8 @@ if (cartTotal) {
   actualizarContadorCarrito();
 
   mostrarCarrito();
+
+  actualizarPago();
 
   cargarProductos();
 

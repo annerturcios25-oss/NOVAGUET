@@ -1,19 +1,37 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+
+    name="viewport"
+
+    content="width=device-width, initial-scale=1.0"
+
+  >
 
   <title>NOVAGUET | Próximamente</title>
 
-  <link rel="stylesheet" href="styles.css">
+  <link
+
+    rel="stylesheet"
+
+    href="styles.css"
+
+  >
+
 </head>
 
 <body>
 
   <!-- =========================
+
        ENCABEZADO
+
   ========================= -->
 
   <header>
@@ -21,43 +39,113 @@
     <div class="navbar">
 
       <div class="logo">
-        <img src="NOVAGUET.PNG.png" alt="Logo NOVAGUET">
+
+        <img
+
+          src="NOVAGUET.PNG.png"
+
+          alt="Logo NOVAGUET"
+
+        >
+
       </div>
 
       <nav>
 
-        <a href="#inicio" data-es="INICIO" data-en="HOME">
+        <a
+
+          href="#inicio"
+
+          data-es="INICIO"
+
+          data-en="HOME"
+
+        >
+
           INICIO
+
         </a>
 
-        <a href="#categorias" data-es="CATEGORÍAS" data-en="CATEGORIES">
+        <a
+
+          href="#categorias"
+
+          data-es="CATEGORÍAS"
+
+          data-en="CATEGORIES"
+
+        >
+
           CATEGORÍAS
+
         </a>
 
         <div class="nosotros-menu">
 
-          <a href="#" id="nosotrosButton" data-es="NOSOTROS" data-en="ABOUT US">
+          <a
+
+            href="#"
+
+            id="nosotrosButton"
+
+            data-es="NOSOTROS"
+
+            data-en="ABOUT US"
+
+          >
+
             NOSOTROS
+
           </a>
 
-          <div id="nosotrosCloud" class="nosotros-cloud">
+          <div
+
+            id="nosotrosCloud"
+
+            class="nosotros-cloud"
+
+          >
 
             <div class="cloud-content">
 
-              <h2 data-es="☁️ QUIÉNES SOMOS" data-en="☁️ WHO WE ARE">
+              <h2
+
+                data-es="☁️ QUIÉNES SOMOS"
+
+                data-en="☁️ WHO WE ARE"
+
+              >
+
                 ☁️ QUIÉNES SOMOS
+
               </h2>
 
               <p
+
                 data-es="NOVAGUET es una marca que conecta estilos, cultura y moda entre Honduras y Estados Unidos."
-                data-en="NOVAGUET is a brand that connects style, culture and fashion between Honduras and the United States.">
-                NOVAGUET es una marca que conecta estilos, cultura y moda entre Honduras y Estados Unidos.
+
+                data-en="NOVAGUET is a brand that connects style, culture and fashion between Honduras and the United States."
+
+              >
+
+                NOVAGUET es una marca que conecta estilos,
+
+                cultura y moda entre Honduras y Estados Unidos.
+
               </p>
 
               <p
+
                 data-es="Nacemos para compartir una nueva forma de vestir, con actitud, identidad y personalidad."
-                data-en="We were created to share a new way of dressing, with attitude, identity and personality.">
-                Nacemos para compartir una nueva forma de vestir, con actitud, identidad y personalidad.
+
+                data-en="We were created to share a new way of dressing, with attitude, identity and personality."
+
+              >
+
+                Nacemos para compartir una nueva forma de vestir,
+
+                con actitud, identidad y personalidad.
+
               </p>
 
             </div>
@@ -66,592 +154,1227 @@
 
         </div>
 
-        <a href="#contacto" data-es="CONTACTO" data-en="CONTACT">
+        <a
+
+          href="#contacto"
+
+          data-es="CONTACTO"
+
+          data-en="CONTACT"
+
+        >
+
           CONTACTO
+
         </a>
 
       </nav>
 
+      <!-- ICONOS -->
+
       <div class="icons">
 
         <button
+
           id="searchButton"
+
           class="icon-button"
+
           type="button"
-          aria-label="Buscar">
+
+          aria-label="Buscar"
+
+        >
+
           🔍
+
         </button>
-
-        <span class="user-icon">
-          ♙
-        </span>
-
-       <button
-  id="cartButton"
-  class="icon-button cart-button"
-  type="button"
-  aria-label="Carrito">
-
-  🛒
-
-  <span
-    id="cartCount"
-    class="cart-count">
-    0
-  </span>
-
-</button>
-
-      </div>
-
-    </div>
-
-
-    <!-- =========================
-         BUSCADOR
-    ========================= -->
-
-    <div
-      id="searchBox"
-      class="search-box">
-
-      <input
-        type="text"
-        id="searchInput"
-        placeholder="¿Qué estás buscando?"
-        autocomplete="off"
-      >
-
-      <button
-        id="closeSearch"
-        type="button">
-        ✕
-      </button>
-
-    </div>
-
-
-    <!-- =========================
-         CARRITO
-    ========================= -->
-
-    <div
-      id="cartBox"
-      class="cart-box">
-
-      <div class="cart-header">
-
-        <h2>
-          🛒 TU CARRITO
-        </h2>
 
         <button
-          id="closeCart"
-          type="button">
-          ✕
-        </button>
 
-      </div>
+          id="cartButton"
 
+          class="icon-button cart-button"
 
-      <!-- PRODUCTOS -->
+          type="button"
 
-      <div id="cartItems"></div>
+          aria-label="Carrito"
 
+        >
 
-      <!-- CARRITO VACÍO -->
-
-      <div
-        id="cartEmpty"
-        class="cart-empty">
-
-        <span>
           🛒
-        </span>
 
-        <h3>
-          Tu carrito está vacío
-        </h3>
+          <span
 
-        <p>
-          Explora nuestros productos y agrega tus favoritos.
-        </p>
+            id="cartCount"
 
-      </div>
+            class="cart-count"
 
+          >
 
-      <!-- RESUMEN DEL CARRITO -->
+            0
 
-      <div class="cart-summary">
-
-        <p>
-          Subtotal:
-          <span id="cartSubtotal">
-            HNL 0
           </span>
-        </p>
-<div class="promo-box">
-  <label for="promoCode">¿Tienes un código promocional?</label>
-
-  <div class="promo-row">
-    <input
-      type="text"
-      id="promoCode"
-      placeholder="Código promocional"
-      autocomplete="off"
-    >
-
-    <button
-      type="button"
-      id="applyPromo">
-      Aplicar
-    </button>
-  </div>
-
-  <p id="promoMessage"></p>
-</div>
-        <p>
-          Total:
-          <span id="cartTotal">
-            HNL 0
-          </span>
-        </p>
-
-        <button
-          id="checkoutButton"
-          class="checkout-button"
-          type="button">
-
-          💳 PAGAR
 
         </button>
 
       </div>
-
 
       <!-- =========================
-           CHECKOUT POR PASOS
+
+           BUSCADOR
+
       ========================= -->
 
       <div
-        class="checkout-container"
-        id="checkoutContainer"
-        style="display: none;">
 
+        id="searchBox"
 
-        <!-- =================================================
-             PASO 1
-             INFORMACIÓN DE ENTREGA
-        ================================================= -->
+        class="search-box"
 
-        <div
-          class="checkout-card checkout-step"
-          id="stepCustomer"
-          style="display: none;">
+      >
 
-          <h3>
-            📦 INFORMACIÓN DE ENTREGA
-          </h3>
+        <input
 
-          <label for="customerName">
-            👤 Nombre completo
-          </label>
+          type="text"
 
-          <input
-            type="text"
-            id="customerName"
-            placeholder="Escribe tu nombre completo"
-            autocomplete="name"
-          >
+          id="searchInput"
 
-          <label for="customerPhone">
-            📞 Número de teléfono
-          </label>
+          placeholder="¿Qué estás buscando?"
 
-          <input
-            type="tel"
-            id="customerPhone"
-            placeholder="Escribe tu número de teléfono"
-            autocomplete="tel"
-          >
+          autocomplete="off"
 
-          <label for="customerAddress">
-            🏠 Dirección de entrega
-          </label>
+        >
 
-          <input
-            type="text"
-            id="customerAddress"
-            placeholder="Escribe tu dirección"
-            autocomplete="street-address"
-          >
+        <button
 
-          <label for="customerCity">
-            🏙️ Ciudad
-          </label>
+          id="closeSearch"
 
-          <input
-            type="text"
-            id="customerCity"
-            placeholder="Escribe tu ciudad"
-            autocomplete="address-level2"
-          >
+          type="button"
 
-          <label for="deliveryReference">
-            📍 Referencia para encontrar la dirección
-          </label>
+        >
 
-          <textarea
-            id="deliveryReference"
-            placeholder="Ejemplo: cerca de..., frente a..., casa color..."
-            rows="3"></textarea>
+          ✕
 
+        </button>
+
+      </div>
+
+      <!-- =========================
+
+           CARRITO
+
+      ========================= -->
+
+      <div
+
+        id="cartBox"
+
+        class="cart-box"
+
+      >
+
+        <div class="cart-header">
+
+          <h2>
+
+            🛒 TU CARRITO
+
+          </h2>
 
           <button
-            id="confirmCustomerButton"
-            class="checkout-button"
-            type="button">
 
-            CONFIRMAR
+            id="closeCart"
+
+            type="button"
+
+          >
+
+            ✕
 
           </button>
 
         </div>
 
+        <!-- PRODUCTOS -->
 
-        <!-- =================================================
-             PASO 2
-             MÉTODO DE ENTREGA
-        ================================================= -->
+        <div id="cartItems"></div>
+
+        <!-- CARRITO VACÍO -->
 
         <div
-          class="checkout-card checkout-step"
-          id="stepDelivery"
-          style="display: none;">
+
+          id="cartEmpty"
+
+          class="cart-empty"
+
+        >
+
+          <span>
+
+            🛒
+
+          </span>
 
           <h3>
-            🚚 MÉTODO DE ENTREGA
+
+            Tu carrito está vacío
+
           </h3>
 
+          <p>
 
-          <!-- ENVÍO A DOMICILIO -->
+            Explora nuestros productos
 
-          <label class="option-card">
+            y agrega tus favoritos.
 
-            <input
-              type="radio"
-              name="deliveryMethod"
-              value="delivery"
-              id="homeDelivery"
-            >
+          </p>
 
-            <span>
-              🚚 Envío a domicilio
+        </div>
+
+        <!-- RESUMEN -->
+
+        <div class="cart-summary">
+
+          <p>
+
+            Subtotal:
+
+            <span id="cartSubtotal">
+
+              HNL 0
+
             </span>
 
-          </label>
+          </p>
 
+          <!-- PROMOCIÓN -->
 
-          <!-- DEPARTAMENTO -->
+          <div class="promo-box">
 
-          <div
-            id="departmentBox"
-            class="department-box">
+            <label for="promoCode">
 
-            <label for="department">
-              🇭🇳 Selecciona tu departamento
+              ¿Tienes un código promocional?
+
             </label>
 
-            <select id="department">
+            <div class="promo-row">
 
-              <option value="">
-                Selecciona un departamento
-              </option>
+              <input
 
-              <option value="atlantida">Atlántida</option>
-              <option value="choluteca">Choluteca</option>
-              <option value="colon">Colón</option>
-              <option value="comayagua">Comayagua</option>
-              <option value="copan">Copán</option>
-              <option value="cortes">Cortés</option>
-              <option value="el-paraiso">El Paraíso</option>
-              <option value="francisco-morazan">Francisco Morazán</option>
-              <option value="gracias-a-dios">Gracias a Dios</option>
-              <option value="intibuca">Intibucá</option>
-              <option value="la-paz">La Paz</option>
-              <option value="lempira">Lempira</option>
-              <option value="ocotepeque">Ocotepeque</option>
-              <option value="olancho">Olancho</option>
-              <option value="santa-barbara">Santa Bárbara</option>
-              <option value="valle">Valle</option>
-              <option value="yoro">Yoro</option>
+                type="text"
 
-            </select>
+                id="promoCode"
+
+                placeholder="Código promocional"
+
+                autocomplete="off"
+
+              >
+
+              <button
+
+                type="button"
+
+                id="applyPromo"
+
+              >
+
+                Aplicar
+
+              </button>
+
+            </div>
+
+            <p id="promoMessage"></p>
 
           </div>
 
+          <p>
 
-          <!-- RECOGER EN TIENDA -->
+            Total:
 
-          <label class="option-card">
+            <span id="cartTotal">
 
-            <input
-              type="radio"
-              name="deliveryMethod"
-              value="pickup"
-              id="storePickup"
-            >
+              HNL 0
 
-            <span>
-              🏪 Recoger en tienda
             </span>
 
-          </label>
+          </p>
 
+          <button
 
-          <!-- PUNTO DE RECOGIDA -->
+            id="checkoutButton"
+
+            class="checkout-button"
+
+            type="button"
+
+          >
+
+            💳 PAGAR
+
+          </button>
+
+        </div>
+
+        <!-- =========================
+
+             CHECKOUT
+
+        ========================= -->
+
+        <div
+
+          class="checkout-container"
+
+          id="checkoutContainer"
+
+          style="display:none;"
+
+        >
+
+          <!-- =========================
+
+               PASO 1
+
+          ========================= -->
 
           <div
-            id="pickupBox"
-            class="department-box">
 
-            <label>
-              📍 Punto de recogida
+            class="checkout-card checkout-step"
+
+            id="stepCustomer"
+
+            style="display:none;"
+
+          >
+
+            <h3>
+
+              📦 INFORMACIÓN DE ENTREGA
+
+            </h3>
+
+            <label for="customerName">
+
+              👤 Nombre completo
+
             </label>
 
-            <div class="pickup-location">
+            <input
 
-              🏪
+              type="text"
 
-              <strong>
-                Comayagua, Honduras 🇭🇳
-              </strong>
+              id="customerName"
+
+              placeholder="Escribe tu nombre completo"
+
+              autocomplete="name"
+
+            >
+
+            <label for="customerPhone">
+
+              📞 Número de teléfono
+
+            </label>
+
+            <div class="phone-input">
+
+              <span class="phone-prefix">
+
+                🇭🇳 +504
+
+              </span>
+
+              <input
+
+                type="tel"
+
+                id="customerPhone"
+
+                placeholder="Número de teléfono"
+
+                maxlength="8"
+
+                inputmode="numeric"
+
+                autocomplete="tel"
+
+              >
+
+            </div>
+
+           <div
+
+  style="
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:15px;
+
+    width:100%;
+
+  "
+
+>
+
+  <button
+
+    type="button"
+
+    id="backCustomerButton"
+
+    style="
+
+      display:block;
+
+      flex:1;
+
+      padding:14px;
+
+      background:#333;
+
+      color:white;
+
+      border:none;
+
+      border-radius:8px;
+
+      cursor:pointer;
+
+      font-weight:bold;
+
+    "
+
+  >
+
+    ← ATRÁS
+
+  </button>
+
+  <button
+
+    id="confirmCustomerButton"
+
+    class="checkout-button"
+
+    type="button"
+
+    style="flex:1;"
+
+  >
+
+    CONTINUAR
+
+  </button>
+
+</div>
+
+          </div>
+
+          <!-- =========================
+
+               PASO 2
+
+          ========================= -->
+
+          <div
+
+            class="checkout-card checkout-step"
+
+            id="stepDelivery"
+
+            style="display:none;"
+
+          >
+
+            <h3>
+
+              🚚 MÉTODO DE ENTREGA
+
+            </h3>
+
+            <!-- DOMICILIO -->
+
+            <label class="option-card">
+
+              <input
+
+                type="radio"
+
+                name="deliveryMethod"
+
+                value="delivery"
+
+                id="homeDelivery"
+
+              >
+
+              <span>
+
+                🚚 Envío a domicilio
+
+              </span>
+
+            </label>
+
+            <!-- DEPARTAMENTO -->
+
+            <div
+
+              id="departmentBox"
+
+              class="department-box"
+
+              style="display:none;"
+
+            >
+
+              <label for="department">
+
+                🇭🇳 Selecciona tu departamento
+
+              </label>
+
+              <select id="department">
+
+                <option value="">
+
+                  Selecciona un departamento
+
+                </option>
+
+                <option value="atlantida">
+
+                  Atlántida
+
+                </option>
+
+                <option value="choluteca">
+
+                  Choluteca
+
+                </option>
+
+                <option value="colon">
+
+                  Colón
+
+                </option>
+
+                <option value="comayagua">
+
+                  Comayagua
+
+                </option>
+
+                <option value="copan">
+
+                  Copán
+
+                </option>
+
+                <option value="cortes">
+
+                  Cortés
+
+                </option>
+
+                <option value="el-paraiso">
+
+                  El Paraíso
+
+                </option>
+
+                <option value="francisco-morazan">
+
+                  Francisco Morazán
+
+                </option>
+
+                <option value="gracias-a-dios">
+
+                  Gracias a Dios
+
+                </option>
+
+                <option value="intibuca">
+
+                  Intibucá
+
+                </option>
+
+                <option value="la-paz">
+
+                  La Paz
+
+                </option>
+
+                <option value="lempira">
+
+                  Lempira
+
+                </option>
+
+                <option value="ocotepeque">
+
+                  Ocotepeque
+
+                </option>
+
+                <option value="olancho">
+
+                  Olancho
+
+                </option>
+
+                <option value="santa-barbara">
+
+                  Santa Bárbara
+
+                </option>
+
+                <option value="valle">
+
+                  Valle
+
+                </option>
+
+                <option value="yoro">
+
+                  Yoro
+
+                </option>
+
+              </select>
+
+            </div>
+
+            <!-- MUNICIPIO -->
+
+            <div
+
+              id="municipalityBox"
+
+              class="department-box"
+
+              style="display:none;"
+
+            >
+
+              <label for="municipality">
+
+                🏙️ Selecciona tu municipio
+
+              </label>
+
+              <select id="municipality">
+
+                <option value="">
+
+                  Selecciona un municipio
+
+                </option>
+
+              </select>
+
+            </div>
+
+            <!-- RECOGER -->
+
+            <label class="option-card">
+
+              <input
+
+                type="radio"
+
+                name="deliveryMethod"
+
+                value="pickup"
+
+                id="storePickup"
+
+              >
+
+              <span>
+
+                🏪 Recoger en tienda
+
+              </span>
+
+            </label>
+
+            <!-- PUNTO DE RECOGIDA -->
+
+            <div
+
+              id="pickupBox"
+
+              class="department-box"
+
+              style="display:none;"
+
+            >
+
+              <label>
+
+                📍 Punto de recogida
+
+              </label>
+
+              <div class="pickup-location">
+
+                🏪
+
+                <strong>
+
+                  Comayagua, Honduras 🇭🇳
+
+                </strong>
+
+              </div>
+
+            </div>
+
+          <div class="checkout-navigation">
+
+  <button
+
+    type="button"
+
+    id="backDeliveryButton"
+
+    class="checkout-back-button"
+
+  >
+
+    ← ATRÁS
+
+  </button>
+
+  <button
+
+    id="continueDeliveryButton"
+
+    class="checkout-button"
+
+    type="button"
+
+  >
+
+    CONTINUAR
+
+  </button>
+
+</div>
+
+          </div>
+
+          <!-- =========================
+
+               PASO 3
+
+          ========================= -->
+
+          <div
+
+            class="checkout-card checkout-step"
+
+            id="stepPayment"
+
+            style="display:none;"
+
+          >
+
+            <h3>
+
+              💳 FORMA DE PAGO
+
+            </h3>
+
+            <!-- TRANSFERENCIA -->
+
+            <label class="option-card">
+
+              <input
+
+                type="radio"
+
+                name="paymentMethod"
+
+                value="transfer"
+
+                id="transferPayment"
+
+              >
+
+              <span>
+
+                🏦 Transferencia bancaria
+
+              </span>
+
+            </label>
+
+            <!-- BANCOS -->
+
+            <div
+
+              id="bankBox"
+
+              class="department-box"
+
+              style="display:none;"
+
+            >
+
+              <label for="bank">
+
+                🏦 Selecciona tu banco
+
+              </label>
+
+              <select id="bank">
+
+                <option value="">
+
+                  Selecciona un banco
+
+                </option>
+
+                <option value="atlantida">
+
+                  Banco Atlántida
+
+                </option>
+
+                <option value="ficohsa">
+
+                  Ficohsa
+
+                </option>
+
+                <option value="bac">
+
+                  BAC Credomatic
+
+                </option>
+
+              </select>
+
+            </div>
+
+            <!-- DATOS CUENTA -->
+
+            <div
+
+              id="bankDetails"
+
+              class="department-box"
+
+              style="display:none;"
+
+            >
+
+              <h4>
+
+                🏦 DATOS PARA LA TRANSFERENCIA
+
+              </h4>
+
+              <p>
+
+                <strong>
+
+                  Banco:
+
+                </strong>
+
+                <span id="selectedBankName"></span>
+
+              </p>
+
+              <p>
+
+                <strong>
+
+                  Titular:
+
+                </strong>
+
+                NOVA SHOP
+
+              </p>
+
+              <p>
+
+                <strong>
+
+                  N/C:
+
+                </strong>
+
+                <span id="selectedAccountNumber"></span>
+
+              </p>
+
+              <p>
+
+                <strong>
+
+                  Tipo de cuenta:
+
+                </strong>
+
+                Ahorro
+
+              </p>
+
+            </div>
+
+            <!-- TARJETA -->
+
+            <label class="option-card">
+
+              <input
+
+                type="radio"
+
+                name="paymentMethod"
+
+                value="card"
+
+                id="cardPayment"
+
+              >
+
+              <span>
+
+                💳 Tarjeta de débito/crédito
+
+              </span>
+
+            </label>
+
+            <!-- DATOS TARJETA -->
+
+            <div
+
+              id="cardBox"
+
+              class="department-box"
+
+              style="display:none;"
+
+            >
+
+              <h4>
+
+                💳 Datos de la tarjeta
+
+              </h4>
+
+              <label for="cardName">
+
+                Nombre del titular
+
+              </label>
+
+              <input
+
+                type="text"
+
+                id="cardName"
+
+                placeholder="Nombre como aparece en la tarjeta"
+
+                autocomplete="cc-name"
+
+              >
+
+              <label for="cardNumber">
+
+                Número de tarjeta
+
+              </label>
+
+              <input
+
+                type="text"
+
+                id="cardNumber"
+
+                placeholder="0000 0000 0000 0000"
+
+                inputmode="numeric"
+
+                autocomplete="cc-number"
+
+                maxlength="19"
+
+              >
+
+              <div class="card-fields">
+
+                <div>
+
+                  <label for="cardExpiry">
+
+                    Vencimiento
+
+                  </label>
+
+                  <input
+
+                    type="text"
+
+                    id="cardExpiry"
+
+                    placeholder="MM/AA"
+
+                    inputmode="numeric"
+
+                    autocomplete="cc-exp"
+
+                    maxlength="5"
+
+                  >
+
+                </div>
+
+                <div>
+
+                  <label for="cardCVV">
+
+                    CVV
+
+                  </label>
+
+                  <input
+
+                    type="password"
+
+                    id="cardCVV"
+
+                    placeholder="CVV"
+
+                    inputmode="numeric"
+
+                    autocomplete="cc-csc"
+
+                    maxlength="4"
+
+                  >
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- EFECTIVO -->
+
+            <label class="option-card">
+
+              <input
+
+                type="radio"
+
+                name="paymentMethod"
+
+                value="cash"
+
+                id="cashPayment"
+
+              >
+
+              <span>
+
+                💵 Pago en efectivo
+
+              </span>
+
+            </label>
+
+            <div
+
+              id="cashBox"
+
+              class="department-box"
+
+              style="display:none;"
+
+            >
+
+              <p>
+
+                💵 El pago se realizará en efectivo
+
+                según el método de entrega seleccionado.
+
+              </p>
+
+            </div>
+
+            <button
+
+              id="continuePaymentButton"
+
+              class="checkout-button"
+
+              type="button"
+
+            >
+
+              CONTINUAR
+
+            </button>
+
+          </div>
+
+          <!-- =========================
+
+               PASO 4
+
+          ========================= -->
+
+          <div
+
+            class="checkout-card checkout-step"
+
+            id="stepSummary"
+
+            style="display:none;"
+
+          >
+
+            <h3>
+
+              📋 CONFIRMA TU PEDIDO
+
+            </h3>
+
+            <div id="orderSummary"></div>
+
+            <button
+
+              id="confirmOrderButton"
+
+              class="checkout-button"
+
+              type="button"
+
+            >
+
+              ✅ CONFIRMAR PEDIDO
+
+            </button>
+
+          </div>
+
+          <!-- =========================
+
+               RESULTADO
+
+          ========================= -->
+
+          <div
+
+            id="stepResult"
+
+            style="display:none;"
+
+          >
+
+            <div
+
+              id="paymentResult"
+
+              class="payment-result success-result"
+
+              style="text-align:center;"
+
+            >
 
             </div>
 
           </div>
 
-
-          <button
-            id="continueDeliveryButton"
-            class="checkout-button"
-            type="button">
-
-            CONTINUAR
-
-          </button>
-
         </div>
-
-
-        <!-- =================================================
-             PASO 3
-             FORMA DE PAGO
-        ================================================= -->
-
-        <div
-          class="checkout-card checkout-step"
-          id="stepPayment"
-          style="display: none;">
-
-          <h3>
-            💳 FORMA DE PAGO
-          </h3>
-
-
-          <!-- TRANSFERENCIA -->
-
-          <label class="option-card">
-
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="transfer"
-              id="transferPayment"
-            >
-
-            <span>
-              🏦 Transferencia bancaria
-            </span>
-
-          </label>
-
-
-          <!-- BANCOS -->
-
-          <div
-            id="bankBox"
-            class="department-box">
-
-            <label for="bank">
-              🏦 Selecciona tu banco
-            </label>
-
-            <select id="bank">
-
-              <option value="">
-                Selecciona un banco
-              </option>
-
-              <option value="atlantida">
-                Banco Atlántida
-              </option>
-
-              <option value="ficohsa">
-                Ficohsa
-              </option>
-
-              <option value="bac">
-                BAC Credomatic
-              </option>
-
-            </select>
-
-          </div>
-
-
-          <!-- EFECTIVO -->
-
-          <label class="option-card">
-
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="cash"
-              id="cashPayment"
-            >
-
-            <span>
-              💵 Pago en efectivo
-            </span>
-
-          </label>
-
-
-          <button
-            id="continuePaymentButton"
-            class="checkout-button"
-            type="button">
-
-            CONTINUAR
-
-          </button>
-
-        </div>
-
-
-        <!-- =================================================
-             PASO 4
-             RESUMEN FINAL
-        ================================================= -->
-
-        <div
-          class="checkout-card checkout-step"
-          id="stepSummary"
-          style="display: none;">
-
-          <h3>
-            📋 CONFIRMA TU PEDIDO
-          </h3>
-
-
-          <div id="orderSummary">
-
-            <!-- Se llena automáticamente -->
-
-          </div>
-
-
-          <button
-            id="confirmOrderButton"
-            class="checkout-button"
-            type="button">
-
-            ✅ CONFIRMAR PAGO
-
-          </button>
-
-        </div>
-
-
-        <!-- =================================================
-             RESULTADO
-        ================================================= -->
-
-        <div
-          id="stepResult"
-          style="display: none;">
-
-          <div
-            id="paymentResult"
-            class="payment-result success-result"
-            style="text-align:center;">
-
-            <!-- Resultado generado por JavaScript -->
-
-          </div>
-
-        </div>
-
 
       </div>
 
-    </div>
+      <!-- LÍNEA DE COLORES -->
 
+      <div class="color-line">
 
-    <!-- LÍNEA DE COLORES -->
+        <div class="blue"></div>
 
-    <div class="color-line">
+        <div class="yellow"></div>
 
-      <div class="blue"></div>
-      <div class="yellow"></div>
-      <div class="black"></div>
+        <div class="black"></div>
+
+      </div>
 
     </div>
 
   </header>
 
-
   <!-- =========================
-       SECCIÓN PRINCIPAL
+
+       PRINCIPAL
+
   ========================= -->
 
   <main id="inicio">
+
+    <!-- HERO -->
 
     <section class="hero">
 
       <h1>
 
         <span class="nova">
+
           NOVA
+
         </span>
 
         <span class="guet">
+
           GUET
+
         </span>
 
       </h1>
 
       <p
+
         data-es="PRÓXIMAMENTE"
-        data-en="COMING SOON">
+
+        data-en="COMING SOON"
+
+      >
 
         PRÓXIMAMENTE
 
       </p>
-
 
       <div class="countries">
 
         <div class="country">
 
           <div class="flag">
+
             🇭🇳
+
           </div>
 
-          <h2
-            data-es="HONDURAS"
-            data-en="HONDURAS">
+          <h2>
 
             HONDURAS
 
@@ -659,21 +1382,21 @@
 
         </div>
 
-
         <div class="connection">
-          🤝
-        </div>
 
+          🤝
+
+        </div>
 
         <div class="country">
 
           <div class="flag">
+
             🇺🇸
+
           </div>
 
-          <h2
-            data-es="ESTADOS UNIDOS"
-            data-en="UNITED STATES">
+          <h2>
 
             ESTADOS UNIDOS
 
@@ -685,57 +1408,89 @@
 
     </section>
 
+    <!-- =========================
 
-    <!-- CATEGORÍAS -->
+         CATEGORÍAS
+
+    ========================= -->
 
     <section
+
       id="categorias"
-      class="info-section">
+
+      class="info-section"
+
+    >
 
       <h2
+
         data-es="CATEGORÍAS"
-        data-en="CATEGORIES">
+
+        data-en="CATEGORIES"
+
+      >
 
         CATEGORÍAS
 
       </h2>
 
       <p
+
         data-es="Descubre próximamente nuestra colección."
-        data-en="Discover our collection coming soon.">
+
+        data-en="Discover our collection coming soon."
+
+      >
 
         Descubre próximamente nuestra colección.
 
       </p>
 
-
       <div class="category-list">
 
         <div
+
           class="category-button"
+
           data-category="Ropa"
+
           data-es="👕 ROPA"
-          data-en="👕 CLOTHING">
+
+          data-en="👕 CLOTHING"
+
+        >
 
           👕 ROPA
 
         </div>
 
         <div
+
           class="category-button"
+
           data-category="Calzado"
+
           data-es="👟 CALZADO"
-          data-en="👟 FOOTWEAR">
+
+          data-en="👟 FOOTWEAR"
+
+        >
 
           👟 CALZADO
 
         </div>
 
         <div
+
           class="category-button"
+
           data-category="Accesorios"
+
           data-es="🧢 ACCESORIOS"
-          data-en="🧢 ACCESSORIES">
+
+          data-en="🧢 ACCESSORIES"
+
+        >
 
           🧢 ACCESORIOS
 
@@ -745,57 +1500,85 @@
 
     </section>
 
+    <!-- =========================
 
-    <!-- PRODUCTOS -->
+         PRODUCTOS
+
+    ========================= -->
 
     <section
+
       id="productos"
-      class="productos-section">
+
+      class="productos-section"
+
+    >
 
       <div
+
         id="productsContainer"
-        class="product-list">
+
+        class="product-list"
+
+      >
+
       </div>
 
     </section>
 
-
     <section class="separador">
 
       <h2>
+
         MUY PRONTO
+
       </h2>
 
     </section>
 
   </main>
 
-
   <!-- =========================
-       PIE DE PÁGINA
+
+       FOOTER
+
   ========================= -->
 
   <footer id="contacto">
 
     <div class="footer-item">
 
-      <span>🛡️</span>
+      <span>
+
+        🛡️
+
+      </span>
 
       <div>
 
         <h3
+
           data-es="CALIDAD PREMIUM"
-          data-en="PREMIUM QUALITY">
+
+          data-en="PREMIUM QUALITY"
+
+        >
 
           CALIDAD PREMIUM
 
         </h3>
 
         <p
-          data-es="Productos seleccionados con el mejor estándar"
-          data-en="Products selected to the highest standards">
 
-          Productos seleccionados con el mejor estándar
+          data-es="Productos seleccionados con el mejor estándar"
+
+          data-en="Products selected to the highest standards"
+
+        >
+
+          Productos seleccionados
+
+          con el mejor estándar
 
         </p>
 
@@ -803,24 +1586,35 @@
 
     </div>
 
-
     <div class="footer-item">
 
-      <span>🚚</span>
+      <span>
+
+        🚚
+
+      </span>
 
       <div>
 
         <h3
+
           data-es="ENVÍOS NACIONALES"
-          data-en="NATIONAL SHIPPING">
+
+          data-en="NATIONAL SHIPPING"
+
+        >
 
           ENVÍOS NACIONALES
 
         </h3>
 
         <p
+
           data-es="A todo Honduras"
-          data-en="Throughout Honduras">
+
+          data-en="Throughout Honduras"
+
+        >
 
           A todo Honduras
 
@@ -830,24 +1624,35 @@
 
     </div>
 
-
     <div class="footer-item">
 
-      <span>🔒</span>
+      <span>
+
+        🔒
+
+      </span>
 
       <div>
 
         <h3
+
           data-es="PAGO SEGURO"
-          data-en="SECURE PAYMENT">
+
+          data-en="SECURE PAYMENT"
+
+        >
 
           PAGO SEGURO
 
         </h3>
 
         <p
+
           data-es="Compra con confianza"
-          data-en="Shop with confidence">
+
+          data-en="Shop with confidence"
+
+        >
 
           Compra con confianza
 
@@ -857,24 +1662,35 @@
 
     </div>
 
-
     <div class="footer-item">
 
-      <span>🎧</span>
+      <span>
+
+        🎧
+
+      </span>
 
       <div>
 
         <h3
+
           data-es="ATENCIÓN AL CLIENTE"
-          data-en="CUSTOMER SERVICE">
+
+          data-en="CUSTOMER SERVICE"
+
+        >
 
           ATENCIÓN AL CLIENTE
 
         </h3>
 
         <p
+
           data-es="Estamos para ayudarte"
-          data-en="We are here to help you">
+
+          data-en="We are here to help you"
+
+        >
 
           Estamos para ayudarte
 
@@ -886,31 +1702,39 @@
 
   </footer>
 
-
   <!-- =========================
+
        IDIOMA
+
   ========================= -->
 
   <div class="language-selector">
 
     <button
+
       type="button"
-      onclick="changeLanguage('es')">
+
+      onclick="changeLanguage('es')"
+
+    >
 
       🇪🇸 Español
 
     </button>
 
     <button
+
       type="button"
-      onclick="changeLanguage('en')">
+
+      onclick="changeLanguage('en')"
+
+    >
 
       🇺🇸 English
 
     </button>
 
   </div>
-
 
   <script src="/app.js"></script>
 

@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1789896524075,
+    "fecha": "2026-09-20T09:28:44.075Z",
+    "nombre": "jkkjk",
+    "telefono": "68768758",
+    "direccion": "",
+    "referencia": "",
+    "departamento": "comayagua",
+    "municipio": "Lamaní",
+    "metodoEntrega": "delivery",
+    "metodoPago": "efectivo",
+    "banco": "",
+    "productos": [
+      {
+        "id": 1789193530403,
+        "nombre": "Camisa de niño PAW PATROL",
+        "precio": 699,
+        "cantidad": 1,
+        "talla": "4T",
+        "imagen": "/images/1789193530401-1789193234564-camisa-paw-patrol.jpeg"
+      }
+    ],
+    "subtotal": 699,
+    "descuento": 0,
+    "total": 699,
+    "codigoPromocional": "",
+    "estado": "Pendiente"
+  },
+  {
+    "id": 1789897192940,
+    "fecha": "2026-09-20T09:39:52.940Z",
+    "nombre": "anner",
+    "telefono": "76565465",
+    "direccion": "",
+    "referencia": "",
+    "departamento": "comayagua",
+    "municipio": "Siguatepeque",
+    "metodoEntrega": "delivery",
+    "metodoPago": "transferencia",
+    "banco": "ficohsa",
+    "productos": [
+      {
+        "id": 1789193530403,
+        "nombre": "Camisa de niño PAW PATROL",
+        "precio": 699,
+        "cantidad": 2,
+        "talla": "4T",
+        "imagen": "/images/1789193530401-1789193234564-camisa-paw-patrol.jpeg"
+      }
+    ],
+    "subtotal": 1398,
+    "descuento": 0,
+    "total": 1398,
+    "codigoPromocional": "",
+    "estado": "Pendiente"
+  },
+  {
+    "id": 1789897694200,
+    "fecha": "2026-09-20T09:48:14.200Z",
+    "nombre": "juan",
+    "telefono": "76565465",
+    "direccion": "",
+    "referencia": "",
+    "departamento": "colon",
+    "municipio": "Trujillo",
+    "metodoEntrega": "delivery",
+    "metodoPago": "transferencia",
+    "banco": "ficohsa",
+    "productos": [
+      {
+        "id": 1789193530403,
+        "nombre": "Camisa de niño PAW PATROL",
+        "precio": 699,
+        "cantidad": 1,
+        "talla": "4T",
+        "imagen": "/images/1789193530401-1789193234564-camisa-paw-patrol.jpeg"
+      }
+    ],
+    "subtotal": 699,
+    "descuento": 0,
+    "total": 699,
+    "codigoPromocional": "",
+    "estado": "Pendiente"
+  },
+  {
+    "id": 1789898357149,
+    "fecha": "2026-09-20T09:59:17.149Z",
+    "nombre": "julian",
+    "telefono": "68768758",
+    "direccion": "",
+    "referencia": "",
+    "departamento": "lempira",
+    "municipio": "Piraera",
+    "metodoEntrega": "delivery",
+    "metodoPago": "transferencia",
+    "banco": "bac",
+    "productos": [
+      {
+        "id": 1789213258405,
+        "nombre": "Sandalias blancas de niña",
+        "precio": 500,
+        "cantidad": 1,
+        "talla": "5",
+        "imagen": "/images/1789213258402-sandalias-de-ni-a.jpeg"
+      }
+    ],
+    "subtotal": 500,
+    "descuento": 0,
+    "total": 500,
+    "codigoPromocional": "",
+    "estado": "Pendiente"
+  }
+]
