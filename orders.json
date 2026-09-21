@@ -25,7 +25,7 @@
     "descuento": 0,
     "total": 699,
     "codigoPromocional": "",
-    "estado": "Pendiente"
+    "estado": "Entregado"
   },
   {
     "id": 1789897192940,
@@ -53,7 +53,7 @@
     "descuento": 0,
     "total": 1398,
     "codigoPromocional": "",
-    "estado": "Pendiente"
+    "estado": "Entregado"
   },
   {
     "id": 1789897694200,
@@ -81,7 +81,7 @@
     "descuento": 0,
     "total": 699,
     "codigoPromocional": "",
-    "estado": "Pendiente"
+    "estado": "Entregado"
   },
   {
     "id": 1789898357149,
@@ -109,6 +109,70 @@
     "descuento": 0,
     "total": 500,
     "codigoPromocional": "",
-    "estado": "Pendiente"
+    "estado": "Entregado"
+  },
+  {
+    "id": 1789943228724,
+    "fecha": "2026-09-20T22:27:08.724Z",
+    "cliente": {
+      "nombre": "Monserrath Alvarado",
+      "telefono": "76565465"
+    },
+    "nombre": "Monserrath Alvarado",
+    "telefono": "76565465",
+    "direccion": "",
+    "referencia": "",
+    "departamento": "",
+    "municipio": "",
+    "metodoEntrega": "pickup",
+    "metodoPago": "efectivo",
+    "banco": "",
+    "productos": [
+      {
+        "id": 1789193530403,
+        "nombre": "Camisa de niño PAW PATROL",
+        "precio": 699,
+        "cantidad": 1,
+        "talla": "4T",
+        "imagen": "/images/1789193530401-1789193234564-camisa-paw-patrol.jpeg"
+      }
+    ],
+    "subtotal": 699,
+    "descuento": 0,
+    "total": 699,
+    "codigoPromocional": "",
+    "estado": "Entregado"
+  },
+  {
+    "id": 1789943279391,
+    "fecha": "2026-09-20T22:27:59.391Z",
+    "cliente": {
+      "nombre": "Monserrath Alvarado",
+      "telefono": "76565465"
+    },
+    "nombre": "Monserrath Alvarado",
+    "telefono": "76565465",
+    "direccion": "",
+    "referencia": "",
+    "departamento": "",
+    "municipio": "",
+    "metodoEntrega": "pickup",
+    "metodoPago": "efectivo",
+    "banco": "",
+    "productos": [
+      {
+        "id": 1789213258405,
+        "nombre": "Sandalias blancas de niña",
+        "precio": 500,
+        "cantidad": 1,
+        "talla": "5",
+        "imagen": "/images/1789213258402-sandalias-de-ni-a.jpeg"
+      }
+    ],
+    "subtotal": 500,
+    "descuento": 0,
+    "total": 500,
+    "codigoPromocional": "",
+    "estado": "Entregado"
   }
 ]

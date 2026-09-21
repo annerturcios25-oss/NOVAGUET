@@ -1,1225 +1,850 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>NOVAGUET | Administración</title>
 
   <style>
-
-    /* =========================
-
-       DISEÑO GENERAL
-
-    ========================= */
-
     * {
-
       box-sizing: border-box;
-
       margin: 0;
-
       padding: 0;
-
-    }
-
-    :root {
-
-      --celeste: #00BFFF;
-
-      --celeste-dark: #009acd;
-
-      --dorado: #D4AF37;
-
-      --negro: #050505;
-
-      --negro-2: #090909;
-
-      --gris-oscuro: #111111;
-
-      --gris-card: #161616;
-
-      --gris-input: #0d0d0d;
-
-      --texto: #f5f5f5;
-
-      --texto-secundario: #a7a7a7;
-
-      --borde: rgba(0, 191, 255, 0.18);
-
-    }
-
-    html {
-
-      width: 100%;
-
-      min-height: 100%;
-
     }
 
     body {
-
       font-family: Arial, Helvetica, sans-serif;
-
-      background:
-
-        radial-gradient(
-
-          circle at top left,
-
-          rgba(0, 191, 255, 0.10),
-
-          transparent 32%
-
-        ),
-
-        radial-gradient(
-
-          circle at top right,
-
-          rgba(212, 175, 55, 0.08),
-
-          transparent 28%
-
-        ),
-
-        #050505;
-
-      color: var(--texto);
-
+      background: #090909;
+      color: #ffffff;
       min-height: 100vh;
+    }
 
+    header {
+      background: #111111;
+      border-bottom: 2px solid #d4af37;
+      padding: 18px 25px;
       display: flex;
-
       align-items: center;
-
-      justify-content: center;
-
-      padding: 25px;
-
-      overflow-x: hidden;
-
-    }
-
-    /* =========================
-
-       DECORACIÓN
-
-    ========================= */
-
-    body::before {
-
-      content: "";
-
-      position: fixed;
-
-      width: 420px;
-
-      height: 420px;
-
-      border-radius: 50%;
-
-      border: 1px solid rgba(0, 191, 255, 0.07);
-
-      top: -210px;
-
-      left: -210px;
-
-      pointer-events: none;
-
-    }
-
-    body::after {
-
-      content: "";
-
-      position: fixed;
-
-      width: 500px;
-
-      height: 500px;
-
-      border-radius: 50%;
-
-      border: 1px solid rgba(212, 175, 55, 0.06);
-
-      bottom: -270px;
-
-      right: -240px;
-
-      pointer-events: none;
-
-    }
-
-    /* =========================
-
-       CONTENEDOR
-
-    ========================= */
-
-    .login-container {
-
-      width: 100%;
-
-      max-width: 500px;
-
-      position: relative;
-
-      z-index: 2;
-
-    }
-
-    /* =========================
-
-       TARJETA
-
-    ========================= */
-
-    .login-box {
-
-      position: relative;
-
-      background:
-
-        linear-gradient(
-
-          145deg,
-
-          rgba(22, 22, 22, 0.98),
-
-          rgba(10, 10, 10, 0.98)
-
-        );
-
-      padding: 38px 34px 28px;
-
-      border-radius: 18px;
-
-      border: 1px solid var(--borde);
-
-      box-shadow:
-
-        0 15px 40px rgba(0, 0, 0, 0.45),
-
-        inset 0 1px 0 rgba(255, 255, 255, 0.025),
-
-        0 0 25px rgba(0, 191, 255, 0.06);
-
-      overflow: hidden;
-
-      animation: aparecer 0.5s ease-out;
-
-    }
-
-    /* LÍNEA SUPERIOR */
-
-    .login-box::before {
-
-      content: "";
-
-      position: absolute;
-
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
       top: 0;
-
-      left: 0;
-
-      right: 0;
-
-      height: 2px;
-
-      background:
-
-        linear-gradient(
-
-          90deg,
-
-          transparent,
-
-          var(--celeste),
-
-          var(--dorado),
-
-          var(--celeste),
-
-          transparent
-
-        );
-
+      z-index: 100;
     }
-
-    /* =========================
-
-       LOGO
-
-    ========================= */
 
     .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
 
-      text-align: center;
-
-      margin-bottom: 30px;
-
+    .brand img {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
     }
 
     .brand h1 {
-
-      font-size: 38px;
-
-      font-weight: 900;
-
-      letter-spacing: 5px;
-
-      line-height: 1;
-
-      text-shadow:
-
-        0 0 15px rgba(0, 191, 255, 0.12);
-
-    }
-
-    .brand-nova {
-
-      color: var(--celeste);
-
-    }
-
-    .brand-guet {
-
-      color: var(--dorado);
-
-    }
-
-    .brand-line {
-
-      width: 70px;
-
-      height: 3px;
-
-      margin: 13px auto;
-
-      border-radius: 20px;
-
-      background:
-
-        linear-gradient(
-
-          90deg,
-
-          var(--celeste),
-
-          var(--dorado)
-
-        );
-
+      color: #00bfff;
+      font-size: 25px;
+      letter-spacing: 2px;
     }
 
     .brand p {
-
-      color: var(--texto-secundario);
-
-      font-size: 13px;
-
-      letter-spacing: 1px;
-
-    }
-
-    /* =========================
-
-       TITULO
-
-    ========================= */
-
-    .admin-title {
-
-      text-align: center;
-
-      margin-bottom: 27px;
-
-    }
-
-    .admin-title h2 {
-
-      color: var(--dorado);
-
-      margin-bottom: 9px;
-
-      font-size: 22px;
-
-      letter-spacing: 1px;
-
-    }
-
-    .admin-title p {
-
-      color: var(--texto-secundario);
-
-      font-size: 13px;
-
-      line-height: 1.5;
-
-    }
-
-    /* =========================
-
-       ICONO
-
-    ========================= */
-
-    .admin-icon {
-
-      width: 50px;
-
-      height: 50px;
-
-      margin: 0 auto 13px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      border-radius: 14px;
-
-      background:
-
-        rgba(0, 191, 255, 0.07);
-
-      border:
-
-        1px solid rgba(0, 191, 255, 0.20);
-
-      font-size: 22px;
-
-      box-shadow:
-
-        0 8px 20px rgba(0, 0, 0, 0.20);
-
-    }
-
-    /* =========================
-
-       FORMULARIO
-
-    ========================= */
-
-    .input-group {
-
-      margin-bottom: 18px;
-
-    }
-
-    .input-group label {
-
-      display: block;
-
-      margin-bottom: 8px;
-
-      color: #e7e7e7;
-
-      font-size: 13px;
-
-      font-weight: bold;
-
-      letter-spacing: 0.4px;
-
-    }
-
-    .input-wrapper {
-
-      position: relative;
-
-    }
-
-    .input-wrapper input {
-
-      width: 100%;
-
-      height: 51px;
-
-      padding:
-
-        0 47px 0 43px;
-
-      border:
-
-        1px solid #2b2b2b;
-
-      border-radius: 10px;
-
-      outline: none;
-
-      background: var(--gris-input);
-
-      color: white;
-
-      font-size: 15px;
-
-      transition:
-
-        border-color 0.2s ease,
-
-        box-shadow 0.2s ease,
-
-        background 0.2s ease;
-
-    }
-
-    .input-wrapper input::placeholder {
-
-      color: #777;
-
-    }
-
-    .input-wrapper input:hover {
-
-      border-color: #3a3a3a;
-
-    }
-
-    .input-wrapper input:focus {
-
-      border-color: var(--celeste);
-
-      box-shadow:
-
-        0 0 0 3px rgba(0, 191, 255, 0.10);
-
-      background: #101010;
-
-    }
-
-    /* =========================
-
-       ICONOS
-
-    ========================= */
-
-    .input-icon {
-
-      position: absolute;
-
-      left: 14px;
-
-      top: 50%;
-
-      transform: translateY(-50%);
-
-      color: #777;
-
-      font-size: 17px;
-
-      pointer-events: none;
-
-    }
-
-    /* =========================
-
-       OJO
-
-    ========================= */
-
-    .eye {
-
-      position: absolute;
-
-      right: 14px;
-
-      top: 50%;
-
-      transform: translateY(-50%);
-
-      color: #777;
-
-      font-size: 17px;
-
-      cursor: pointer;
-
-      user-select: none;
-
-      transition: color 0.2s ease;
-
-    }
-
-    .eye:hover {
-
-      color: var(--celeste);
-
-    }
-
-    /* =========================
-
-       BOTÓN
-
-    ========================= */
-
-    .login-button {
-
-      width: 100%;
-
-      margin-top: 5px;
-
-      padding: 15px;
-
-      border: none;
-
-      border-radius: 10px;
-
-      background:
-
-        linear-gradient(
-
-          135deg,
-
-          #00BFFF,
-
-          #009acd
-
-        );
-
-      color: white;
-
-      font-weight: bold;
-
-      font-size: 15px;
-
-      letter-spacing: 0.5px;
-
-      cursor: pointer;
-
-      box-shadow:
-
-        0 7px 20px rgba(0, 191, 255, 0.16);
-
-      transition:
-
-        transform 0.2s ease,
-
-        box-shadow 0.2s ease,
-
-        filter 0.2s ease;
-
-    }
-
-    .login-button:hover {
-
-      transform: translateY(-2px);
-
-      box-shadow:
-
-        0 10px 25px rgba(0, 191, 255, 0.25);
-
-      filter: brightness(1.08);
-
-    }
-
-    .login-button:active {
-
-      transform: translateY(0);
-
-    }
-
-    /* =========================
-
-       ERROR
-
-    ========================= */
-
-    .error {
-
-      display: none;
-
-      margin-top: 15px;
-
-      padding: 12px 14px;
-
-      border-radius: 10px;
-
-      background:
-
-        rgba(255, 77, 77, 0.07);
-
-      border:
-
-        1px solid rgba(255, 77, 77, 0.20);
-
-      color: #ff7070;
-
-      text-align: center;
-
+      color: #d4af37;
       font-size: 12px;
-
-      line-height: 1.4;
-
+      margin-top: 4px;
     }
 
-    /* =========================
-
-       VOLVER
-
-    ========================= */
-
-    .back {
-
-      display: block;
-
-      width: 100%;
-
-      margin-top: 20px;
-
-      padding: 12px;
-
-      text-align: center;
-
-      text-decoration: none;
-
-      background: #050505;
-
+    .logout-btn {
+      background: #c01717;
       color: white;
-
-      border:
-
-        1px solid var(--dorado);
-
-      border-radius: 10px;
-
+      border: none;
+      padding: 11px 18px;
+      border-radius: 8px;
+      cursor: pointer;
       font-weight: bold;
-
-      font-size: 13px;
-
-      transition:
-
-        background 0.2s ease,
-
-        color 0.2s ease,
-
-        transform 0.2s ease,
-
-        box-shadow 0.2s ease;
-
     }
 
-    .back:hover {
-
-      background: var(--dorado);
-
-      color: #050505;
-
-      transform: translateY(-2px);
-
-      box-shadow:
-
-        0 8px 20px rgba(212, 175, 55, 0.18);
-
+    .logout-btn:hover {
+      background: #e02020;
     }
 
-    /* =========================
+    main {
+      width: 94%;
+      max-width: 1400px;
+      margin: 30px auto;
+    }
 
-       SEGURIDAD
+    .welcome {
+      margin-bottom: 25px;
+    }
 
-    ========================= */
+    .welcome h2 {
+      color: #d4af37;
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
 
-    .security {
+    .welcome p {
+      color: #aaa;
+    }
 
-      display: flex;
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 30px;
+    }
 
-      align-items: center;
-
-      justify-content: center;
-
-      gap: 7px;
-
-      margin-top: 20px;
-
-      padding-top: 18px;
-
-      border-top: 1px solid #292929;
-
-      color: #777;
-
-      font-size: 10px;
-
-      letter-spacing: 0.4px;
-
+    .stat {
+      background: #151515;
+      border: 1px solid #292929;
+      border-radius: 14px;
+      padding: 22px;
       text-align: center;
-
     }
 
-    .security-dot {
-
-      width: 6px;
-
-      height: 6px;
-
-      flex-shrink: 0;
-
-      border-radius: 50%;
-
-      background: #35d46b;
-
-      box-shadow:
-
-        0 0 8px rgba(53, 212, 107, 0.45);
-
+    .stat h3 {
+      color: #00bfff;
+      font-size: 34px;
+      margin-bottom: 7px;
     }
 
-    /* =========================
-
-       ANIMACIÓN
-
-    ========================= */
-
-    @keyframes aparecer {
-
-      from {
-
-        opacity: 0;
-
-        transform: translateY(15px);
-
-      }
-
-      to {
-
-        opacity: 1;
-
-        transform: translateY(0);
-
-      }
-
+    .stat p {
+      color: #aaa;
     }
 
-    /* =========================
+    .section {
+      background: #111111;
+      border: 1px solid #292929;
+      border-radius: 14px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
 
-       TELEFONO
+    .section-title {
+      color: #d4af37;
+      font-size: 22px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #292929;
+      padding-bottom: 12px;
+    }
 
-    ========================= */
+    form {
+      display: grid;
+      gap: 15px;
+    }
 
-    @media (max-width: 700px) {
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
 
-      body {
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
 
-        padding: 18px;
+    .field.full {
+      grid-column: 1 / -1;
+    }
 
+    label {
+      color: #d4af37;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      background: #1c1c1c;
+      border: 1px solid #383838;
+      border-radius: 8px;
+      color: white;
+      padding: 12px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #00bfff;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .primary-btn {
+      background: #00bfff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 13px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .primary-btn:hover {
+      background: #24c9ff;
+    }
+
+    .message {
+      display: none;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      background: #162b16;
+      color: #7dff7d;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+    }
+
+    .product-card {
+      background: #181818;
+      border: 1px solid #303030;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      background: #222;
+    }
+
+    .product-info {
+      padding: 15px;
+    }
+
+    .product-info h3 {
+      color: white;
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      color: #d4af37;
+      font-weight: bold;
+      font-size: 19px;
+      margin-bottom: 7px;
+    }
+
+    .product-info p {
+      color: #aaa;
+      font-size: 13px;
+      margin: 4px 0;
+    }
+
+    .stock {
+      color: #00bfff !important;
+      font-weight: bold;
+    }
+
+    .orders {
+      display: grid;
+      gap: 15px;
+    }
+
+    .order-card {
+      background: #181818;
+      border: 1px solid #303030;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .order-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .order-id {
+      color: #00bfff;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .order-date {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .order-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 20px;
+      margin-bottom: 15px;
+    }
+
+    .order-info div {
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    .order-info strong {
+      color: white;
+    }
+
+    .order-products {
+      border-top: 1px solid #303030;
+      border-bottom: 1px solid #303030;
+      padding: 12px 0;
+      margin-bottom: 15px;
+    }
+
+    .order-products p {
+      color: #ccc;
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .order-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .order-total {
+      color: #d4af37;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .status-select {
+      min-width: 170px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 30px;
+    }
+
+    .loading {
+      text-align: center;
+      color: #aaa;
+      padding: 25px;
+    }
+
+    @media (max-width: 750px) {
+      header {
+        padding: 14px;
       }
 
-      .login-box {
-
-        padding: 32px 22px 25px;
-
-        border-radius: 15px;
-
+      .brand img {
+        width: 48px;
+        height: 48px;
       }
 
       .brand h1 {
-
-        font-size: 32px;
-
-        letter-spacing: 4px;
-
+        font-size: 19px;
       }
 
-      .admin-title h2 {
-
-        font-size: 20px;
-
+      .brand p {
+        font-size: 10px;
       }
 
-      .input-wrapper input {
-
-        height: 50px;
-
-      }
-
-      .login-button {
-
-        padding: 14px;
-
-      }
-
-    }
-
-    /* =========================
-
-       TELEFONO PEQUEÑO
-
-    ========================= */
-
-    @media (max-width: 400px) {
-
-      body {
-
-        padding: 14px;
-
-      }
-
-      .login-box {
-
-        padding: 28px 17px 23px;
-
-      }
-
-      .brand h1 {
-
-        font-size: 27px;
-
-        letter-spacing: 3px;
-
-      }
-
-      .admin-title h2 {
-
-        font-size: 18px;
-
-      }
-
-      .admin-title p {
-
+      .logout-btn {
+        padding: 9px 11px;
         font-size: 12px;
-
       }
 
-    }
+      main {
+        width: 94%;
+        margin: 20px auto;
+      }
 
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .section {
+        padding: 18px;
+      }
+
+      .order-info {
+        grid-template-columns: 1fr;
+      }
+
+      .order-bottom {
+        align-items: stretch;
+      }
+
+      .status-select {
+        width: 100%;
+      }
+    }
+    /* Ajuste de imágenes de productos */
+.product-image {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  display: block;
+  background: #222;
+}
+.products-grid .card > img {
+  width: 100% !important;
+  height: 170px !important;
+  max-height: 170px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+/* =========================
+   BOTONES EDITAR / BORRAR
+========================= */
+
+.product-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.product-actions button {
+  flex: 1;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* EDITAR - AZUL + DORADO */
+
+.product-actions .edit-product {
+  background: linear-gradient(135deg, #050505, #003b5c);
+  color: #00bfff;
+  border-color: #00bfff;
+  box-shadow: 0 0 0 rgba(0, 191, 255, 0);
+}
+
+.product-actions .edit-product:hover {
+  background: linear-gradient(135deg, #003b5c, #00bfff);
+  color: #000;
+  border-color: #d4af37;
+  box-shadow: 0 0 14px rgba(0, 191, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+/* BORRAR - NEGRO + DORADO */
+
+.product-actions .delete-product {
+  background: linear-gradient(135deg, #050505, #1a1a1a);
+  color: #d4af37;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 rgba(212, 175, 55, 0);
+}
+
+.product-actions .delete-product:hover {
+  background: linear-gradient(135deg, #d4af37, #000);
+  color: #000;
+  border-color: #00bfff;
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
+  transform: translateY(-2px);
+}
+
+.product-actions button:active {
+  transform: scale(0.96);
+}
+
+/* EFECTO DE BRILLO */
+
+.product-actions button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.18),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.45s ease;
+}
+
+.product-actions button:hover::after {
+  left: 140%;
+}
+
+/* MÓVIL */
+
+@media (max-width: 500px) {
+
+  .product-actions {
+    gap: 8px;
+  }
+
+  .product-actions button {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+}
+/* =========================
+   BOTONES NOVAGUET
+   NEGRO + AZUL + DORADO
+========================= */
+
+.product-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.product-actions button {
+  flex: 1;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* EDITAR */
+
+.product-actions .edit-product {
+  background: linear-gradient(135deg, #050505, #003b5c);
+  color: #00bfff;
+  border-color: #00bfff;
+  box-shadow: 0 0 0 rgba(0, 191, 255, 0);
+}
+
+.product-actions .edit-product:hover {
+  background: linear-gradient(135deg, #003b5c, #00bfff);
+  color: #000;
+  border-color: #d4af37;
+  box-shadow: 0 0 14px rgba(0, 191, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+/* BORRAR */
+
+.product-actions .delete-product {
+  background: linear-gradient(135deg, #050505, #1a1a1a);
+  color: #d4af37;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 rgba(212, 175, 55, 0);
+}
+
+.product-actions .delete-product:hover {
+  background: linear-gradient(135deg, #d4af37, #000);
+  color: #000;
+  border-color: #00bfff;
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
+  transform: translateY(-2px);
+}
+
+/* AL PRESIONAR */
+
+.product-actions button:active {
+  transform: scale(0.96);
+}
+
+/* EFECTO DE BRILLO */
+
+.product-actions button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.18),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.45s ease;
+}
+
+.product-actions button:hover::after {
+  left: 140%;
+}
+
+/* MÓVIL */
+
+@media (max-width: 500px) {
+
+  .product-actions {
+    gap: 8px;
+  }
+
+  .product-actions button {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+}
   </style>
 
 </head>
 
 <body>
 
-  <div class="login-container">
+  <header>
+    <div class="brand">
+      <img
+        src="/images/NOVAGUET.PNG.png"
+        alt="NOVAGUET"
+        onerror="this.style.display='none'"
+      >
 
-    <div class="login-box">
+      <div>
+        <h1>NOVAGUET</h1>
+        <p>Panel de Administración</p>
+      </div>
+    </div>
 
-      <!-- LOGO -->
+    <button
+      class="logout-btn"
+      id="logoutButton"
+    >
+      Cerrar sesión
+    </button>
+  </header>
 
-      <div class="brand">
+  <main>
 
-        <h1>
+    <div class="welcome">
+      <h2>Administración</h2>
+      <p>Gestiona productos, inventario y pedidos de NOVAGUET.</p>
+    </div>
 
-          <span class="brand-nova">NOVA</span><span class="brand-guet">GUET</span>
+    <section class="stats">
 
-        </h1>
-
-        <div class="brand-line"></div>
-
-        <p>Moda que habla por ti.</p>
-
+      <div class="stat">
+        <h3 id="totalProducts">0</h3>
+        <p>Productos</p>
       </div>
 
-      <!-- TITULO -->
-
-      <div class="admin-title">
-
-        <div class="admin-icon">
-
-          ⚙️
-
-        </div>
-
-        <h2>
-
-          PANEL DE ADMINISTRACIÓN
-
-        </h2>
-
-        <p>
-
-          Acceso exclusivo para administrar NOVAGUET
-
-        </p>
-
+      <div class="stat">
+        <h3 id="totalStock">0</h3>
+        <p>Unidades en stock</p>
       </div>
 
-      <!-- LOGIN -->
+      <div class="stat">
+        <h3 id="pendingOrders">0</h3>
+        <p>Pedidos pendientes</p>
+      </div>
 
-      <form id="loginForm">
+    </section>
 
-        <!-- USUARIO -->
+    <section class="section">
 
-        <div class="input-group">
+      <h2 class="section-title">
+        ➕ Agregar producto
+      </h2>
 
-          <label for="username">
+      <form
+        id="productForm"
+        enctype="multipart/form-data"
+      >
 
-            Usuario
+        <div class="form-grid">
 
-          </label>
-
-          <div class="input-wrapper">
-
-            <span class="input-icon">
-
-              👤
-
-            </span>
+          <div class="field">
+            <label for="nombre">
+              Nombre
+            </label>
 
             <input
-
+              id="nombre"
+              name="nombre"
               type="text"
-
-              id="username"
-
-              placeholder="Ingresa tu usuario"
-
-              autocomplete="username"
-
               required
-
             >
-
           </div>
 
-        </div>
-
-        <!-- CONTRASEÑA -->
-
-        <div class="input-group">
-
-          <label for="password">
-
-            Contraseña
-
-          </label>
-
-          <div class="input-wrapper">
-
-            <span class="input-icon">
-
-              🔒
-
-            </span>
+          <div class="field">
+            <label for="precio">
+              Precio (HNL)
+            </label>
 
             <input
-
-              type="password"
-
-              id="password"
-
-              placeholder="Ingresa tu contraseña"
-
-              autocomplete="current-password"
-
+              id="precio"
+              name="precio"
+              type="number"
+              min="0"
               required
-
             >
+          </div>
 
-            <span
+          <div class="field">
+            <label for="categoria">
+              Categoría
+            </label>
 
-              class="eye"
-
-              id="togglePassword"
-
-              aria-label="Mostrar contraseña"
-
+            <select
+              id="categoria"
+              name="categoria"
+              required
             >
+              <option value="">
+                Seleccionar
+              </option>
 
-              👁️
+              <option value="Ropa">
+                Ropa
+              </option>
 
-            </span>
+              <option value="Calzado">
+                Calzado
+              </option>
 
+              <option value="Accesorios">
+                Accesorios
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="talla">
+              Talla
+            </label>
+
+            <input
+              id="talla"
+              name="talla"
+              type="text"
+            >
+          </div>
+
+          <div class="field">
+            <label for="stock">
+              Stock
+            </label>
+
+            <input
+              id="stock"
+              name="stock"
+              type="number"
+              min="0"
+              value="0"
+              required
+            >
+          </div>
+
+          <div class="field">
+            <label for="imagen">
+              Imagen
+            </label>
+
+            <input
+              id="imagen"
+              name="imagen"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+          </div>
+
+          <div class="field full">
+            <label for="descripcion">
+              Descripción
+            </label>
+
+            <textarea
+              id="descripcion"
+              name="descripcion"
+            ></textarea>
           </div>
 
         </div>
-
-        <!-- BOTÓN -->
 
         <button
-
           type="submit"
-
-          class="login-button"
-
+          class="primary-btn"
         >
-
-          INGRESAR AL PANEL
-
+          AGREGAR PRODUCTO
         </button>
 
-        <!-- ERROR -->
-
         <div
-
-          class="error"
-
-          id="errorMessage"
-
-        >
-
-          Usuario o contraseña incorrectos.
-
-        </div>
+          id="productMessage"
+          class="message"
+        ></div>
 
       </form>
 
-      <!-- VOLVER -->
+    </section>
 
-      <a
+    <section class="section">
 
-        href="/"
+      <h2 class="section-title">
+        👕 Productos
+      </h2>
 
-        class="back"
-
+      <div
+        id="productsContainer"
+        class="products-grid"
       >
-
-        ← VOLVER A NOVAGUET
-
-      </a>
-
-      <!-- SEGURIDAD -->
-
-      <div class="security">
-
-        <span class="security-dot"></span>
-
-        Área segura de administración NOVAGUET
-
+        <div class="loading">
+          Cargando productos...
+        </div>
       </div>
 
-    </div>
+    </section>
 
-  </div>
+    <section class="section">
 
-  <script>
+      <h2 class="section-title">
+        📦 Pedidos
+      </h2>
 
-    const loginForm =
+      <div
+        id="ordersContainer"
+        class="orders"
+      >
+        <div class="loading">
+          Cargando pedidos...
+        </div>
+      </div>
 
-      document.getElementById("loginForm");
+    </section>
 
-    const password =
+  </main>
 
-      document.getElementById("password");
-
-    const togglePassword =
-
-      document.getElementById("togglePassword");
-
-    const errorMessage =
-
-      document.getElementById("errorMessage");
-
-    /* =========================
-
-       MOSTRAR / OCULTAR CONTRASEÑA
-
-    ========================= */
-
-    togglePassword.addEventListener(
-
-      "click",
-
-      () => {
-
-        if (password.type === "password") {
-
-          password.type = "text";
-
-          togglePassword.textContent = "🙈";
-
-        } else {
-
-          password.type = "password";
-
-          togglePassword.textContent = "👁️";
-
-        }
-
-      }
-
-    );
-
-    /* =========================
-
-       LOGIN
-
-    ========================= */
-
-    loginForm.addEventListener(
-
-      "submit",
-
-      async (e) => {
-
-        e.preventDefault();
-
-        errorMessage.style.display = "none";
-
-        const username =
-
-          document.getElementById("username").value.trim();
-
-        const passwordValue =
-
-          password.value;
-
-        try {
-
-          const response =
-
-            await fetch(
-
-              "/api/login",
-
-              {
-
-                method: "POST",
-
-                headers: {
-
-                  "Content-Type": "application/json"
-
-                },
-
-                credentials: "include",
-
-                body: JSON.stringify({
-
-                  username: username,
-
-                  password: passwordValue
-
-                })
-
-              }
-
-            );
-
-          if (response.ok) {
-
-            window.location.href =
-
-              "/admin.html";
-
-          } else {
-
-            errorMessage.style.display =
-
-              "block";
-
-          }
-
-        } catch (error) {
-
-          errorMessage.textContent =
-
-            "No se pudo conectar con el servidor.";
-
-          errorMessage.style.display =
-
-            "block";
-
-        }
-
-      }
-
-    );
-
-  </script>
+  <script src="/admin.js"></script>
 
 </body>
-
 </html>

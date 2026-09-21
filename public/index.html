@@ -417,7 +417,55 @@
           </button>
 
         </div>
+<!-- =========================
+             RASTREAR PEDIDO
+        ========================= -->
 
+        <div class="cart-tracking">
+
+          <button
+            type="button"
+            id="trackingButton"
+            class="tracking-button"
+          >
+            📦 VER ESTADO DE MI PEDIDO
+          </button>
+
+          <div
+            id="trackingBox"
+            class="tracking-box"
+            style="display:none;"
+          >
+
+            <h3>📦 Rastrear mi pedido</h3>
+
+            <p>
+              Ingresa el número de tu pedido para consultar su estado.
+            </p>
+
+            <input
+              type="text"
+              id="trackingOrderId"
+              placeholder="Número de pedido"
+              inputmode="numeric"
+            >
+
+            <button
+              type="button"
+              id="searchTrackingButton"
+              class="tracking-search-button"
+            >
+              🔍 CONSULTAR PEDIDO
+            </button>
+
+            <div
+              id="trackingResult"
+              class="tracking-result"
+            ></div>
+
+          </div>
+
+        </div>
         <!-- =========================
 
              CHECKOUT
@@ -522,41 +570,16 @@
 
 >
 
-  <button
+ <button
+  type="button"
+  id="backCustomerButton"
+  class="checkout-button"
+  style="flex:1;"
+>
+  ← ATRÁS
+</button>
 
-    type="button"
-
-    id="backCustomerButton"
-
-    style="
-
-      display:block;
-
-      flex:1;
-
-      padding:14px;
-
-      background:#333;
-
-      color:white;
-
-      border:none;
-
-      border-radius:8px;
-
-      cursor:pointer;
-
-      font-weight:bold;
-
-    "
-
-  >
-
-    ← ATRÁS
-
-  </button>
-
-  <button
+<button
 
     id="confirmCustomerButton"
 

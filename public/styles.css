@@ -2179,7 +2179,7 @@ footer {
   font-size: 48px;
   font-weight: 900;
   letter-spacing: 4px;
-  animation: novaguetMotion 5s ease-in-out infinite;
+  animation: novaguetMotion 15s ease-in-out infinite;
 }
 
 .nova-confirmed {
@@ -2233,4 +2233,868 @@ footer {
   text-align: center;
   padding: 30px 20px;
   box-sizing: border-box;
+}
+#backDeliveryButton,
+#backPaymentButton,
+.checkout-back-button {
+  background: #00BFFF !important;
+  color: white !important;
+  border: none !important;
+  padding: 12px 20px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  width: auto !important;
+  box-sizing: border-box !important;
+  cursor: pointer;
+}
+.checkout-navigation {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.checkout-navigation button {
+  flex: 1;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 10px 12px !important;
+  font-size: 14px !important;
+  box-sizing: border-box !important;
+}
+/* Ajuste de imágenes de productos */
+.product-image {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  display: block;
+  background: #222;
+}
+/* =====================================================
+   NOVAGUET — BOTONES DE LA TIENDA
+   NEGRO + AZUL + DORADO
+===================================================== */
+
+/* AGREGAR AL CARRITO */
+.product-card button {
+  background: linear-gradient(135deg, #050505, #003b5c) !important;
+  color: #00BFFF !important;
+  border: 1px solid #00BFFF !important;
+  border-radius: 10px !important;
+  padding: 13px 24px !important;
+  min-height: 46px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card button:hover {
+  background: linear-gradient(135deg, #003b5c, #00BFFF) !important;
+  color: #000 !important;
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.product-card button:active {
+  transform: scale(0.96);
+}
+
+
+/* ELIMINAR DEL CARRITO */
+.remove-product {
+  background: linear-gradient(135deg, #050505, #1a1a1a) !important;
+  color: #D4AF37 !important;
+  border: 1px solid #D4AF37 !important;
+  border-radius: 10px !important;
+  padding: 10px 18px !important;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.remove-product:hover {
+  background: linear-gradient(135deg, #D4AF37, #000) !important;
+  color: #000 !important;
+  border-color: #00BFFF !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.45);
+  transform: translateY(-2px);
+}
+
+.remove-product:active {
+  transform: scale(0.96);
+}
+
+
+/* FINALIZAR COMPRA */
+.checkout-button {
+  background: linear-gradient(135deg, #050505, #003b5c) !important;
+  color: #00BFFF !important;
+  border: 1px solid #D4AF37 !important;
+  border-radius: 10px !important;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.checkout-button:hover {
+  background: linear-gradient(135deg, #003b5c, #00BFFF) !important;
+  color: #000 !important;
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 16px rgba(0, 191, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.checkout-button:active {
+  transform: scale(0.97);
+}
+
+
+/* APLICAR CÓDIGO PROMOCIONAL */
+.promo-row button {
+  background: linear-gradient(135deg, #050505, #003b5c) !important;
+  color: #00BFFF !important;
+  border: 1px solid #D4AF37 !important;
+  border-radius: 9px !important;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.promo-row button:hover {
+  background: linear-gradient(135deg, #D4AF37, #000) !important;
+  color: #000 !important;
+  border-color: #00BFFF !important;
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
+  transform: translateY(-2px);
+}
+
+.promo-row button:active {
+  transform: scale(0.96);
+}
+
+
+/* VOLVER / CONTINUAR EN CHECKOUT */
+#backDeliveryButton,
+#backPaymentButton,
+.checkout-back-button {
+  background: linear-gradient(135deg, #050505, #003b5c) !important;
+  color: #00BFFF !important;
+  border: 1px solid #D4AF37 !important;
+  transition: all 0.25s ease;
+}
+
+#backDeliveryButton:hover,
+#backPaymentButton:hover,
+.checkout-back-button:hover {
+  background: linear-gradient(135deg, #003b5c, #00BFFF) !important;
+  color: #000 !important;
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 14px rgba(0, 191, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+
+/* EFECTO AL PRESIONAR */
+.product-card button:active,
+.remove-product:active,
+.checkout-button:active,
+.promo-row button:active,
+#backDeliveryButton:active,
+#backPaymentButton:active,
+.checkout-back-button:active {
+  transform: scale(0.96);
+}
+
+
+/* MÓVIL */
+@media (max-width: 600px) {
+
+  .product-card button {
+    width: 100%;
+  }
+
+  .remove-product {
+    width: auto;
+  }
+
+}
+/* =====================================================
+   NOVAGUET — BOTONES DE CATEGORÍAS
+   NEGRO + AZUL + DORADO
+===================================================== */
+
+.category-list div {
+  background: linear-gradient(135deg, #050505, #003b5c) !important;
+  color: #00BFFF !important;
+  border: 1px solid #D4AF37 !important;
+  border-radius: 10px !important;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-list div:hover {
+  background: linear-gradient(135deg, #003b5c, #00BFFF) !important;
+  color: #000 !important;
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 18px rgba(0, 191, 255, 0.50);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.category-list div:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.40);
+}
+/* =====================================================
+   NOVAGUET — BOTONES DEL MENÚ
+   NEGRO + AZUL + DORADO
+===================================================== */
+
+nav a {
+  background: linear-gradient(135deg, #050505, #003b5c);
+  color: #00BFFF !important;
+  border: 1px solid #D4AF37;
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+nav a:hover {
+  background: linear-gradient(135deg, #003b5c, #00BFFF);
+  color: #000 !important;
+  border-color: #D4AF37;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+nav a:active {
+  transform: scale(0.96);
+}
+/* FONDO BLANCO PARA LAS FOTOS DE PRODUCTOS */
+.product-card .product-image {
+  background: #ffffff !important;
+}
+/* =====================================================
+   NOVAGUET — RASTREO DE PEDIDOS
+===================================================== */
+
+.tracking-section {
+  width: 100%;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 15px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.tracking-button,
+.tracking-search-button {
+  background: linear-gradient(135deg, #050505, #003b5c) !important;
+  color: #00BFFF !important;
+  border: 1px solid #D4AF37 !important;
+  border-radius: 10px !important;
+  padding: 13px 22px !important;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.tracking-button:hover,
+.tracking-search-button:hover {
+  background: linear-gradient(135deg, #003b5c, #00BFFF) !important;
+  color: #000 !important;
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 16px rgba(0, 191, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.tracking-button:active,
+.tracking-search-button:active {
+  transform: scale(0.96);
+}
+
+.tracking-box {
+  margin: 20px auto 0;
+  width: 100%;
+  max-width: 800px;
+  padding: 32px;
+  background: linear-gradient(145deg, #050505, #101820);
+  border: 1px solid #D4AF37;
+  border-radius: 14px;
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.15);
+  box-sizing: border-box;
+}
+
+
+.tracking-box h3 {
+  color: #00BFFF;
+  margin-top: 0;
+}
+
+.tracking-box p {
+  color: #fff;
+}
+
+#trackingOrderId {
+  width: 100%;
+  max-width: 450px;
+  box-sizing: border-box;
+  padding: 13px;
+  margin: 10px auto 15px;
+  display: block;
+  background: #fff;
+  color: #000;
+  border: 1px solid #D4AF37;
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.tracking-result {
+  margin-top: 25px;
+}
+
+.tracking-info {
+  width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+.tracking-info h3 {
+  margin-bottom: 5px;
+}
+
+.tracking-progress {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  margin: 22px auto 10px;
+  box-sizing: border-box;
+}
+
+.tracking-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 68px;
+}
+
+.tracking-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #222;
+  color: #ffffff !important;
+  border: 2px solid #777;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1;
+  text-align: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.tracking-active .tracking-circle {
+  background: #00BFFF;
+  color: #000;
+  border-color: #D4AF37;
+  box-shadow: 0 0 8px rgba(0, 191, 255, 0.35);
+}
+
+.tracking-label {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #777;
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.tracking-active .tracking-label {
+  color: #00BFFF;
+}
+
+.tracking-line {
+  flex: 1;
+  height: 2px;
+  min-width: 18px;
+  margin-top: 16px;
+  background: #444;
+}
+
+.tracking-line-active {
+  background: #00BFFF;
+}
+
+.tracking-cancelled {
+  padding: 20px;
+  border: 1px solid #D4AF37;
+  border-radius: 12px;
+  background: #111;
+}
+
+.tracking-cancelled h3 {
+  color: #D4AF37;
+}
+
+/* =====================================================
+   MÓVIL
+===================================================== */
+
+@media (max-width: 600px) {
+
+  .tracking-section {
+    padding: 0 10px;
+  }
+
+  .tracking-box {
+    padding: 18px 12px;
+  }
+
+  .tracking-progress {
+    min-width: 430px;
+  }
+
+  .tracking-info {
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+
+  .tracking-step {
+    min-width: 78px;
+  }
+
+  .tracking-label {
+    font-size: 11px;
+  }
+
+  .tracking-button,
+  .tracking-search-button {
+    width: 100%;
+  }
+
+}
+/* =====================================================
+   RASTREO DENTRO DEL CARRITO
+===================================================== */
+
+.cart-tracking {
+  width: 100%;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(212, 175, 55, 0.55);
+  box-sizing: border-box;
+}
+
+.cart-tracking .tracking-button {
+  width: 100%;
+  margin: 0;
+}
+
+.cart-tracking .tracking-box {
+  width: 100%;
+  max-width: 800px;
+  margin: 18px auto 0;
+  box-sizing: border-box;
+}
+
+/* Separación visual en móvil */
+@media (max-width: 600px) {
+
+  .cart-tracking {
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+
+  .cart-tracking .tracking-button {
+    width: 100%;
+  }
+
+}
+
+/* =====================================================
+   NOVAGUET — RASTREO DINÁMICO CON CAMIÓN 🚚
+===================================================== */
+
+.tracking-modern {
+  width: 100%;
+  margin: 30px auto 10px;
+  box-sizing: border-box;
+}
+
+.tracking-track {
+  position: relative;
+  width: 92%;
+  height: 42px;
+  margin: 0 auto;
+}
+
+.tracking-track-bg,
+.tracking-track-fill {
+  position: absolute;
+  top: 21px;
+  left: 0;
+  height: 4px;
+  border-radius: 10px;
+}
+
+.tracking-track-bg {
+  width: 100%;
+  background: #444;
+}
+
+.tracking-track-fill {
+  background: #00BFFF;
+  box-shadow: 0 0 8px rgba(0, 191, 255, 0.45);
+  transition: width 1.2s ease;
+}
+
+.tracking-truck {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 28px;
+  line-height: 32px;
+  z-index: 5;
+  transition: left 1.2s ease;
+  filter: drop-shadow(0 0 5px rgba(0, 191, 255, 0.5));
+  animation: truckPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes truckPulse {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-3px);
+  }
+}
+
+.tracking-stations {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+
+.tracking-station {
+  width: 20%;
+  text-align: center;
+  color: #777;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.tracking-station.station-active {
+  color: #00BFFF;
+}
+
+.tracking-info > p {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+
+  .tracking-modern {
+    margin-top: 25px;
+    padding: 0 3px;
+  }
+
+  .tracking-track {
+    width: 94%;
+  }
+
+  .tracking-truck {
+    font-size: 25px;
+  }
+
+  .tracking-station {
+    font-size: 9px;
+    padding: 0 2px;
+  }
+
+}
+
+/* =====================================================
+   NOVAGUET — RASTREO DINÁMICO
+   CAMIÓN AVANZANDO IZQUIERDA → DERECHA
+===================================================== */
+
+.tracking-modern {
+  width: 100%;
+  margin: 30px auto 10px;
+  box-sizing: border-box;
+}
+
+.tracking-track {
+  position: relative;
+  width: 92%;
+  height: 45px;
+  margin: 0 auto;
+}
+
+.tracking-track-bg,
+.tracking-track-fill {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  height: 4px;
+  border-radius: 10px;
+}
+
+.tracking-track-bg {
+  width: 100%;
+  background: #444;
+}
+
+.tracking-track-fill {
+  background: #00BFFF;
+  box-shadow: 0 0 10px rgba(0, 191, 255, 0.55);
+  transition: width 1.2s ease;
+}
+
+/* CAMIÓN */
+.tracking-truck {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%) scaleX(-1);
+  font-size: 29px;
+  line-height: 34px;
+  z-index: 5;
+  transition: left 1.2s ease;
+  filter: drop-shadow(0 0 6px rgba(0, 191, 255, 0.55));
+  animation: truckMove 1.8s ease-in-out infinite;
+}
+
+/* Movimiento suave del camión */
+@keyframes truckMove {
+
+  0%,
+  100% {
+    margin-top: 0;
+  }
+
+  50% {
+    margin-top: -3px;
+  }
+
+}
+
+/* ETAPAS DEL PEDIDO */
+
+.tracking-stations {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  width: 100%;
+
+  margin: 14px auto 0;
+
+  box-sizing: border-box;
+
+}
+
+.tracking-station {
+
+  width: 20%;
+
+  min-width: 70px;
+
+  text-align: center;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  line-height: 1.25;
+
+  padding: 0 5px;
+
+  box-sizing: border-box;
+
+  transition:
+
+    opacity 0.6s ease,
+
+    transform 0.6s ease;
+
+}
+
+.station-hidden {
+
+  opacity: 0;
+
+  transform: translateY(8px);
+
+  color: #555;
+
+}
+
+.station-visible {
+
+  opacity: 1;
+
+  transform: translateY(0);
+
+  color: #00BFFF;
+
+  animation: stationAppear 0.6s ease;
+
+}
+
+@keyframes stationAppear {
+
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+/* INFORMACIÓN */
+.tracking-info > p {
+  margin-bottom: 8px;
+}
+
+/* CANCELADO */
+.tracking-cancelled {
+  padding: 20px;
+  border: 1px solid #D4AF37;
+  border-radius: 12px;
+  background: #111;
+}
+
+.tracking-cancelled h3 {
+  color: #D4AF37;
+}
+
+/* MÓVIL */
+@media (max-width: 600px) {
+
+  .tracking-modern {
+    margin-top: 25px;
+    padding: 0 8px;
+  }
+
+  .tracking-track {
+    width: 94%;
+  }
+
+  .tracking-truck {
+    font-size: 26px;
+  }
+
+  .tracking-stations {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .tracking-station {
+    min-width: 0;
+    width: 20%;
+    font-size: 12px;
+    padding: 0 3px;
+    white-space: normal;
+  }
+
+}
+
+/* =====================================================
+
+   NOVAGUET — CONFETI
+
+===================================================== */
+
+.novaguet-confetti {
+
+  position: fixed;
+
+  top: -20px;
+
+  width: 9px;
+
+  height: 14px;
+
+  z-index: 999999;
+
+  pointer-events: none;
+
+  border-radius: 2px;
+
+  animation: novaguetConfettiFall 4s linear forwards;
+
+}
+
+@keyframes novaguetConfettiFall {
+
+  0% {
+
+    top: -20px;
+
+    opacity: 1;
+
+  }
+
+  100% {
+
+    top: 100vh;
+
+    opacity: 0;
+
+  }
+
+}
+/* ESTADO ENTREGADO */
+.tracking-delivered {
+  margin-top: 18px;
+  text-align: center;
+  color: #00e676;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px rgba(0, 230, 118, 0.45);
+  animation: deliveredAppear 0.7s ease;
+}
+
+@keyframes deliveredAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  .tracking-delivered {
+    font-size: 24px;
+  }
 }

@@ -28,6 +28,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoMessage = document.getElementById("promoMessage");
 
   const checkoutButton = document.getElementById("checkoutButton");
+/* =====================================================
+   RASTREO DE PEDIDOS
+===================================================== */
+
+const trackingButton =
+  document.getElementById("trackingButton");
+
+const trackingBox =
+  document.getElementById("trackingBox");
+
+const trackingOrderId =
+  document.getElementById("trackingOrderId");
+
+const searchTrackingButton =
+  document.getElementById("searchTrackingButton");
+
+const trackingResult =
+  document.getElementById("trackingResult");
+
   const checkoutContainer = document.getElementById("checkoutContainer");
   const closeCheckout = document.getElementById("closeCheckout");
 
@@ -3390,31 +3409,44 @@ console.log("PEDIDO A ENVIAR:", pedido);
           }
 if (paymentResult) {
 
-  paymentResult.innerHTML = `
-    <div class="payment-success">
+ paymentResult.innerHTML = `
+  <div class="payment-success">
 
-      <div class="confirmation-check">
-        ✓
-      </div>
-
-      <h2>
-        ¡PEDIDO CONFIRMADO!
-      </h2>
-
-     <div class="novaguet-confirmed">
-  <span class="nova-confirmed">NOVA</span><span class="guet-confirmed">GUET</span>
-</div>
-
-      <p>
-        Gracias por comprar con nosotros.
-      </p>
-
-      <p class="confirmation-small">
-        Tu pedido ha sido recibido correctamente.
-      </p>
-
+    <div class="confirmation-check">
+      ✓
     </div>
-  `;
+
+    <h2>
+      ¡PEDIDO CONFIRMADO!
+    </h2>
+
+    <div class="novaguet-confirmed">
+      <span class="nova-confirmed">NOVA</span><span class="guet-confirmed">GUET</span>
+    </div>
+
+    <p>
+      Gracias por comprar con nosotros.
+    </p>
+
+    <p class="confirmation-small">
+      Tu pedido ha sido recibido correctamente.
+    </p>
+
+    <p>
+      📦 <strong>Número de pedido:</strong>
+      ${resultado.pedido.id}
+    </p>
+
+    <button
+      type="button"
+      class="tracking-button"
+      onclick="document.getElementById('trackingOrderId').value='${resultado.pedido.id}'; document.getElementById('trackingBox').style.display='block'; document.getElementById('trackingResult').innerHTML=''; document.getElementById('trackingBox').scrollIntoView({behavior:'smooth'});"
+    >
+      📦 VER ESTADO DE MI PEDIDO
+    </button>
+
+  </div>
+`;
 
   paymentResult.style.display =
     "block";
@@ -3617,6 +3649,175 @@ if (paymentResult) {
 
   }
 
+/* =====================================================
+   RASTREAR PEDIDO
+===================================================== */
+
+if (trackingButton) {
+
+  trackingButton.addEventListener(
+    "click",
+    () => {
+
+      if (
+        trackingBox.style.display === "none" ||
+        trackingBox.style.display === ""
+      ) {
+
+        trackingBox.style.display = "block";
+
+        trackingOrderId.focus();
+
+      } else {
+
+        trackingBox.style.display = "none";
+
+        trackingResult.innerHTML = "";
+
+      }
+
+    }
+  );
+
+}
+
+if (searchTrackingButton) {
+
+  searchTrackingButton.addEventListener(
+    "click",
+    async () => {
+
+      const id =
+        trackingOrderId.value.trim();
+
+      if (!id) {
+
+        trackingResult.innerHTML =
+          "<p>⚠️ Ingresa el número de tu pedido.</p>";
+
+        return;
+
+      }
+
+      trackingResult.innerHTML =
+        "<p>🔄 Consultando pedido...</p>";
+
+      try {
+
+        const respuesta =
+          await fetch(
+            "/api/pedidos/" +
+            encodeURIComponent(id)
+          );
+
+        const resultado =
+          await respuesta
+            .json()
+            .catch(
+              () => ({})
+            );
+
+        if (!respuesta.ok) {
+
+          trackingResult.innerHTML =
+            "<p>❌ " +
+            (
+              resultado.error ||
+              "Pedido no encontrado."
+            ) +
+            "</p>";
+
+          return;
+
+        }
+
+        mostrarEstadoPedido(
+          resultado
+        );
+
+      } catch (error) {
+
+        console.error(error);
+
+        trackingResult.innerHTML =
+          "<p>❌ No se pudo consultar el pedido.</p>";
+
+      }
+
+    }
+  );
+
+}
+
+/* =====================================================
+   MOSTRAR ESTADO DEL PEDIDO
+===================================================== */
+
+function mostrarEstadoPedido(pedido) {
+
+  const estados = [
+    "Pendiente",
+    "Confirmado",
+    "Preparando",
+    "Enviado",
+    "Entregado"
+  ];
+
+  const estadoActual = pedido.estado;
+
+  if (estadoActual === "Cancelado") {
+
+    trackingResult.innerHTML =
+      '<div class="tracking-cancelled">' +
+        "<h3>❌ Pedido cancelado</h3>" +
+        "<p>Pedido #" + pedido.id + "</p>" +
+      "</div>";
+
+    return;
+  }
+
+  const indiceActual = estados.indexOf(estadoActual);
+
+  const porcentaje =
+    indiceActual >= 0
+      ? (indiceActual / (estados.length - 1)) * 100
+      : 0;
+
+  trackingResult.innerHTML =
+    '<div class="tracking-info">' +
+
+      "<h3>📦 Pedido #" +
+      pedido.id +
+      "</h3>" +
+
+      "<p>Estado actual: <strong>" +
+      estadoActual +
+      "</strong></p>" +
+
+      '<div class="tracking-modern">' +
+
+        '<div class="tracking-track">' +
+
+          '<div class="tracking-track-bg"></div>' +
+
+          '<div class="tracking-track-fill" style="width:' +
+            porcentaje +
+          '%;"></div>' +
+
+          '<div class="tracking-truck" style="left:' +
+            porcentaje +
+          '%;">🚚</div>' +
+
+        '</div>' +
+
+        (estadoActual === "Entregado"
+          ? '<div class="tracking-delivered">✓ ENTREGADO</div>'
+          : '') +
+
+      '</div>' +
+
+    '</div>';
+}
 
   /* =====================================================
      INICIALIZAR
