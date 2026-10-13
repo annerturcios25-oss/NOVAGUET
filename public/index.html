@@ -553,6 +553,25 @@
               >
 
             </div>
+            <!-- BOTONES -->
+<label for="customerReference">
+
+  📍 Referencia de entrega
+
+</label>
+
+<textarea
+
+  id="customerReference"
+
+  placeholder="Ej. Casa azul, portón negro, frente a la pulpería..."
+
+  rows="3"
+
+  maxlength="300"
+
+></textarea>
+
 
            <div
 
@@ -1242,7 +1261,13 @@
               </p>
 
             </div>
-
+<button
+  id="backPaymentButton"
+  class="checkout-button"
+  type="button"
+>
+  ATRÁS
+</button>
             <button
 
               id="continuePaymentButton"
@@ -1282,7 +1307,22 @@
             </h3>
 
             <div id="orderSummary"></div>
+<div class="summary-actions">
+  <button
+    id="backSummaryButton"
+    class="checkout-button"
+    type="button"
+  >
+    ATRÁS
+  </button>
 
+  <button
+    id="cancelCheckoutButton"
+    type="button"
+  >
+    CANCELAR
+  </button>
+</div>
             <button
 
               id="confirmOrderButton"

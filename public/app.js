@@ -101,6 +101,12 @@ const trackingResult =
   const confirmOrderButton =
     document.getElementById("confirmOrderButton");
 
+const backSummaryButton =
+    document.getElementById("backSummaryButton");
+
+const cancelCheckoutButton =
+    document.getElementById("cancelCheckoutButton");
+
   const stepResult =
     document.getElementById("stepResult");
 
@@ -1685,19 +1691,17 @@ if (confirmCustomerButton) {
 
           : "";
 
-      if (!nombre) {
-
-        sonidoError();
-
-        alert(
-
-          "Ingresa tu nombre completo."
-
-        );
-
-        return;
-
-      }
+const partesNombre = nombre
+  .trim()
+  .split(/\s+/)
+  .filter(Boolean);
+if (partesNombre.length < 2) {
+  sonidoError();
+  alert(
+    "Ingresa tu nombre y al menos un apellido."
+  );
+  return;
+}
 
       if (telefono.length !== 8) {
 
@@ -1713,31 +1717,20 @@ if (confirmCustomerButton) {
 
       }
 
-      orderData.nombre =
+    orderData.nombre = nombre;
 
-        nombre;
+orderData.telefono = telefono;
 
-      orderData.telefono =
+// La dirección se agregará en ENTREGA
+orderData.direccion = "";
 
-        telefono;
+// La referencia se guardará en el paso de entrega
+orderData.referencia = "";
 
-      // La dirección se agregará en ENTREGA
-
-      orderData.direccion =
-
-        "";
-
-      orderData.referencia =
-
-        "";
-
-      avanzarCheckout(
-
-        "customer",
-
-        "delivery"
-
-      );
+avanzarCheckout(
+  "customer",
+  "delivery"
+);
 
     }
 
@@ -2325,30 +2318,18 @@ if (deliveryMethod === "delivery") {
     !departmentSelect ||
     !departmentSelect.value
   ) {
-
     sonidoError();
-
-    alert(
-      "Selecciona tu departamento."
-    );
-
+    alert("Selecciona tu departamento.");
     return;
-
   }
 
   if (
     !municipality ||
     !municipality.value
   ) {
-
     sonidoError();
-
-    alert(
-      "Selecciona tu municipio."
-    );
-
+    alert("Selecciona tu municipio.");
     return;
-
   }
 
   orderData.departamento =
@@ -2359,31 +2340,34 @@ if (deliveryMethod === "delivery") {
 
   orderData.direccion = "";
 
-  orderData.referencia = "";
+  // CONSERVAR la referencia de entrega
+  const customerReference =
+    document.getElementById("customerReference");
+
+  orderData.referencia =
+    customerReference
+      ? customerReference.value.trim()
+      : "";
 
 } else {
 
   orderData.departamento = "";
-
   orderData.municipio = "";
-
   orderData.referencia = "";
-
   orderData.direccion = "";
 
 }
 
-      orderData.metodoEntrega =
-        deliveryMethod;
+orderData.metodoEntrega =
+  deliveryMethod;
 
-      avanzarCheckout(
-        "delivery",
-        "payment"
-      );
+avanzarCheckout(
+  "delivery",
+  "payment"
+);
 
-    }
-  );
-
+}
+);
 }
 /* =====================================================
 
@@ -2832,7 +2816,48 @@ if (backPaymentButton) {
     );
 
   }
+/* =====================================================
+   BOTÓN ATRÁS DEL RESUMEN
+===================================================== */
 
+if (backSummaryButton) {
+  backSummaryButton.addEventListener("click", () => {
+    avanzarCheckout("summary", "payment");
+  });
+}
+
+/* =====================================================
+   BOTÓN CANCELAR COMPRA
+===================================================== */
+
+if (cancelCheckoutButton) {
+  cancelCheckoutButton.addEventListener("click", () => {
+    const cancelar = confirm(
+      "¿Estás seguro de que deseas cancelar la compra?"
+    );
+
+    if (!cancelar) {
+      return;
+    }
+
+    if (checkoutContainer) {
+      checkoutContainer.style.display = "none";
+    }
+
+    if (stepResult) {
+      stepResult.style.display = "none";
+    }
+
+    if (cartBox) {
+      cartBox.style.display = "none";
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+}
 
   /* =====================================================
      AVANZAR CHECKOUT

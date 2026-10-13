@@ -2250,6 +2250,13 @@ footer {
   box-sizing: border-box !important;
   cursor: pointer;
 }
+/* Alinear botones del método de entrega */
+#backDeliveryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
 .checkout-navigation {
   display: flex;
   gap: 10px;
@@ -3097,4 +3104,104 @@ nav a:active {
   .tracking-delivered {
     font-size: 24px;
   }
+}
+/* Ajustar tamaño del botón CONTINUAR en forma de pago */
+#continuePaymentButton {
+  display: inline-block;
+  width: auto;
+  min-width: 120px;
+  padding: 13px 20px;
+}
+/* Colocar los botones de pago en la misma fila */
+#stepPayment #backPaymentButton,
+#stepPayment #continuePaymentButton {
+  display: inline-block;
+  width: calc(50% - 6px);
+  min-width: 0;
+  margin-top: 15px;
+  vertical-align: top;
+}
+
+#stepPayment #backPaymentButton {
+  margin-right: 8px;
+}
+/* Corregir el ancho de los botones de pago */
+#stepPayment #backPaymentButton,
+#stepPayment #continuePaymentButton {
+  box-sizing: border-box;
+  width: calc(50% - 4px);
+  min-width: 0;
+  padding: 13px 4px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+#stepPayment #backPaymentButton {
+  margin-right: 4px;
+}
+/* Alinear botones de MÉTODO DE ENTREGA */
+#stepDelivery #backDeliveryButton,
+#stepDelivery #continueDeliveryButton {
+  box-sizing: border-box;
+  display: inline-block;
+  width: calc(50% - 4px);
+  min-width: 0;
+  padding: 13px 4px;
+  margin-top: 15px;
+  font-size: 13px;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+#stepDelivery #backDeliveryButton {
+  margin-right: 4px;
+}
+/* Ajustar texto de los botones de entrega */
+#stepDelivery #backDeliveryButton,
+#stepDelivery #continueDeliveryButton {
+  box-sizing: border-box;
+  padding: 13px 2px;
+  font-size: 12px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* Dar más espacio al botón CONTINUAR de entrega */
+#stepDelivery #continueDeliveryButton {
+  width: calc(55% - 4px);
+  text-align: center;
+}
+
+#stepDelivery #backDeliveryButton {
+  width: calc(45% - 4px);
+  text-align: center;
+}
+/* Botones de confirmar pedido */
+.summary-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+#backSummaryButton,
+#cancelCheckoutButton {
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  margin-top: 0;
+  padding: 13px 4px;
+  border: none;
+  border-radius: 7px;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#backSummaryButton {
+  background: #00BFFF;
+}
+
+#cancelCheckoutButton {
+  background: #c01717;
 }
