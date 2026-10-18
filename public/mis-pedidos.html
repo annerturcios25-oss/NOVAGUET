@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis pedidos | NOVAGUET</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 24px 16px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #080808;
+    color: #f5f5f5;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .contenedor {
+    width: 100%;
+    max-width: 390px;
+    margin: 20px auto;
+    padding: 32px 26px;
+    background: #111111;
+    border: 1px solid #9c7b35;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  h1 {
+    margin: 0;
+    color: #d8b45a;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 5px;
+  }
+
+  .subtitulo {
+    margin: 10px 0 28px;
+    color: #b9b9b9;
+    text-align: center;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+  }
+
+  .pestanas {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #343434;
+  }
+
+  .pestanas button {
+    flex: 1;
+    padding: 12px 5px;
+    background: transparent;
+    color: #aaaaaa;
+    border: 1px solid #393939;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: 0.2s;
+  }
+
+  .pestanas button.activa {
+    background: #d8b45a;
+    color: #111111;
+    border-color: #d8b45a;
+    font-weight: bold;
+  }
+
+  label {
+    display: block;
+    margin: 17px 0 8px;
+    color: #e3c77e;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  input {
+    width: 100%;
+    padding: 13px 12px;
+    color: #ffffff;
+    background: #090909;
+    border: 1px solid #414141;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+  }
+
+  input:focus {
+    border-color: #d8b45a;
+    box-shadow: 0 0 0 2px rgba(216, 180, 90, 0.12);
+  }
+
+  .principal {
+    width: 100%;
+    padding: 14px 12px;
+    margin-top: 25px;
+    background: #d8b45a;
+    color: #111111;
+    border: 1px solid #d8b45a;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    transition: 0.2s;
+  }
+
+  .principal:hover {
+    background: #edcf7d;
+  }
+
+  .principal:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  .volver {
+    display: block;
+    margin-top: 24px;
+    color: #d8b45a;
+    text-align: center;
+    text-decoration: none;
+    font-size: 13px;
+  }
+
+  .volver:hover {
+    color: #edcf7d;
+    text-decoration: underline;
+  }
+
+  #mensaje {
+    margin-top: 16px;
+    color: #e3c77e;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .oculto {
+    display: none;
+  }
+
+  @media (max-width: 420px) {
+    body {
+      padding: 14px;
+    }
+
+    .contenedor {
+      padding: 27px 20px;
+    }
+  }
+</style>
+</head>
+<body>
+  <main class="contenedor">
+    <header>
+      <h1>NOVAGUET</h1>
+      <button class="boton secundario" id="cerrarSesion" type="button">
+        Cerrar sesión
+      </button>
+    </header>
+
+    <h2>Mis pedidos</h2>
+    <p id="mensaje" role="status" aria-live="polite">
+      Cargando tus pedidos...
+    </p>
+
+    <section id="listaPedidos"></section>
+
+    <div class="acciones">
+      <a class="boton" href="index.html">Volver a la tienda</a>
+    </div>
+  </main>
+
+  <script>
+    const mensaje = document.getElementById("mensaje");
+    const listaPedidos = document.getElementById("listaPedidos");
+    const cerrarSesion = document.getElementById("cerrarSesion");
+
+    function crearTexto(etiqueta, valor) {
+      const parrafo = document.createElement("p");
+      parrafo.textContent = etiqueta + ": " + valor;
+      return parrafo;
+    }
+
+    async function cargarPedidos() {
+      try {
+        const respuesta = await fetch("/api/clientes/mis-pedidos", {
+          credentials: "same-origin"
+        });
+
+        const resultado = await respuesta.json();
+
+        if (respuesta.status === 401) {
+          window.location.replace("cuenta.html");
+          return;
+        }
+
+        if (!respuesta.ok) {
+          mensaje.textContent =
+            resultado.mensaje || "No se pudieron cargar los pedidos.";
+          return;
+        }
+
+        mensaje.textContent = "";
+
+        if (!resultado.pedidos || resultado.pedidos.length === 0) {
+          mensaje.textContent =
+            "Todavía no tienes pedidos vinculados a tu cuenta.";
+          return;
+        }
+
+        resultado.pedidos.forEach((pedido) => {
+          const tarjeta = document.createElement("article");
+          tarjeta.className = "pedido";
+
+          const titulo = document.createElement("h2");
+          titulo.textContent = "Pedido #" + pedido.id;
+          tarjeta.appendChild(titulo);
+
+          tarjeta.appendChild(
+            crearTexto(
+              "Fecha",
+              pedido.fecha
+                ? new Date(pedido.fecha).toLocaleDateString("es-HN")
+                : "No disponible"
+            )
+          );
+
+          tarjeta.appendChild(
+            crearTexto(
+              "Total",
+              new Intl.NumberFormat("es-HN", {
+                style: "currency",
+                currency: "HNL"
+              }).format(Number(pedido.total) || 0)
+            )
+          );
+
+          const estado = document.createElement("p");
+          const etiqueta = document.createElement("span");
+          etiqueta.className = "estado";
+          etiqueta.textContent = "Estado: " + (pedido.estado || "Pendiente");
+          estado.appendChild(etiqueta);
+          tarjeta.appendChild(estado);
+
+          if (Array.isArray(pedido.productos)) {
+            const productos = document.createElement("p");
+            productos.textContent =
+              "Productos: " +
+              pedido.productos.map((producto) => {
+                const nombre = producto.nombre || producto.name || "Producto";
+                const cantidad = Number(
+                  producto.cantidad || producto.quantity || 1
+                );
+                return nombre + " x " + cantidad;
+              }).join(", ");
+
+            tarjeta.appendChild(productos);
+          }
+
+          listaPedidos.appendChild(tarjeta);
+        });
+      } catch (error) {
+        mensaje.textContent =
+          "No se pudieron cargar tus pedidos. Inténtalo de nuevo.";
+      }
+    }
+
+    cerrarSesion.addEventListener("click", async () => {
+      cerrarSesion.disabled = true;
+
+      try {
+        const respuesta = await fetch("/api/clientes/logout", {
+          method: "POST",
+          credentials: "same-origin"
+        });
+
+        if (!respuesta.ok) {
+          mensaje.textContent = "No se pudo cerrar la sesión.";
+          cerrarSesion.disabled = false;
+          return;
+        }
+
+        window.location.replace("cuenta.html");
+      } catch (error) {
+        mensaje.textContent = "No se pudo conectar para cerrar la sesión.";
+        cerrarSesion.disabled = false;
+      }
+    });
+
+    cargarPedidos();
+  </script>
+</body>
+</html>
