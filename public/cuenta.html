@@ -109,6 +109,94 @@
     .oculto {
       display: none;
     }
+
+    /* =====================================
+   NOVAGUET — NEGRO, DORADO Y AZUL
+===================================== */
+
+body {
+  background: #080808;
+  color: #ffffff;
+}
+
+/* Tarjeta principal */
+.contenedor {
+  background: linear-gradient(145deg, #111111, #202020);
+  border: 1px solid #D4AF37;
+  border-radius: 18px;
+  box-shadow: 0 0 25px rgba(0, 191, 255, 0.12);
+}
+
+/* Título */
+.contenedor h1 {
+  color: #D4AF37;
+  letter-spacing: 2px;
+}
+
+/* Subtítulo */
+.subtitulo {
+  color: #00BFFF;
+}
+
+/* Pestañas */
+.pestanas button {
+  background: #171717;
+  color: #D4AF37;
+  border: 1px solid #D4AF37;
+  border-radius: 9px;
+}
+
+/* Pestaña activa */
+.pestanas button.activa {
+  background: #00BFFF;
+  color: #050505;
+  border-color: #D4AF37;
+}
+
+/* Etiquetas */
+.contenedor label {
+  color: #ffffff;
+}
+
+/* Campos de entrada */
+.contenedor input {
+  background: #f5f5f5;
+  color: #111111;
+  border: 2px solid #D4AF37;
+  border-radius: 9px;
+}
+
+/* Campo seleccionado */
+.contenedor input:focus {
+  outline: none;
+  border-color: #00BFFF;
+  box-shadow: 0 0 8px rgba(0, 191, 255, 0.4);
+}
+
+/* Botón principal */
+#botonEnviar {
+  background: #00BFFF;
+  color: #050505;
+  border: 1px solid #D4AF37;
+  border-radius: 9px;
+  font-weight: bold;
+  transition: background 0.25s ease;
+}
+
+/* Efecto del botón */
+#botonEnviar:hover {
+  background: #D4AF37;
+  color: #050505;
+}
+
+/* Enlaces */
+.contenedor a {
+  color: #00BFFF;
+}
+
+.contenedor a:hover {
+  color: #D4AF37;
+}
   </style>
 </head>
 <body>
@@ -139,14 +227,14 @@
       </div>
 
       <label for="email">Correo electrónico</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        maxlength="254"
-        autocomplete="email"
-        required
-      >
+<input
+  id="email"
+  name="email"
+  type="email"
+  maxlength="254"
+  autocomplete="username"
+  required
+>
 
       <label for="password">Contraseña</label>
       <input

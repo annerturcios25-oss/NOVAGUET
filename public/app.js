@@ -54,6 +54,7 @@ const trackingResult =
 
   const customerName = document.getElementById("customerName");
   const customerPhone = document.getElementById("customerPhone");
+  const customerEmail = document.getElementById("customerEmail");
   const customerAddress = document.getElementById("customerAddress");
   const deliveryReference = document.getElementById("deliveryReference");
 
@@ -1690,7 +1691,20 @@ if (confirmCustomerButton) {
           ? customerPhone.value.replace(/\D/g, "")
 
           : "";
+const email = customerEmail
+  ? customerEmail.value.trim().toLowerCase()
+  : "";
 
+const formatoEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!formatoEmail.test(email)) {
+  sonidoError();
+  alert("Ingresa un correo electrónico válido.");
+  if (customerEmail) {
+    customerEmail.focus();
+  }
+  return;
+}
 const partesNombre = nombre
   .trim()
   .split(/\s+/)
@@ -1720,7 +1734,7 @@ if (partesNombre.length < 2) {
     orderData.nombre = nombre;
 
 orderData.telefono = telefono;
-
+orderData.email = email;
 // La dirección se agregará en ENTREGA
 orderData.direccion = "";
 
@@ -2858,80 +2872,48 @@ if (cancelCheckoutButton) {
     });
   });
 }
+/* =====================================================
+   AVANZAR CHECKOUT
+===================================================== */
 
-  /* =====================================================
-     AVANZAR CHECKOUT
-  ===================================================== */
+function avanzarCheckout(actual, siguiente) {
 
-  function avanzarCheckout(
-    actual,
-    siguiente
-  ) {
+  const pasosCheckout = [
+    "stepCustomer",
+    "stepDelivery",
+    "stepPayment",
+    "stepSummary"
+  ];
 
-    document
-      .querySelectorAll(
-        ".checkout-step"
-      )
-      .forEach(
-        paso => {
+  // Ocultar todos los pasos del checkout
+  pasosCheckout.forEach(id => {
+    const paso = document.getElementById(id);
 
-          const id =
-            paso.id || "";
+    if (paso) {
+      paso.style.display = "none";
+    }
+  });
 
-          if (
-            id
-              .toLowerCase()
-              .includes(
-                siguiente.toLowerCase()
-              )
-          ) {
+  // Mostrar únicamente el siguiente paso
+  const pasoSiguiente = document.getElementById(
+    siguiente === "customer" ? "stepCustomer" :
+    siguiente === "delivery" ? "stepDelivery" :
+    siguiente === "payment" ? "stepPayment" :
+    siguiente === "summary" ? "stepSummary" :
+    ""
+  );
 
-            paso.style.display =
-              "block";
-
-          } else if (
-            id
-              .toLowerCase()
-              .includes(
-                actual.toLowerCase()
-              )
-          ) {
-
-            paso.style.display =
-              "none";
-
-          }
-
-        }
-      );
-
-    document
-      .querySelectorAll(
-        "[data-step]"
-      )
-      .forEach(
-        elemento => {
-
-          const step =
-            elemento.dataset.step;
-
-          if (step === siguiente) {
-
-            elemento.style.display =
-              "block";
-
-          } else if (step === actual) {
-
-            elemento.style.display =
-              "none";
-
-          }
-
-        }
-      );
-
+  if (pasoSiguiente) {
+    pasoSiguiente.style.display = "block";
   }
 
+  // Ocultar otros elementos identificados mediante data-step
+  document.querySelectorAll("[data-step]").forEach(elemento => {
+    elemento.style.display =
+      elemento.dataset.step === siguiente ? "block" : "none";
+  });
+
+}
 
   /* =====================================================
      MOSTRAR RESUMEN
@@ -3015,9 +2997,9 @@ if (cancelCheckoutButton) {
         </p>
 
         <p>
-          <strong>Dirección:</strong>
-          ${orderData.direccion || ""}
-        </p>
+  <strong>Correo electrónico:</strong>
+  ${orderData.email || ""}
+</p>
 
       </div>
 
@@ -3238,21 +3220,17 @@ if (cancelCheckoutButton) {
             0,
             subtotal - descuento
           );
+const pedido = {
+  cliente: {
+    nombre: orderData.nombre || "",
+    telefono: orderData.telefono || "",
+    email: orderData.email || "",
+    direccion: orderData.direccion || ""
+  },
 
-        const pedido = {
-
-          cliente: {
-
-            nombre:
-              orderData.nombre || "",
-
-            telefono:
-              orderData.telefono || "",
-
-            direccion:
-              orderData.direccion || ""
-
-          },
+  nombre: orderData.nombre || "",
+  telefono: orderData.telefono || "",
+  email: orderData.email || "",
 
           productos:
             carrito.map(

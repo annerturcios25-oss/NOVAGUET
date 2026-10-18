@@ -19,18 +19,18 @@ header {
 }
 
 .navbar {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: auto;
-  min-height: 95px;
-  padding: 15px 30px;
+  min-height: 120px;
+  padding: 20px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 25px;
+  gap: 30px;
 }
 
 .logo img {
-  width: 120px;
+  width: 130px;
   height: auto;
   display: block;
 }
@@ -54,9 +54,9 @@ nav a:hover {
 
 .icons {
   display: flex;
-  gap: 15px;
+  gap: 18px;
   align-items: center;
-  font-size: 22px;
+  font-size: 24px;
 }
 
 .icon-button {
@@ -91,7 +91,7 @@ nav a:hover {
 
 .hero {
   text-align: center;
-  padding: 70px 20px 90px;
+  padding: 90px 40px 110px;
   background-image:
     linear-gradient(
       rgba(245, 247, 248, 0.88),
@@ -104,9 +104,9 @@ nav a:hover {
 }
 
 .hero h1 {
-  font-size: 68px;
-  letter-spacing: 5px;
-  margin-bottom: 20px;
+  font-size: 80px;
+  letter-spacing: 10px;
+  margin-bottom: 30px;
 }
 
 .nova {
@@ -3204,4 +3204,162 @@ nav a:active {
 
 #cancelCheckoutButton {
   background: #c01717;
+}
+.honduras-flag {
+  display: inline-block;
+  width: 28px;
+  height: 18px;
+  vertical-align: middle;
+  background: linear-gradient(
+    to bottom,
+    #00BCE4 0%,
+    #00BCE4 33.33%,
+    #FFFFFF 33.33%,
+    #FFFFFF 66.66%,
+    #00BCE4 66.66%,
+    #00BCE4 100%
+  );
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  position: relative;
+  margin-right: 5px;
+}
+/* Enlaces del menú principal */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-links > a,
+.nosotros-menu > a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Botón MI CUENTA */
+.nav-links > .account-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  background: #d8b45a;
+  color: #111111;
+  border: 1px solid #d8b45a;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: background 0.2s ease;
+}
+
+.nav-links > .account-button:hover {
+  background: #edcf7d;
+  color: #111111;
+}
+
+/* NOVAGUET: alinear menú e iconos en una sola fila */
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.navbar nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+}
+
+.icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    margin-left: 0;
+}
+
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+/* ==================================
+   NOVAGUET — MI CUENTA
+   Negro, dorado y azul turquesa
+================================== */
+
+body {
+    background: #080808;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+/* Tarjeta principal */
+.account-container,
+.login-container,
+.auth-container {
+    background: linear-gradient(145deg, #111111, #202020);
+    border: 1px solid #D4AF37;
+    border-radius: 18px;
+    box-shadow: 0 0 25px rgba(0, 191, 255, 0.12);
+}
+
+/* Título NOVAGUET */
+h1 {
+    color: #D4AF37;
+    letter-spacing: 2px;
+}
+
+/* Subtítulos */
+p,
+label {
+    color: #F5F5F5;
+}
+
+/* Campos de correo y contraseña */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+    background: #F5F5F5;
+    color: #111111;
+    border: 2px solid #D4AF37;
+    border-radius: 9px;
+    padding: 13px;
+    outline: none;
+}
+
+/* Cuando seleccionas un campo */
+input:focus {
+    border-color: #00BFFF;
+    box-shadow: 0 0 10px rgba(0, 191, 255, 0.35);
+}
+
+/* Botones */
+button {
+    background: #00BFFF;
+    color: #050505;
+    border: 1px solid #D4AF37;
+    border-radius: 9px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+/* Efecto al pasar el cursor */
+button:hover {
+    background: #D4AF37;
+    color: #050505;
+}
+
+/* Enlaces */
+a {
+    color: #00BFFF;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #D4AF37;
 }
