@@ -197,6 +197,48 @@ body {
 .contenedor a:hover {
   color: #D4AF37;
 }
+
+/* Ajuste para teléfonos */
+@media (max-width: 480px) {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 12px;
+    overflow-x: hidden;
+  }
+
+  .contenedor {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 auto;
+  }
+
+  .pestanas {
+    display: flex;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .pestanas button {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+    padding: 12px 4px;
+    font-size: 14px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+  }
+}
   </style>
 </head>
 <body>
