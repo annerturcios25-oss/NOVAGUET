@@ -292,10 +292,50 @@ body {
       <button class="principal" type="submit" id="botonEnviar">
         Iniciar sesión
       </button>
+
+      <button
+        type="button"
+        id="botonOlvide"
+        class="volver"
+        style="background:none;border:0;cursor:pointer;"
+      >
+        ¿Olvidaste tu contraseña?
+      </button>
+
     </form>
 
     <p id="mensaje" role="status" aria-live="polite"></p>
+<section id="seccionRestablecer" class="oculto">
+  <h2>Crear nueva contraseña</h2>
 
+  <form id="formularioRestablecer">
+    <label for="nuevaPassword">Nueva contraseña</label>
+    <input
+      id="nuevaPassword"
+      type="password"
+      minlength="8"
+      maxlength="128"
+      autocomplete="new-password"
+      required
+    >
+
+    <label for="confirmarPassword">Confirmar contraseña</label>
+    <input
+      id="confirmarPassword"
+      type="password"
+      minlength="8"
+      maxlength="128"
+      autocomplete="new-password"
+      required
+    >
+
+    <button class="principal" type="submit" id="botonRestablecer">
+      Guardar nueva contraseña
+    </button>
+  </form>
+
+  <p id="mensajeRestablecer" role="status" aria-live="polite"></p>
+</section>
     <a class="volver" href="index.html">
       Volver a la tienda
     </a>
@@ -310,6 +350,7 @@ body {
     const botonLogin = document.getElementById("botonLogin");
     const botonRegistro = document.getElementById("botonRegistro");
     const botonEnviar = document.getElementById("botonEnviar");
+    const botonOlvide = document.getElementById("botonOlvide");
     const mensaje = document.getElementById("mensaje");
 
     let modo = "login";
@@ -331,15 +372,43 @@ body {
         ? "Crear cuenta"
         : "Iniciar sesión";
 
+      botonOlvide.style.display = esRegistro ? "none" : "block";
       mensaje.textContent = "";
     }
 
-    botonLogin.addEventListener("click", () => {
-      cambiarModo("login");
-    });
+    botonLogin.addEventListener("click", () => cambiarModo("login"));
+    botonRegistro.addEventListener("click", () => cambiarModo("registro"));
 
-    botonRegistro.addEventListener("click", () => {
-      cambiarModo("registro");
+    botonOlvide.addEventListener("click", async () => {
+      const correo = email.value.trim().toLowerCase();
+
+      if (!correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+        mensaje.textContent = "Escribe tu correo electrónico en el campo de arriba.";
+        email.focus();
+        return;
+      }
+
+      mensaje.textContent = "Enviando solicitud...";
+      botonOlvide.disabled = true;
+
+      try {
+        const respuesta = await fetch("/api/clientes/solicitar-recuperacion", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ email: correo })
+        });
+
+        const resultado = await respuesta.json();
+
+        mensaje.textContent = resultado.mensaje ||
+          "Si el correo está registrado, recibirás instrucciones para recuperar tu contraseña.";
+      } catch (error) {
+        mensaje.textContent =
+          "No se pudo conectar con NOVAGUET. Inténtalo de nuevo.";
+      } finally {
+        botonOlvide.disabled = false;
+      }
     });
 
     formulario.addEventListener("submit", async (evento) => {
@@ -362,9 +431,7 @@ body {
       try {
         const respuesta = await fetch(ruta, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "same-origin",
           body: JSON.stringify(datos)
         });
@@ -373,7 +440,8 @@ body {
 
         if (!respuesta.ok) {
           mensaje.textContent =
-            resultado.error || "No se pudo completar la operación.";
+            resultado.error || resultado.mensaje ||
+            "No se pudo completar la operación.";
           return;
         }
 
@@ -383,13 +451,93 @@ body {
           mensaje.textContent =
             "Cuenta creada correctamente. Ahora inicia sesión.";
         } else {
-          window.location.href = "mis-pedidos.html";
+          const destino = new URLSearchParams(
+            window.location.search
+          ).get("return");
+
+          if (destino === "checkout") {
+            window.location.href = "index.html?return=checkout";
+          } else {
+            window.location.href = "mis-pedidos.html";
+          }
         }
       } catch (error) {
         mensaje.textContent =
           "No se pudo conectar con NOVAGUET. Inténtalo de nuevo.";
       } finally {
         botonEnviar.disabled = false;
+      }
+    });
+
+    cambiarModo("login");
+
+    const seccionRestablecer =
+      document.getElementById("seccionRestablecer");
+    const formularioRestablecer =
+      document.getElementById("formularioRestablecer");
+    const mensajeRestablecer =
+      document.getElementById("mensajeRestablecer");
+
+    const tokenRecuperacion = new URLSearchParams(
+      window.location.search
+    ).get("restablecer");
+
+    if (tokenRecuperacion) {
+      formulario.classList.add("oculto");
+      botonLogin.classList.add("oculto");
+      botonRegistro.classList.add("oculto");
+      botonOlvide.classList.add("oculto");
+      seccionRestablecer.classList.remove("oculto");
+    }
+
+    formularioRestablecer.addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      mensajeRestablecer.textContent = "";
+
+      const nueva = document.getElementById("nuevaPassword").value;
+      const confirmar = document.getElementById("confirmarPassword").value;
+      const boton = document.getElementById("botonRestablecer");
+
+      if (nueva !== confirmar) {
+        mensajeRestablecer.textContent =
+          "Las contraseñas no coinciden.";
+        return;
+      }
+
+      boton.disabled = true;
+
+      try {
+        const respuesta = await fetch(
+          "/api/clientes/restablecer-contrasena",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({
+              token: tokenRecuperacion,
+              password: nueva
+            })
+          }
+        );
+
+        const resultado = await respuesta.json();
+        mensajeRestablecer.textContent =
+          resultado.mensaje ||
+          "No se pudo actualizar la contraseña.";
+
+        if (respuesta.ok) {
+          formularioRestablecer.reset();
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          );
+        }
+      } catch (error) {
+        mensajeRestablecer.textContent =
+          "No se pudo conectar con NOVAGUET. Inténtalo de nuevo.";
+      } finally {
+        boton.disabled = false;
       }
     });
   </script>

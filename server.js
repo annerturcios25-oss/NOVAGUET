@@ -1125,9 +1125,15 @@ app.post( "/api/pedidos",
           "utf8"
         )
       );
-
-      const datos = req.body || {};
+const datos = req.body || {};
       const sesionCliente = obtenerClienteSesion(req);
+
+      if (!sesionCliente) {
+        return res.status(401).json({
+          error: "Debes registrarte o iniciar sesión para realizar un pedido."
+        });
+      }
+     
 console.log(
   "EMAIL RECIBIDO:",
   datos.email
@@ -1426,26 +1432,17 @@ app.get(
    CAMBIAR ESTADO DE PEDIDO
    🔐 PROTEGIDO
 ========================================================= */
-
 app.patch(
   "/api/pedidos/:id/estado",
   protegerAdmin,
-  (req, res) => {
+  async (req, res) => {
     try {
       const pedidos = JSON.parse(
-        fs.readFileSync(
-          ordersFile,
-          "utf8"
-        )
+        fs.readFileSync(ordersFile, "utf8")
       );
 
-      const id =
-        String(req.params.id);
-
-      const estado =
-        String(
-          req.body?.estado || ""
-        ).trim();
+      const id = String(req.params.id);
+      const estado = String(req.body?.estado || "").trim();
 
       const estadosPermitidos = [
         "Pendiente",
@@ -1456,56 +1453,103 @@ app.patch(
         "Cancelado"
       ];
 
-      if (
-        !estadosPermitidos.includes(
-          estado
-        )
-      ) {
+      if (!estadosPermitidos.includes(estado)) {
         return res.status(400).json({
-          error:
-            "Estado de pedido inválido."
+          error: "Estado de pedido inválido."
         });
       }
 
-      const indice =
-        pedidos.findIndex(
-          pedido =>
-            String(pedido.id) === id
-        );
+      const indice = pedidos.findIndex(
+        pedido => String(pedido.id) === id
+      );
 
       if (indice === -1) {
         return res.status(404).json({
-          error:
-            "Pedido no encontrado."
+          error: "Pedido no encontrado."
         });
       }
 
-      pedidos[indice].estado =
-        estado;
+      const pedido = pedidos[indice];
+      const estadoAnterior = pedido.estado || "";
+
+      // Guardar el nuevo estado.
+      pedido.estado = estado;
 
       fs.writeFileSync(
         ordersFile,
-        JSON.stringify(
-          pedidos,
-          null,
-          2
-        )
+        JSON.stringify(pedidos, null, 2)
       );
 
-      res.json({
-        mensaje:
-          "Estado actualizado correctamente",
+      // Enviar correo solamente si el estado realmente cambió.
+      if (
+        estadoAnterior !== estado &&
+        (pedido.cliente?.email || pedido.email)
+      ) {
+        const emailCliente =
+          pedido.cliente?.email || pedido.email;
 
-        pedido:
-          pedidos[indice]
+        const mensajesEstado = {
+          Pendiente: "Tu pedido está pendiente de confirmación.",
+          Confirmado: "¡Tu pedido ha sido confirmado!",
+          Preparando: "Estamos preparando tu pedido.",
+          Enviado: "¡Tu pedido ha sido enviado!",
+          Entregado: "¡Tu pedido aparece como entregado!",
+          Cancelado: "Tu pedido ha sido cancelado."
+        };
+
+        try {
+          await transporter.sendMail({
+            from: "NOVA GUET <" + process.env.GMAIL_USER + ">",
+            to: emailCliente,
+            subject: "Actualización de tu pedido | NOVA GUET",
+            text:
+              "Hola " +
+              (pedido.cliente?.nombre || pedido.nombre || "cliente") +
+              ",\n\n" +
+              "El estado de tu pedido #" + id + " ha cambiado.\n\n" +
+              "Estado anterior: " + (estadoAnterior || "Sin estado") +
+              "\nNuevo estado: " + estado +
+              "\n\n" + mensajesEstado[estado] +
+              "\n\nGracias por comprar en NOVA GUET.",
+            html:
+              "<div style='background:#111;color:#fff;padding:24px;font-family:Arial,sans-serif'>" +
+              "<h2 style='color:#00bfff'>NOVA GUET</h2>" +
+              "<p>Hola " +
+              String(
+                pedido.cliente?.nombre || pedido.nombre || "cliente"
+              ).replace(/[&<>"']/g, "") +
+              ",</p>" +
+              "<p>Hay una actualización en tu pedido <strong>#" +
+              String(id).replace(/[&<>"']/g, "") +
+              "</strong>.</p>" +
+              "<p>Estado anterior: <strong>" +
+              String(estadoAnterior || "Sin estado").replace(/[&<>"']/g, "") +
+              "</strong></p>" +
+              "<p>Nuevo estado: <strong style='color:#00bfff'>" +
+              String(estado).replace(/[&<>"']/g, "") +
+              "</strong></p>" +
+              "<p>" + mensajesEstado[estado] + "</p>" +
+              "<p>Gracias por comprar en NOVA GUET.</p>" +
+              "</div>"
+          });
+        } catch (errorCorreo) {
+          // El pedido queda actualizado aunque falle el correo.
+          console.error(
+            "No se pudo enviar el aviso del pedido #" + id + ":",
+            errorCorreo.message
+          );
+        }
+      }
+
+      return res.json({
+        mensaje: "Estado actualizado correctamente",
+        pedido
       });
-
     } catch (error) {
       console.error(error);
 
-      res.status(500).json({
-        error:
-          "No se pudo actualizar el estado del pedido"
+      return res.status(500).json({
+        error: "No se pudo actualizar el estado del pedido"
       });
     }
   }
@@ -1650,218 +1694,215 @@ app.post("/api/clientes/registro", async (req, res) => {
   }
 });
 
+/* =========================================
+   SOLICITAR RECUPERACIÓN DE CONTRASEÑA
+========================================= */
 
-/* =========================
-   INICIO DE SESIÓN DE CLIENTES
-========================= */
+app.post("/api/clientes/solicitar-recuperacion", async (req, res) => {
+  const respuesta = {
+    ok: true,
+    mensaje:
+      "Si el correo está registrado, recibirás instrucciones para recuperar tu contraseña."
+  };
 
-function verificarContrasenaCliente(contrasena, hashGuardado) {
-  return new Promise((resolve, reject) => {
-    const partes = hashGuardado.split(":");
-
-    if (partes.length !== 2) {
-      return resolve(false);
-    }
-
-    const salt = partes[0];
-    const hashOriginal = Buffer.from(partes[1], "hex");
-
-    crypto.scrypt(contrasena, salt, 64, (error, clave) => {
-      if (error) {
-        return reject(error);
-      }
-
-      if (clave.length !== hashOriginal.length) {
-        return resolve(false);
-      }
-
-      resolve(crypto.timingSafeEqual(clave, hashOriginal));
-    });
-  });
-}
-
-function crearTokenSesionCliente(clienteId) {
-  const datos =
-    "NOVAGUET_CLIENTE:" +
-    clienteId +
-    ":" +
-    Date.now() +
-    ":" +
-    crypto.randomBytes(32).toString("hex");
-
-  const firma = crypto
-    .createHmac("sha256", SESSION_SECRET)
-    .update(datos)
-    .digest("hex");
-
-  return Buffer.from(datos + "." + firma).toString("base64url");
-}
-
-function obtenerClienteSesion(req) {
-  const cookies = req.headers.cookie || "";
-  const coincidencia = cookies.match(
-    /(?:^|;\s*)novaguet_cliente_session=([^;]+)/
-  );
-
-app.get("/api/clientes/sesion", async (req, res) => {
-  try {
-    const sesion = obtenerClienteSesion(req);
-
-    if (!sesion) {
-      return res.status(401).json({
-        ok: false,
-        mensaje: "No hay una sesión activa."
-      });
-    }
-
-    const resultado = await pool.query(
-      "SELECT id, nombre, email FROM clientes WHERE id = $1",
-      [sesion.id]
-    );
-
-    if (resultado.rows.length === 0) {
-      return res.status(401).json({
-        ok: false,
-        mensaje: "La cuenta no existe."
-      });
-    }
-
-    return res.json({
-      ok: true,
-      cliente: resultado.rows[0]
-    });
-  } catch (error) {
-    console.error("Error al comprobar la sesión:", error.message);
-
-    return res.status(500).json({
-      ok: false,
-      mensaje: "No se pudo comprobar la sesión."
-    });
-  }
-});
-
-  if (!coincidencia) return null;
-
-  try {
-    const token = decodeURIComponent(coincidencia[1]);
-    const decodificado = Buffer.from(token, "base64url").toString("utf8");
-    const separador = decodificado.lastIndexOf(".");
-
-    if (separador === -1) return null;
-
-    const datos = decodificado.substring(0, separador);
-    const firma = decodificado.substring(separador + 1);
-
-    const firmaEsperada = crypto
-      .createHmac("sha256", SESSION_SECRET)
-      .update(datos)
-      .digest("hex");
-
-    if (firma.length !== firmaEsperada.length) return null;
-
-    if (
-      !crypto.timingSafeEqual(
-        Buffer.from(firma),
-        Buffer.from(firmaEsperada)
-      )
-    ) {
-      return null;
-    }
-
-    const partes = datos.split(":");
-
-    if (partes.length !== 4 || partes[0] !== "NOVAGUET_CLIENTE") {
-      return null;
-    }
-
-    if (!/^\d+$/.test(partes[1])) return null;
-
-    const fecha = Number(partes[2]);
-
-    if (!Number.isSafeInteger(fecha)) return null;
-    if (fecha > Date.now() + 60000) return null;
-    if (Date.now() - fecha > 86400000) return null;
-
-    return { id: partes[1] };
-  } catch (error) {
-    return null;
-  }
-}
-
-app.post("/api/clientes/login", async (req, res) => {
   try {
     const email = String(req.body?.email || "")
       .trim()
       .toLowerCase();
 
-    const contrasena = String(req.body?.password || "");
-
-    if (!email || !contrasena) {
+    if (
+      email.length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    ) {
       return res.status(400).json({
-        error: "Introduce tu correo y contraseña."
+        ok: false,
+        mensaje: "Introduce un correo electrónico válido."
       });
     }
 
     const resultado = await pool.query(
-      "SELECT id, nombre, email, password_hash FROM clientes WHERE email = $1",
+      "SELECT id, nombre, email FROM clientes WHERE email = $1",
       [email]
     );
 
+    // No revelar si existe una cuenta con ese correo.
     if (resultado.rows.length === 0) {
-      return res.status(401).json({
-        error: "Correo o contraseña incorrectos."
-      });
+      return res.json(respuesta);
     }
 
     const cliente = resultado.rows[0];
 
-    const valida = await verificarContrasenaCliente(
-      contrasena,
-      cliente.password_hash
+    const token = crypto.randomBytes(32).toString("hex");
+    const tokenHash = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    await pool.query(
+      `DELETE FROM recuperacion_contrasenas
+       WHERE cliente_id = $1 OR vence_en < NOW() OR usado = TRUE`,
+      [cliente.id]
     );
 
-    if (!valida) {
-      return res.status(401).json({
-        error: "Correo o contraseña incorrectos."
-      });
-    }
+    await pool.query(
+      `INSERT INTO recuperacion_contrasenas
+       (cliente_id, token_hash, vence_en)
+       VALUES ($1, $2, NOW() + INTERVAL '30 minutes')`,
+      [cliente.id, tokenHash]
+    );
 
-    const token = crearTokenSesionCliente(cliente.id);
+    const baseUrl = (
+      process.env.BASE_URL || "http://localhost:3000"
+    ).replace(/\/+$/, "");
 
-    const esHttps =
-      req.headers["x-forwarded-proto"] === "https" ||
-      process.env.NODE_ENV === "production";
+    const enlace =
+      baseUrl +
+      "/cuenta.html?restablecer=" +
+      encodeURIComponent(token);
 
-    const cookie = [
-      "novaguet_cliente_session=" + encodeURIComponent(token),
-      "Path=/",
-      "HttpOnly",
-      "SameSite=Lax",
-      "Max-Age=86400"
-    ];
-
-    if (esHttps) {
-      cookie.push("Secure");
-    }
-
-    res.setHeader("Set-Cookie", cookie.join("; "));
-
-    return res.json({
-      ok: true,
-      cliente: {
-        id: cliente.id,
-        nombre: cliente.nombre,
-        email: cliente.email
-      }
+    await transporter.sendMail({
+      from: "NOVA GUET <" + process.env.GMAIL_USER + ">",
+      to: cliente.email,
+      subject: "Recupera tu contraseña | NOVA GUET",
+      text:
+        "Hola " + cliente.nombre + ",\n\n" +
+        "Solicitaste recuperar tu contraseña de NOVA GUET.\n\n" +
+        "Abre este enlace para crear una nueva contraseña. " +
+        "Es válido durante 30 minutos:\n" +
+        enlace + "\n\n" +
+        "Si no solicitaste este cambio, ignora este correo.",
+      html:
+        "<div style='background:#111;color:#fff;padding:24px;font-family:Arial,sans-serif'>" +
+        "<h2 style='color:#00bfff'>NOVA GUET</h2>" +
+        "<p>Hola, " +
+        String(cliente.nombre).replace(/[&<>"']/g, "") +
+        ". Solicitaste recuperar tu contraseña.</p>" +
+        "<p>El enlace es válido durante 30 minutos.</p>" +
+        "<p><a href='" + enlace +
+        "' style='display:inline-block;background:#00bfff;color:#000;padding:12px 18px;text-decoration:none;font-weight:bold'>" +
+        "RECUPERAR CONTRASEÑA</a></p>" +
+        "<p>Si no solicitaste este cambio, ignora este correo.</p>" +
+        "</div>"
     });
+
+    return res.json(respuesta);
   } catch (error) {
-    console.error("Error en el inicio de sesión del cliente:", error.message);
+    console.error(
+      "Error al solicitar recuperación:",
+      error.message
+    );
 
     return res.status(500).json({
-      error: "No se pudo iniciar sesión. Inténtalo de nuevo."
+      ok: false,
+      mensaje: "No se pudo enviar el correo. Inténtalo más tarde."
     });
   }
 });
+/* =========================================
+   RESTABLECER CONTRASEÑA DE CLIENTE
+========================================= */
+
+app.post("/api/clientes/restablecer-contrasena", async (req, res) => {
+  const token = String(req.body?.token || "");
+  const nuevaContrasena = String(req.body?.password || "");
+
+  if (!/^[a-f0-9]{64}$/i.test(token)) {
+    return res.status(400).json({
+      ok: false,
+      mensaje: "El enlace no es válido o ha caducado."
+    });
+  }
+
+  if (nuevaContrasena.length < 8 || nuevaContrasena.length > 128) {
+    return res.status(400).json({
+      ok: false,
+      mensaje: "La contraseña debe tener entre 8 y 128 caracteres."
+    });
+  }
+
+  try {
+    const tokenHash = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    const resultado = await pool.query(
+      `SELECT cliente_id
+       FROM recuperacion_contrasenas
+       WHERE token_hash = $1
+         AND usado = FALSE
+         AND vence_en > NOW()
+       LIMIT 1`,
+      [tokenHash]
+    );
+
+    if (resultado.rows.length === 0) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: "El enlace no es válido o ha caducado. Solicita uno nuevo."
+      });
+    }
+
+    const clienteId = resultado.rows[0].cliente_id;
+    const nuevoHash = await generarHashContrasena(nuevaContrasena);
+
+    const conexion = await pool.connect();
+
+    try {
+      await conexion.query("BEGIN");
+
+      const comprobacion = await conexion.query(
+        `SELECT cliente_id
+         FROM recuperacion_contrasenas
+         WHERE token_hash = $1
+           AND usado = FALSE
+           AND vence_en > NOW()
+         FOR UPDATE`,
+        [tokenHash]
+      );
+
+      if (comprobacion.rows.length === 0) {
+        await conexion.query("ROLLBACK");
+        return res.status(400).json({
+          ok: false,
+          mensaje: "El enlace ya se utilizó o ha caducado."
+        });
+      }
+
+      await conexion.query(
+        "UPDATE clientes SET password_hash = $1 WHERE id = $2",
+        [nuevoHash, clienteId]
+      );
+
+      await conexion.query(
+        `UPDATE recuperacion_contrasenas
+         SET usado = TRUE
+         WHERE cliente_id = $1`,
+        [clienteId]
+      );
+
+      await conexion.query("COMMIT");
+
+      return res.json({
+        ok: true,
+        mensaje: "Contraseña actualizada. Ya puedes iniciar sesión."
+      });
+    } catch (error) {
+      await conexion.query("ROLLBACK");
+      throw error;
+    } finally {
+      conexion.release();
+    }
+  } catch (error) {
+    console.error("Error al restablecer contraseña:", error.message);
+
+    return res.status(500).json({
+      ok: false,
+      mensaje: "No se pudo actualizar la contraseña. Inténtalo de nuevo."
+    });
+  }
+});
+
 
 /* CIERRE DE SESION DEL CLIENTE */
 
@@ -1889,6 +1930,115 @@ app.post("/api/clientes/logout", (req, res) => {
     mensaje: "Sesion cerrada correctamente."
   });
 });
+
+/* =====================================================
+   CANCELAR PEDIDO DEL CLIENTE
+===================================================== */
+
+app.post("/api/clientes/cancelar-pedido", (req, res) => {
+  try {
+    const sesion = obtenerClienteSesion(req);
+
+    if (!sesion) {
+      return res.status(401).json({
+        ok: false,
+        mensaje: "Inicia sesión para cancelar un pedido."
+      });
+    }
+
+    const pedidoId = req.body?.pedidoId;
+
+    if (!pedidoId) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: "Falta el número del pedido."
+      });
+    }
+
+    const pedidos = JSON.parse(
+      fs.readFileSync(ordersFile, "utf8")
+    );
+
+    const pedido = pedidos.find(
+      p =>
+        String(p.id) === String(pedidoId) &&
+        String(p.clienteId) === String(sesion.id)
+    );
+
+    if (!pedido) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: "No encontramos ese pedido en tu cuenta."
+      });
+    }
+
+    if (pedido.estado !== "Pendiente") {
+      return res.status(400).json({
+        ok: false,
+        mensaje: "Solo puedes cancelar pedidos pendientes."
+      });
+    }
+
+    const productos = JSON.parse(
+      fs.readFileSync(productsFile, "utf8")
+    );
+
+    for (const item of pedido.productos || []) {
+      const producto = productos.find(
+        p => String(p.id) === String(item.id)
+      );
+
+      if (!producto) {
+        return res.status(409).json({
+          ok: false,
+          mensaje:
+            "No se pudo completar la cancelación porque falta un producto del inventario. Contacta con la tienda."
+        });
+      }
+    }
+
+    for (const item of pedido.productos || []) {
+      const producto = productos.find(
+        p => String(p.id) === String(item.id)
+      );
+
+      const cantidad = Number(
+        item.cantidad || item.quantity || 1
+      );
+
+      producto.stock =
+        Number(producto.stock || 0) + cantidad;
+    }
+
+    pedido.estado = "Cancelado";
+
+    fs.writeFileSync(
+      productsFile,
+      JSON.stringify(productos, null, 2)
+    );
+
+    fs.writeFileSync(
+      ordersFile,
+      JSON.stringify(pedidos, null, 2)
+    );
+
+    return res.json({
+      ok: true,
+      mensaje: "Pedido cancelado correctamente."
+    });
+  } catch (error) {
+    console.error(
+      "Error al cancelar pedido:",
+      error.message
+    );
+
+    return res.status(500).json({
+      ok: false,
+      mensaje: "No se pudo cancelar el pedido."
+    });
+  }
+});
+
 
 /* MIS PEDIDOS DEL CLIENTE */
 
