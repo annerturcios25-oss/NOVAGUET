@@ -769,11 +769,27 @@ const cancelCheckoutButton =
 
     }
 
-    guardarCarrito();
+   guardarCarrito();
 
-    actualizarContadorCarrito();
+actualizarContadorCarrito();
 
-    mostrarCarrito();
+mostrarCarrito();
+
+sonidoExito();
+
+const mensaje = document.createElement("div");
+
+mensaje.className = "aviso-producto-agregado";
+
+mensaje.textContent =
+  "✓ " + producto.nombre +
+  " se agregó correctamente al carrito.";
+
+document.body.appendChild(mensaje);
+
+setTimeout(() => {
+  mensaje.remove();
+}, 3000);
 
   }
 
@@ -1467,6 +1483,7 @@ const cancelCheckoutButton =
       }
 
     }
+    
   );
 
 
@@ -1476,9 +1493,9 @@ const cancelCheckoutButton =
 
   if (checkoutButton) {
 
-    checkoutButton.addEventListener(
-      "click",
-      event => {
+checkoutButton.addEventListener(
+  "click",
+  async event => {
 
         event.preventDefault();
 
@@ -1493,6 +1510,45 @@ const cancelCheckoutButton =
           return;
 
         }
+        
+try {
+          const respuestaSesion = await fetch(
+            "/api/clientes/sesion",
+            {
+              method: "GET",
+              credentials: "same-origin"
+            }
+          );
+
+          const resultadoSesion = await respuestaSesion
+            .json()
+            .catch(() => ({}));
+
+          if (
+            !respuestaSesion.ok ||
+            resultadoSesion.ok !== true
+          ) {
+            alert(
+              "Para continuar con tu compra, inicia sesión o crea una cuenta."
+            );
+
+window.location.href = "/cuenta.html?return=checkout";
+            return;
+          }
+
+        } catch (error) {
+          console.error(
+            "Error al comprobar la sesión:",
+            error
+          );
+
+          alert(
+            "No pudimos comprobar tu sesión. Inténtalo de nuevo."
+          );
+
+          return;
+        }
+
 
         if (cartBox) {
 
@@ -1660,6 +1716,20 @@ const cancelCheckoutButton =
       }
     );
 
+  }
+  
+/* =====================================
+     RETOMAR COMPRA DESPUÉS DE INICIAR SESIÓN
+  ===================================== */
+
+  const parametrosURL = new URLSearchParams(
+    window.location.search
+  );
+
+  if (parametrosURL.get("return") === "checkout") {
+    if (checkoutButton) {
+      checkoutButton.click();
+    }
   }
 
 /* =====================================================
@@ -3351,6 +3421,17 @@ console.log("PEDIDO A ENVIAR:", pedido);
                 () => ({})
               );
 
+if (respuesta.status === 401) {
+
+            sonidoError();
+
+            alert(
+              "Para realizar tu pedido, debes registrarte o iniciar sesión."
+            );
+
+            return;
+
+          }
 
           if (!respuesta.ok) {
 
@@ -3360,8 +3441,7 @@ console.log("PEDIDO A ENVIAR:", pedido);
             );
 
           }
-
-
+        
           /* =====================================
              PEDIDO CORRECTO
           ===================================== */
@@ -3448,6 +3528,19 @@ if (paymentResult) {
       📦 VER ESTADO DE MI PEDIDO
     </button>
 
+<button
+  type="button"
+  class="return-store-button"
+  onclick="
+    document.getElementById('checkoutContainer').style.display = 'none';
+    document.getElementById('stepResult').style.display = 'none';
+    document.getElementById('cartBox').style.display = 'none';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  "
+>
+  ← REGRESAR A LA TIENDA
+</button>
+
   </div>
 `;
 
@@ -3462,42 +3555,6 @@ if (paymentResult) {
              VOLVER A LA PÁGINA PRINCIPAL
 
           ===================================== */
-
-          setTimeout(() => {
-
-            if (checkoutContainer) {
-
-              checkoutContainer.style.display =
-
-                "none";
-
-            }
-
-            if (stepResult) {
-
-              stepResult.style.display =
-
-                "none";
-
-            }
-
-            if (cartBox) {
-
-              cartBox.style.display =
-
-                "none";
-
-            }
-
-            window.scrollTo({
-
-              top: 0,
-
-              behavior: "smooth"
-
-            });
-
-          }, 3000);
 
           /* =====================================
              OCULTAR CARRITO

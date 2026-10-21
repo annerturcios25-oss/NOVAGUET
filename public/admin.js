@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const productMessage = document.getElementById("productMessage");
   const productsContainer = document.getElementById("productsContainer");
   const ordersContainer = document.getElementById("ordersContainer");
+  const archivedOrdersContainer = document.getElementById("archivedOrdersContainer");
 
   const totalProducts = document.getElementById("totalProducts");
   const totalStock = document.getElementById("totalStock");
@@ -439,9 +440,10 @@ document.addEventListener("DOMContentLoaded", () => {
      MOSTRAR PEDIDOS
   ========================= */
 
-  function mostrarPedidos(pedidos) {
+ function mostrarPedidos(pedidos) {
 
     ordersContainer.innerHTML = "";
+archivedOrdersContainer.innerHTML = "";
 
     if (!Array.isArray(pedidos) || pedidos.length === 0) {
 
@@ -482,7 +484,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const estadoActual =
         pedido.estado || "Pendiente";
+const fechaPedido = new Date(pedido.fecha).getTime();
+      const ahora = Date.now();
 
+      const antiguedad = ahora - fechaPedido;
+
+      const esCancelado =
+        estadoActual.toLowerCase() === "cancelado";
+
+      const esEntregado =
+        estadoActual.toLowerCase() === "entregado";
+
+      const vaAlCementerio =
+        Number.isFinite(fechaPedido) &&
+        fechaPedido > 0 &&
+        (
+          (esCancelado && antiguedad >= 24 * 60 * 60 * 1000) ||
+          (esEntregado && antiguedad >= 7 * 24 * 60 * 60 * 1000)
+        );
 
       card.innerHTML = `
 
@@ -658,8 +677,11 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      ordersContainer.appendChild(card);
-
+if (vaAlCementerio) {
+        archivedOrdersContainer.appendChild(card);
+      } else {
+        ordersContainer.appendChild(card);
+      }
     });
 
 

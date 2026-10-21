@@ -3244,9 +3244,9 @@ nav a:active {
   align-items: center;
   justify-content: center;
   padding: 10px 18px;
-  background: #d8b45a;
+  background: #8bc945;
   color: #111111;
-  border: 1px solid #d8b45a;
+  border: 1px solid #5ad893;
   border-radius: 6px;
   text-decoration: none;
   font-weight: 700;
@@ -3362,4 +3362,202 @@ a {
 
 a:hover {
     color: #D4AF37;
+}
+
+/* NOVAGUET: fila superior de cuenta y accesos */
+.mobile-account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mobile-account-row .account-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mobile-account-row .icons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* En móviles, la fila de accesos queda encima del menú */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .mobile-account-row {
+    order: 1;
+  }
+
+ .nav-links {
+  order: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 14px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 12px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.nav-links > a,
+.nav-links > .nosotros-menu {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+}
+
+
+/* NOVAGUET: corregir texto blanco sobre fondo blanco en el carrito */
+.cart-box,
+.cart-box h1,
+.cart-box h2,
+.cart-box h3,
+.cart-box p,
+.cart-box label,
+.cart-box span,
+.cart-box div,
+.cart-box strong,
+.cart-box small {
+  color: #111111;
+}
+
+/* Mantener legibles los campos del carrito */
+.cart-box input,
+.cart-box select,
+.cart-box textarea {
+  color: #111111;
+  background-color: #ffffff;
+}
+
+/* NOVAGUET: restaurar colores de la confirmación del pedido */
+.payment-success p,
+.payment-success h2 {
+  color: #ffffff !important;
+}
+
+.payment-success .confirmation-check {
+  color: #ffffff !important;
+}
+
+.payment-success .nova-confirmed {
+  color: #00BFFF !important;
+}
+
+.payment-success .guet-confirmed {
+  color: #D4AF37 !important;
+}
+
+/* NOVAGUET: restaurar colores de la confirmación del pedido */
+.payment-success p,
+.payment-success h2 {
+  color: #ffffff !important;
+}
+
+.payment-success .confirmation-check {
+  color: #ffffff !important;
+}
+
+.payment-success .nova-confirmed {
+  color: #00BFFF !important;
+}
+
+.payment-success .guet-confirmed {
+  color: #D4AF37 !important;
+}
+
+/* Aviso al agregar productos al carrito */
+.aviso-producto-agregado {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  box-sizing: border-box;
+  padding: 14px 20px;
+  background: #111111;
+  color: #ffffff;
+  border: 2px solid #00BFFF;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  z-index: 99999;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  animation: avisoEntrada 0.25s ease-out;
+}
+
+@keyframes avisoEntrada {
+  from {
+    opacity: 0;
+    margin-top: -10px;
+  }
+  to {
+    opacity: 1;
+    margin-top: 0;
+  }
+}
+
+/* Botón para regresar a la tienda */
+.return-store-button {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 20px auto 0;
+  padding: 14px 18px;
+  background: #c01717;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.return-store-button:hover {
+  opacity: 0.9;
+}
+
+/* NOVAGUET: mejorar la visibilidad del pedido confirmado */
+.payment-success p,
+.payment-success p strong {
+  color: #ffffff !important;
+}
+
+/* NOVAGUET: textos de consulta y rastreo del pedido */
+#trackingBox,
+#trackingBox h1,
+#trackingBox h2,
+#trackingBox h3,
+#trackingBox p,
+#trackingBox label,
+#trackingBox span,
+#trackingBox strong,
+#trackingBox small {
+  color: #ffffff !important;
+}
+
+/* Campos para escribir el número de pedido */
+#trackingBox input,
+#trackingBox select {
+  color: #111111 !important;
+  background-color: #ffffff !important;
 }

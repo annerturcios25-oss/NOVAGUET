@@ -157,6 +157,118 @@
       padding: 27px 20px;
     }
   }
+
+  /* ===== DISEÑO NOVAGUET: MI CUENTA ===== */
+
+.contenedor {
+  max-width: 500px;
+  width: 100%;
+  padding: 28px 22px;
+  background: linear-gradient(145deg, #111111, #202020);
+  border: 1px solid #D4AF37;
+  border-radius: 18px;
+  box-shadow: 0 0 25px rgba(0, 191, 255, 0.12);
+}
+
+.contenedor header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.contenedor h1 {
+  color: #D4AF37;
+  letter-spacing: 4px;
+}
+
+.contenedor > h2 {
+  margin-top: 28px;
+  color: #00BFFF;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+#mensaje {
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.pedido {
+  margin: 18px 0;
+  padding: 18px;
+  background: #151515;
+  border: 1px solid #383838;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+.pedido h2 {
+  color: #D4AF37;
+  font-size: 18px;
+}
+
+.pedido p {
+  color: #EEEEEE;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.estado {
+  color: #00BFFF;
+  font-weight: bold;
+}
+
+.acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.boton {
+  display: block;
+  width: 100%;
+  padding: 13px 12px;
+  background: #00BFFF;
+  color: #050505;
+  border: 1px solid #D4AF37;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.boton.secundario {
+  background: #151515;
+  color: #00BFFF;
+  border-color: #00BFFF;
+}
+
+.boton.cancelar {
+  background: #351515;
+  color: #FF6464;
+  border-color: #C01717;
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media (max-width: 420px) {
+  body {
+    align-items: flex-start;
+  }
+
+  .contenedor {
+    margin: 8px auto;
+    padding: 24px 16px;
+  }
+}
 </style>
 </head>
 <body>
@@ -265,6 +377,71 @@
               }).join(", ");
 
             tarjeta.appendChild(productos);
+          }
+
+if (
+            String(pedido.estado || "Pendiente").toLowerCase() ===
+            "pendiente"
+          ) {
+            const botonCancelar = document.createElement("button");
+
+            botonCancelar.type = "button";
+            botonCancelar.className = "boton cancelar";
+            botonCancelar.textContent = "CANCELAR PEDIDO";
+
+            botonCancelar.addEventListener("click", async () => {
+              const confirmar = window.confirm(
+                "¿Seguro que deseas cancelar el pedido #" +
+                pedido.id +
+                "?"
+              );
+
+              if (!confirmar) return;
+
+              botonCancelar.disabled = true;
+              botonCancelar.textContent = "CANCELANDO...";
+
+              try {
+                const respuesta = await fetch(
+                  "/api/clientes/cancelar-pedido",
+                  {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                      pedidoId: pedido.id
+                    })
+                  }
+                );
+
+                const resultado = await respuesta.json();
+
+                if (!respuesta.ok || !resultado.ok) {
+                  window.alert(
+                    resultado.mensaje ||
+                    "No se pudo cancelar el pedido."
+                  );
+
+                  botonCancelar.disabled = false;
+                  botonCancelar.textContent = "CANCELAR PEDIDO";
+                  return;
+                }
+
+                window.alert("Pedido cancelado correctamente.");
+                await cargarPedidos();
+              } catch (error) {
+                window.alert(
+                  "No se pudo conectar con el servidor. Inténtalo de nuevo."
+                );
+
+                botonCancelar.disabled = false;
+                botonCancelar.textContent = "CANCELAR PEDIDO";
+              }
+            });
+
+            tarjeta.appendChild(botonCancelar);
           }
 
           listaPedidos.appendChild(tarjeta);
