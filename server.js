@@ -4,15 +4,27 @@ const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD
-  }
-});
+const { Resend } = require("resend");
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const transporter = {
+  sendMail: async (mail) => {
+    const { data, error } = await resend.emails.send({
+      from: mail.from,
+      to: mail.to,
+      subject: mail.subject,
+      html: mail.html,
+      text: mail.text
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data;
+  }
+};
 /* =====================================
    ENVIAR CORREO DE CONFIRMACIÓN
    DISEÑO PREMIUM NEGRO Y DORADO
@@ -309,7 +321,7 @@ const fechaPedido = new Date(fechaOriginal).toLocaleDateString(
   `;
 
   await transporter.sendMail({
-    from: "NOVA GUET <" + process.env.GMAIL_USER + ">",
+    from: "NOVA GUET <pedidos@novaguet.com>",
     to: emailCliente,
     subject: "¡Gracias por tu compra! Pedido #" + numeroPedido + " | NOVA GUET",
     html: htmlCorreo
@@ -1499,7 +1511,7 @@ app.patch(
 
         try {
           await transporter.sendMail({
-            from: "NOVA GUET <" + process.env.GMAIL_USER + ">",
+            from: "NOVA GUET <pedidos@novaguet.com>",
             to: emailCliente,
             subject: "Actualización de tu pedido | NOVA GUET",
             text:
@@ -1974,7 +1986,7 @@ app.post("/api/clientes/solicitar-recuperacion", async (req, res) => {
       encodeURIComponent(token);
 
     await transporter.sendMail({
-      from: "NOVA GUET <" + process.env.GMAIL_USER + ">",
+      from: "NOVA GUET <pedidos@novaguet.com>",
       to: cliente.email,
       subject: "Recupera tu contraseña | NOVA GUET",
       text:
