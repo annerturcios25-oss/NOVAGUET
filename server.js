@@ -1639,6 +1639,219 @@ function generarHashContrasena(contrasena) {
   });
 }
 
+function verificarContrasena(contrasena, hashGuardado) {
+  return new Promise((resolve, reject) => {
+    const partes = String(hashGuardado || "").split(":");
+
+    if (partes.length !== 2) {
+      return resolve(false);
+    }
+
+    const [salt, hashHex] = partes;
+
+    if (!/^[a-f0-9]{32}$/i.test(salt) ||
+        !/^[a-f0-9]{128}$/i.test(hashHex)) {
+      return resolve(false);
+    }
+
+    crypto.scrypt(contrasena, salt, 64, (error, clave) => {
+      if (error) {
+        return reject(error);
+      }
+
+      const hashEsperado = Buffer.from(hashHex, "hex");
+
+      resolve(
+        crypto.timingSafeEqual(clave, hashEsperado)
+      );
+    });
+  });
+}
+
+function obtenerClienteSesion(req) {
+  const cookies = req.headers.cookie || "";
+  const coincidencia = cookies.match(
+    /(?:^|;\s*)novaguet_cliente_session=([^;]+)/
+  );
+
+  if (!coincidencia) {
+    return null;
+  }
+
+  try {
+    const token = decodeURIComponent(coincidencia[1]);
+    const decodificado = Buffer.from(token, "base64url").toString("utf8");
+    const separador = decodificado.lastIndexOf(".");
+
+    if (separador === -1) {
+      return null;
+    }
+
+    const datos = decodificado.substring(0, separador);
+    const firma = decodificado.substring(separador + 1);
+
+    const firmaEsperada = crypto
+      .createHmac("sha256", SESSION_SECRET)
+      .update(datos)
+      .digest("hex");
+
+    if (
+      firma.length !== firmaEsperada.length ||
+      !crypto.timingSafeEqual(
+        Buffer.from(firma),
+        Buffer.from(firmaEsperada)
+      )
+    ) {
+      return null;
+    }
+
+    const partes = datos.split(":");
+
+    if (
+      partes.length !== 3 ||
+      partes[0] !== "NOVAGUET_CLIENTE" ||
+      !/^\d+$/.test(partes[1]) ||
+      Date.now() - Number(partes[1]) > 86400000
+    ) {
+      return null;
+    }
+
+    return { id: partes[2] };
+  } catch (error) {
+    return null;
+  }
+}
+
+function crearTokenSesionCliente(clienteId) {
+  const datos =
+    "NOVAGUET_CLIENTE:" +
+    Date.now() +
+    ":" +
+    String(clienteId);
+
+  const firma = crypto
+    .createHmac("sha256", SESSION_SECRET)
+    .update(datos)
+    .digest("hex");
+
+  return Buffer
+    .from(datos + "." + firma)
+    .toString("base64url");
+}
+
+app.post("/api/clientes/login", async (req, res) => {
+  try {
+    const email = String(req.body?.email || "").trim().toLowerCase();
+    const contrasena = String(req.body?.password || "");
+
+    if (!email || !contrasena) {
+      return res.status(400).json({
+        ok: false,
+        error: "Introduce tu correo y contraseña."
+      });
+    }
+
+    const resultado = await pool.query(
+      "SELECT id, nombre, email, password_hash FROM clientes WHERE email = $1",
+      [email]
+    );
+
+    if (resultado.rows.length === 0) {
+      return res.status(401).json({
+        ok: false,
+        error: "Correo o contraseña incorrectos."
+      });
+    }
+
+    const cliente = resultado.rows[0];
+    const valido = await verificarContrasena(
+      contrasena,
+      cliente.password_hash
+    );
+
+    if (!valido) {
+      return res.status(401).json({
+        ok: false,
+        error: "Correo o contraseña incorrectos."
+      });
+    }
+
+    const esHttps =
+      req.headers["x-forwarded-proto"] === "https" ||
+      process.env.NODE_ENV === "production";
+
+    const cookie = [
+      "novaguet_cliente_session=" +
+        encodeURIComponent(crearTokenSesionCliente(cliente.id)),
+      "Path=/",
+      "HttpOnly",
+      "SameSite=Lax",
+      "Max-Age=86400"
+    ];
+
+    if (esHttps) {
+      cookie.push("Secure");
+    }
+
+    res.setHeader("Set-Cookie", cookie.join("; "));
+
+    return res.json({
+      ok: true,
+      mensaje: "Sesión iniciada correctamente.",
+      cliente: {
+        id: cliente.id,
+        nombre: cliente.nombre,
+        email: cliente.email
+      }
+    });
+  } catch (error) {
+    console.error("Error al iniciar sesión del cliente:", error.message);
+
+    return res.status(500).json({
+      ok: false,
+      error: "No se pudo iniciar sesión. Inténtalo de nuevo."
+    });
+  }
+});
+
+app.get("/api/clientes/sesion", async (req, res) => {
+  try {
+    const sesion = obtenerClienteSesion(req);
+
+    if (!sesion) {
+      return res.status(401).json({
+        ok: false
+      });
+    }
+
+    const resultado = await pool.query(
+      "SELECT id, nombre, email FROM clientes WHERE id = $1",
+      [sesion.id]
+    );
+
+    if (resultado.rows.length === 0) {
+      return res.status(401).json({
+        ok: false
+      });
+    }
+
+    return res.json({
+      ok: true,
+      cliente: resultado.rows[0]
+    });
+
+  } catch (error) {
+    console.error(
+      "Error al comprobar la sesión del cliente:",
+      error.message
+    );
+
+    return res.status(500).json({
+      ok: false
+    });
+  }
+});
+
 app.post("/api/clientes/registro", async (req, res) => {
   try {
     const nombre = String(req.body?.nombre || "").trim();
