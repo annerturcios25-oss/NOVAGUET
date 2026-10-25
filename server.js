@@ -1484,6 +1484,99 @@ app.patch(
       const pedido = pedidos[indice];
       const estadoAnterior = pedido.estado || "";
 
+      // No permitir confirmar una transferencia sin verificar el pago.
+      const metodoPago = String(pedido.metodoPago || "")
+        .trim()
+        .toLowerCase();
+
+      const esTransferencia = [
+        "transferencia",
+        "transfer"
+      ].includes(metodoPago);
+
+      if (
+        esTransferencia &&
+        estado === "Confirmado" &&
+        estadoAnterior !== "Confirmado" &&
+        pedido.estadoPago !== "Verificado"
+      ) {
+        return res.status(400).json({
+          error:
+            "No puedes confirmar este pedido: primero debes verificar la transferencia."
+        });
+      }
+
+      /* =========================================================
+   VERIFICAR TRANSFERENCIA BANCARIA
+   PROTEGIDO PARA ADMINISTRACIÓN
+========================================================= */
+app.patch(
+  "/api/pedidos/:id/verificar-transferencia",
+  protegerAdmin,
+  async (req, res) => {
+    try {
+      const pedidos = JSON.parse(
+        fs.readFileSync(ordersFile, "utf8")
+      );
+
+      const id = String(req.params.id);
+
+      const indice = pedidos.findIndex(
+        pedido => String(pedido.id) === id
+      );
+
+      if (indice === -1) {
+        return res.status(404).json({
+          error: "Pedido no encontrado."
+        });
+      }
+
+      const pedido = pedidos[indice];
+
+      const metodoPago = String(
+        pedido.metodoPago || ""
+      ).trim().toLowerCase();
+
+      if (
+        !["transferencia", "transfer"].includes(metodoPago)
+      ) {
+        return res.status(400).json({
+          error: "Este pedido no es una transferencia bancaria."
+        });
+      }
+
+      if (pedido.estado === "Cancelado") {
+        return res.status(400).json({
+          error: "No se puede verificar un pedido cancelado."
+        });
+      }
+
+      pedido.estadoPago = "Verificado";
+      pedido.fechaVerificacionPago = new Date().toISOString();
+
+      fs.writeFileSync(
+        ordersFile,
+        JSON.stringify(pedidos, null, 2)
+      );
+
+      return res.json({
+        mensaje: "Transferencia marcada como verificada.",
+        pedido
+      });
+
+    } catch (error) {
+      console.error(
+        "Error al verificar transferencia:",
+        error
+      );
+
+      return res.status(500).json({
+        error: "No se pudo verificar la transferencia."
+      });
+    }
+  }
+);
+
       // Guardar el nuevo estado.
       pedido.estado = estado;
 

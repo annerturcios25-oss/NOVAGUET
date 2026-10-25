@@ -586,7 +586,36 @@ const fechaPedido = new Date(pedido.fecha).getTime();
               `
               : ""
           }
+${
+            ["transferencia", "transfer"].includes(
+              String(pedido.metodoPago || "").trim().toLowerCase()
+            )
+              ? `
+                <div class="payment-verification">
+                  <p>
+                    <strong>Estado del pago:</strong>
+                    ${escapeHtml(pedido.estadoPago || "Pendiente de verificación")}
+                  </p>
 
+                  ${
+                    pedido.estadoPago === "Verificado"
+                      ? `
+                        <p>✅ Transferencia verificada</p>
+                      `
+                      : `
+                        <button
+                          type="button"
+                          class="verify-transfer-btn"
+                          data-id="${escapeHtml(String(pedido.id || ""))}"
+                        >
+                          Verificar transferencia
+                        </button>
+                      `
+                  }
+                </div>
+              `
+              : ""
+          }
           <hr>
 
           <h4>Productos</h4>
@@ -701,6 +730,53 @@ if (vaAlCementerio) {
 
         });
 
+      });
+
+document
+      .querySelectorAll(".verify-transfer-btn")
+      .forEach(button => {
+        button.addEventListener("click", async function () {
+          const pedidoId = this.dataset.id;
+
+          if (!confirm(
+            "¿Ya comprobaste el abono en la cuenta bancaria y deseas marcar esta transferencia como verificada?"
+          )) {
+            return;
+          }
+
+          this.disabled = true;
+
+          try {
+            const response = await fetch(
+              "/api/pedidos/" +
+                encodeURIComponent(pedidoId) +
+                "/verificar-transferencia",
+              {
+                method: "PATCH",
+                credentials: "include"
+              }
+            );
+
+            const resultado = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+              alert(
+                resultado.error ||
+                "No se pudo verificar la transferencia."
+              );
+              this.disabled = false;
+              return;
+            }
+
+            alert("Transferencia verificada correctamente.");
+            await cargarPedidos();
+
+          } catch (error) {
+            console.error(error);
+            alert("No se pudo conectar con el servidor.");
+            this.disabled = false;
+          }
+        });
       });
 
   }
