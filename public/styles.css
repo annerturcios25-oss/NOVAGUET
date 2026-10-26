@@ -176,7 +176,7 @@ nav a:hover {
 }
 
 .description {
-  color: #666;
+  color: #050505;
   font-size: 18px;
   margin-bottom: 30px;
 }
@@ -196,39 +196,64 @@ nav a:hover {
 }
 
 /* PIE DE PÁGINA */
-
-footer {
+footer#contacto {
   background: #050505;
-  color: white;
-  padding: 45px 30px;
+  color: #ffffff;
+  padding: 35px 20px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 25px;
+  text-align: center;
+  border: none;
+  box-shadow: none;
 }
 
-.footer-item {
+footer#contacto .footer-item {
   display: flex;
-  align-items: flex-start;
-  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  min-width: 0;
+  text-align: center;
+  border: none;
+  box-shadow: none;
 }
 
-.footer-item > span {
+footer#contacto .footer-item > span {
   font-size: 30px;
+  color: #ffffff;
 }
 
-.footer-item h3 {
+footer#contacto .footer-item h3 {
+  margin: 0 0 8px;
   font-size: 13px;
-  margin-bottom: 8px;
+  color: #ffffff;
 }
 
-.footer-item p {
-  color: #aaa;
+footer#contacto .footer-item p {
+  margin: 0;
   font-size: 13px;
+  color: #ffffff;
+  overflow-wrap: anywhere;
 }
+/* Footer en teléfonos */
+  footer#contacto {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 15px;
+    padding: 30px 15px;
+  }
 
-/* ADAPTACIÓN PARA TELÉFONOS */
+  footer#contacto .footer-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
-@media (max-width: 768px) {
+  footer#contacto .footer-item h3,
+  footer#contacto .footer-item p {
+    text-align: center;
+  }
 
   nav {
     flex-wrap: wrap;
@@ -260,13 +285,6 @@ footer {
   .country h2 {
     font-size: 11px;
   }
-
-  footer {
-    grid-template-columns: 1fr;
-  }
-
-}
-
 /* SECCIONES DE INFORMACIÓN */
 
 .info-section {
@@ -3560,4 +3578,466 @@ a:hover {
 #trackingBox select {
   color: #111111 !important;
   background-color: #ffffff !important;
+}
+
+/* NOVAGUET — GUÍA DE TALLAS MINIMALISTA */
+
+.size-guide-button {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: max-content;
+  min-height: 0 !important;
+  margin: 4px 0;
+  padding: 4px 8px !important;
+  background: transparent !important;
+  color: #D4AF37 !important;
+  border: 1px solid #D4AF37 !important;
+  border-radius: 4px;
+  font-size: 11px !important;
+  line-height: 1.2;
+  font-weight: 400;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+.size-guide-button:hover {
+  background: #D4AF37 !important;
+  color: #111111 !important;
+}
+
+.size-guide-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 100000;
+}
+
+.size-guide-overlay.is-open {
+  display: flex;
+}
+
+.size-guide-modal {
+  width: 100%;
+  max-width: 430px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 24px;
+  background: #ffffff;
+  color: #111111;
+  border: 2px solid #00BFFF;
+  border-radius: 14px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+}
+
+.size-guide-modal h2 {
+  margin: 0 35px 16px 0;
+  color: #111111;
+  font-size: 22px;
+}
+
+.size-guide-modal p,
+.size-guide-modal li {
+  color: #333333;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.size-guide-close {
+  display: block;
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px;
+  background: #00BFFF;
+  color: #111111;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .size-guide-modal {
+    padding: 20px;
+  }
+}
+
+/* NOVAGUET — Botón compacto de guía de tallas */
+.product-card .size-guide-button {
+  display: inline-block;
+  width: auto;
+  padding: 5px 9px;
+  margin: 3px 0 10px;
+  background: #111111;
+  color: #ffffff;
+  border: 1px solid #00BFFF;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  box-shadow: none;
+}
+
+.product-card .size-guide-button:hover {
+  background: #00BFFF;
+  color: #111111;
+}
+/* NOVAGUET — Corazón minimalista de favoritos */
+.product-card .product-image-container {
+  position: relative;
+}
+
+.product-card .favorite-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 5;
+
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+
+  background: transparent !important;
+  color: #111111;
+  border: none !important;
+  border-radius: 0;
+  box-shadow: none !important;
+
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+  transform: none !important;
+}
+
+.product-card .favorite-button:hover {
+  background: transparent !important;
+  color: #c01717;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.product-card .favorite-button.is-favorite {
+  color: #c01717;
+}
+
+/* NOVAGUET: botón del menú lateral */
+.menu-hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin: 0 8px 0 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* NOVAGUET: menú lateral */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(244, 242, 242, 0.55);
+  z-index: 9998;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.menu-overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: min(300px, 85vw);
+  height: 100vh;
+  height: 100dvh;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #111;
+  color: #fff;
+  z-index: 9999;
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  overflow-y: auto;
+}
+
+.side-menu.is-open {
+  transform: translateX(0);
+}
+
+.side-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #444;
+}
+
+.side-menu-header strong {
+  color: #f5c542;
+  font-size: 20px;
+}
+
+.side-menu-header button {
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.side-menu-links {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+}
+
+.side-menu-links a {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 50px;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.side-menu-links a:hover {
+  color: #f5c542;
+}
+@media (max-width: 768px) {
+  .nav-links,
+  .mobile-account-row .account-button {
+    display: none !important;
+  }
+}
+/* NOVAGUET: letras blancas en todo el footer */
+footer,
+footer h1,
+footer h2,
+footer h3,
+footer h4,
+footer p,
+footer span,
+footer a,
+footer strong,
+footer small {
+  color: #ffffff;
+}
+
+/* Estrellas de reseñas NOVAGUET */
+
+.product-reviews-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 10px;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.product-reviews-summary .reviews-stars {
+  color: #D4AF37;
+  font-size: 19px;
+  letter-spacing: 2px;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+}
+
+.product-reviews-summary small {
+  color: #888;
+  font-size: 12px;
+  border: none;
+  outline: none;
+}
+/* NOVAGUET — Formulario de reseñas minimalista */
+
+.product-reviews {
+  margin-top: 8px;
+}
+
+.show-review-form {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent;
+  color: #D4AF37;
+  border: 1px solid #D4AF37;
+  border-radius: 5px;
+  cursor: pointer;
+  width: auto;
+  min-height: 0;
+  box-shadow: none;
+}
+
+.show-review-form:hover {
+  background: #D4AF37;
+  color: #111;
+}
+
+.review-form-container {
+  margin-top: 10px;
+}
+
+.product-review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 7px;
+  background: transparent;
+  max-width: 100%;
+}
+
+.product-review-form label {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.product-review-form select,
+.product-review-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+}
+
+.product-review-form textarea {
+  min-height: 65px;
+  resize: vertical;
+}
+
+.product-review-form button[type="submit"] {
+  align-self: flex-start;
+  width: auto;
+  min-height: 0;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #D4AF37;
+  border-radius: 5px;
+  background: #D4AF37;
+  color: #111;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.product-review-form button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.product-review-form .review-message {
+  margin: 2px 0 0;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+/* Botón escribir reseña — compacto */
+
+.product-reviews .show-review-form {
+  display: inline-flex;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: max-content;
+  min-height: 0 !important;
+  padding: 4px 8px !important;
+  margin: 4px 0;
+  font-size: 11px !important;
+  line-height: 1.2;
+  font-weight: 400;
+  border-radius: 4px;
+  box-shadow: none !important;
+}
+/* Estrellas interactivas — NOVAGUET */
+
+.review-rating {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.review-stars-selector {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.product-review-form .review-star {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 2px !important;
+  margin: 0;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  font-size: 28px !important;
+  line-height: 1;
+  color: #D4AF37 !important;
+  cursor: pointer;
+}
+
+.product-review-form .review-star.selected {
+  color: #D4AF37 !important;
+}
+
+.product-review-form .review-star:focus-visible {
+  outline: 1px solid #D4AF37;
+  outline-offset: 2px;
+}
+
+.product-review-form .rating-hint {
+  color: #888;
+  font-size: 11px;
+}
+/* Mensajes de reseñas — NOVAGUET */
+.product-review-form .review-message,
+.product-reviews .review-message {
+  color: #D4AF37 !important;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+/* NOVAGUET — Texto visible en el formulario de reseñas */
+
+.product-review-form label,
+.product-review-form .rating-hint {
+  color: #D4AF37 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }

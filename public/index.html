@@ -28,7 +28,7 @@
 
 <body>
 
-  <!-- =========================
+ <!-- =========================
 
        ENCABEZADO
 
@@ -37,7 +37,6 @@
   <header>
 
     <div class="navbar">
-
      <div class="logo">
   <img
     src="NOVAGUET.PNG.png"
@@ -46,6 +45,16 @@
 </div>
 <!-- FILA SUPERIOR: MI CUENTA, BUSCADOR Y CARRITO -->
 <div class="mobile-account-row">
+  <!-- NOVAGUET: BOTÓN DE MENÚ LATERAL -->
+<button
+  type="button"
+  id="menuHamburger"
+  class="menu-hamburger"
+  aria-label="Abrir menú"
+  aria-expanded="false"
+>
+  ☰
+</button>
   <a
     class="account-button"
     href="cuenta.html"
@@ -156,8 +165,7 @@
 
       <!-- =========================
 
-           CARRITO
-
+           C
       ========================= -->
 
       <div
@@ -1263,7 +1271,24 @@
     </div>
 
   </header>
+<!-- NOVAGUET: fondo del menú lateral -->
+<div id="menuOverlay" class="menu-overlay"></div>
 
+<!-- NOVAGUET: menú lateral -->
+<aside id="sideMenu" class="side-menu" aria-hidden="true">
+  <div class="side-menu-header">
+    <strong>NOVA GUET</strong>
+    <button type="button" id="closeSideMenu" aria-label="Cerrar menú">✕</button>
+  </div>
+
+  <nav class="side-menu-links">
+    <a href="#inicio" data-es="Inicio" data-en="Home">Inicio</a>
+    <a href="#categorias" data-es="Categorías" data-en="Categories">Categorías</a>
+    <a href="cuenta.html" data-es="Mi cuenta" data-en="My account">Mi cuenta</a>
+    <a href="#favoritos" data-es="Mis favoritos ♥️" data-en="My favorites ♥️">Mis favoritos ♥️</a>
+    <a href="#contacto" data-es="Contacto" data-en="Contact">Contacto</a>
+  </nav>
+</aside>
   <!-- =========================
 
        PRINCIPAL
@@ -1440,43 +1465,83 @@
 
     </section>
 
-    <!-- =========================
+   <!-- =========================
 
-         PRODUCTOS
+     PRODUCTOS
 
-    ========================= -->
+========================= -->
 
-    <section
+<section
 
-      id="productos"
+  id="productos"
 
-      class="productos-section"
+  class="productos-section"
 
-    >
+>
 
-      <div
+  <div
 
-        id="productsContainer"
+    id="productsContainer"
 
-        class="product-list"
+    class="product-list"
 
-      >
+  >
 
-      </div>
+  </div>
 
-    </section>
+</section>
 
-    <section class="separador">
+<!-- =========================
 
-      <h2>
+     MIS FAVORITOS
 
-        MUY PRONTO
+========================= -->
 
-      </h2>
+<section
 
-    </section>
+  id="favoritos"
 
-  </main>
+  class="productos-section"
+
+  hidden
+
+>
+
+  <h2>Mis favoritos ♥️</h2>
+
+  <div
+
+    id="favoritosContainer"
+
+    class="product-list"
+
+  >
+
+  </div>
+
+  <button
+
+    type="button"
+
+    id="volverProductos"
+
+    class="add-to-cart"
+
+  >
+
+    Volver a la tienda
+
+  </button>
+
+</section>
+
+<section class="separador">
+
+  <h2>
+
+    MUY PRONTO
+
+  </h2>
 
   <!-- =========================
 
@@ -1675,6 +1740,64 @@
     </button>
 
   </div>
+
+<!-- NOVAGUET: VENTANA DE GUÍA DE TALLAS -->
+<div
+  id="sizeGuideOverlay"
+  class="size-guide-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="sizeGuideTitle"
+>
+  <div class="size-guide-modal">
+  <h2 id="sizeGuideTitle"
+      data-es="Guía de tallas"
+      data-en="Size Guide">
+    Guía de tallas
+  </h2>
+
+  <p
+    data-es="Para elegir tu talla, revisa la talla indicada en el producto."
+    data-en="To choose your size, check the size listed on the product.">
+    Para elegir tu talla, revisa la talla indicada en el producto.
+  </p>
+
+  <p>
+    <strong data-es="Ropa:" data-en="Clothing:">Ropa:</strong>
+    <span
+      data-es=" Si tienes dudas, compara tus medidas de pecho, cintura y cadera con las indicaciones del fabricante."
+      data-en=" If you are unsure, compare your chest, waist, and hip measurements with the manufacturer's sizing instructions.">
+      Si tienes dudas, compara tus medidas de pecho, cintura y cadera con las indicaciones del fabricante.
+    </span>
+  </p>
+
+  <p>
+    <strong data-es="Calzado:" data-en="Footwear:">Calzado:</strong>
+    <span
+      data-es=" Mide tu pie desde el talón hasta la punta y consulta la guía específica del fabricante."
+      data-en=" Measure your foot from heel to toe and check the manufacturer's specific size guide.">
+      Mide tu pie desde el talón hasta la punta y consulta la guía específica del fabricante.
+    </span>
+  </p>
+
+  <p
+    data-es="Las tallas pueden variar según el producto y la marca."
+    data-en="Sizes may vary by product and brand.">
+    Las tallas pueden variar según el producto y la marca.
+  </p>
+
+  <button
+    type="button"
+    id="closeSizeGuide"
+    class="size-guide-close"
+    data-es="Cerrar"
+    data-en="Close"
+    >
+    Cerrar
+  </button>
+
+</div>
+</div>
 
   <script src="/app.js"></script>
 

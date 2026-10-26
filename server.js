@@ -661,6 +661,22 @@ const ordersFile = path.join(
   "orders.json"
 );
 
+/* =========================================================
+   ARCHIVO DE RESEÑAS
+========================================================= */
+
+const resenasFile = path.join(
+  __dirname,
+  "resenas.json"
+);
+
+if (!fs.existsSync(resenasFile)) {
+  fs.writeFileSync(
+    resenasFile,
+    JSON.stringify([], null, 2)
+  );
+}
+
 if (!fs.existsSync(ordersFile)) {
   fs.writeFileSync(
     ordersFile,
@@ -769,6 +785,154 @@ app.get(
           "utf8"
         )
       );
+
+/* =========================================================
+   OBTENER RESEÑAS
+========================================================= */
+
+app.get("/api/resenas", (req, res) => {
+  try {
+    const resenas = JSON.parse(
+      fs.readFileSync(resenasFile, "utf8")
+    );
+
+    res.json(resenas);
+  } catch (error) {
+    console.error("Error al cargar reseñas:", error);
+
+    res.status(500).json({
+      error: "No se pudieron cargar las reseñas."
+    });
+  }
+});
+
+/* =========================================================
+   PUBLICAR RESEÑA — SOLO CLIENTES CON COMPRA ENTREGADA
+========================================================= */
+
+app.post("/api/resenas", (req, res) => {
+  try {
+    // 1. Verificar que el cliente haya iniciado sesión.
+    const sesionCliente = obtenerClienteSesion(req);
+
+    if (!sesionCliente) {
+      return res.status(401).json({
+        error: "Debes iniciar sesión para publicar una reseña."
+      });
+    }
+
+    // 2. Validar los datos recibidos.
+    const productoId = String(req.body?.productoId || "").trim();
+    const calificacion = Number(req.body?.calificacion);
+    const comentario = String(req.body?.comentario || "").trim();
+
+    if (!productoId) {
+      return res.status(400).json({
+        error: "Selecciona un producto."
+      });
+    }
+
+    if (
+      !Number.isInteger(calificacion) ||
+      calificacion < 1 ||
+      calificacion > 5
+    ) {
+      return res.status(400).json({
+        error: "La calificación debe ser de 1 a 5 estrellas."
+      });
+    }
+
+    if (comentario.length > 500) {
+      return res.status(400).json({
+        error: "La reseña no puede superar los 500 caracteres."
+      });
+    }
+
+    // 3. Leer pedidos y productos existentes.
+    const pedidos = JSON.parse(
+      fs.readFileSync(ordersFile, "utf8")
+    );
+
+    const productos = JSON.parse(
+      fs.readFileSync(productsFile, "utf8")
+    );
+
+    const resenas = JSON.parse(
+      fs.readFileSync(resenasFile, "utf8")
+    );
+
+    // 4. Comprobar que el producto exista.
+    const producto = productos.find(
+      p => String(p.id) === productoId
+    );
+
+    if (!producto) {
+      return res.status(404).json({
+        error: "Producto no encontrado."
+      });
+    }
+
+    // 5. Exigir un pedido entregado del mismo cliente
+    // que incluya el producto.
+    const pedidoEntregado = pedidos.some(pedido =>
+      String(pedido.clienteId) === String(sesionCliente.id) &&
+      pedido.estado === "Entregado" &&
+      Array.isArray(pedido.productos) &&
+      pedido.productos.some(item =>
+        String(item.id) === productoId
+      )
+    );
+
+    if (!pedidoEntregado) {
+      return res.status(403).json({
+        error: "Solo puedes reseñar productos de pedidos entregados de tu cuenta."
+      });
+    }
+
+    // 6. Evitar reseñas duplicadas del mismo cliente
+    // para el mismo producto.
+    const yaExiste = resenas.some(resena =>
+      String(resena.clienteId) === String(sesionCliente.id) &&
+      String(resena.productoId) === productoId
+    );
+
+    if (yaExiste) {
+      return res.status(409).json({
+        error: "Ya publicaste una reseña para este producto."
+      });
+    }
+
+    // 7. Guardar la nueva reseña.
+    const nuevaResena = {
+      id: Date.now(),
+      clienteId: sesionCliente.id,
+      productoId: producto.id,
+      productoNombre: producto.nombre || "Producto",
+      calificacion,
+      comentario,
+      fecha: new Date().toISOString()
+    };
+
+    resenas.push(nuevaResena);
+
+    fs.writeFileSync(
+      resenasFile,
+      JSON.stringify(resenas, null, 2)
+    );
+
+    return res.status(201).json({
+      mensaje: "Reseña publicada correctamente.",
+      resena: nuevaResena
+    });
+
+  } catch (error) {
+    console.error("Error al publicar reseña:", error);
+
+    return res.status(500).json({
+      error: "No se pudo publicar la reseña."
+    });
+  }
+});
 
       res.json(productos);
 

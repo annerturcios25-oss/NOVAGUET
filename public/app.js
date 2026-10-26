@@ -480,9 +480,11 @@ const cancelCheckoutButton =
           });
 
       guardarCarrito();
+await cargarResenasProductos();
 
-      mostrarProductos(productos);
-      mostrarCarrito();
+mostrarProductos(productos);
+actualizarEstrellasProductos();
+mostrarCarrito();
 
     } catch (error) {
 
@@ -501,6 +503,130 @@ const cancelCheckoutButton =
 
   }
 
+/* =====================================================
+   NOVAGUET — SISTEMA DE FAVORITOS
+===================================================== */
+
+const FAVORITOS_KEY = "novaguet_favoritos";
+
+function obtenerFavoritos() {
+  try {
+    const favoritos = JSON.parse(
+      localStorage.getItem(FAVORITOS_KEY) || "[]"
+    );
+
+    return Array.isArray(favoritos)
+      ? favoritos.map(String)
+      : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function guardarFavoritos(favoritos) {
+  localStorage.setItem(
+    FAVORITOS_KEY,
+    JSON.stringify(favoritos)
+  );
+}
+
+function actualizarBotonesFavoritos() {
+  const favoritos = obtenerFavoritos();
+
+  document
+    .querySelectorAll(".favorite-button")
+    .forEach(boton => {
+      const id = String(boton.dataset.favoriteId);
+      const activo = favoritos.includes(id);
+
+      boton.textContent = activo ? "♥️" : "♡";
+      boton.setAttribute("aria-pressed", String(activo));
+      boton.setAttribute(
+        "aria-label",
+        activo ? "Quitar de favoritos" : "Agregar a favoritos"
+      );
+      boton.classList.toggle("is-favorite", activo);
+    });
+}
+
+document.addEventListener("click", function (event) {
+  const boton = event.target.closest(".favorite-button");
+
+  if (!boton) return;
+
+  const id = String(boton.dataset.favoriteId);
+  const favoritos = obtenerFavoritos();
+  const existe = favoritos.includes(id);
+
+  const nuevosFavoritos = existe
+    ? favoritos.filter(favorito => favorito !== id)
+    : [...favoritos, id];
+
+  guardarFavoritos(nuevosFavoritos);
+  actualizarBotonesFavoritos();
+});
+
+/* =====================================================
+   CARGAR RESEÑAS DE PRODUCTOS
+===================================================== */
+
+let resenasProductos = [];
+
+async function cargarResenasProductos() {
+  try {
+    const respuesta = await fetch("/api/resenas");
+
+    if (!respuesta.ok) {
+      throw new Error("No se pudieron cargar las reseñas.");
+    }
+
+    const resenas = await respuesta.json();
+
+    resenasProductos = Array.isArray(resenas)
+      ? resenas
+      : [];
+
+  } catch (error) {
+    console.error("Error al cargar reseñas:", error);
+    resenasProductos = [];
+  }
+}
+
+/* =====================================================
+   ACTUALIZAR ESTRELLAS DE PRODUCTOS
+===================================================== */
+
+function actualizarEstrellasProductos() {
+  document.querySelectorAll("[data-reviews-id]").forEach(elemento => {
+    const productoId = elemento.dataset.reviewsId;
+
+    const resenas = resenasProductos.filter(
+      resena => String(resena.productoId) === String(productoId)
+    );
+
+    const promedio = resenas.length
+      ? resenas.reduce(
+          (total, resena) => total + Number(resena.calificacion || 0),
+          0
+        ) / resenas.length
+      : 0;
+
+    const estrellas = elemento.querySelector(".reviews-stars");
+    const texto = elemento.querySelector("small");
+
+    if (estrellas) {
+      estrellas.textContent =
+        "★".repeat(Math.round(promedio)) +
+        "☆".repeat(5 - Math.round(promedio));
+    }
+
+    if (texto) {
+      texto.textContent = resenas.length
+        ? promedio.toFixed(1) + " (" + resenas.length + " reseñas)"
+        : "Sin reseñas";
+    }
+  });
+}
 
   /* =====================================================
      MOSTRAR PRODUCTOS
@@ -562,20 +688,37 @@ const cancelCheckoutButton =
 
       let opcionesTalla = "";
 
-      if (talla) {
-
-        opcionesTalla = `
-          <div class="product-size">
-            <span>Talla:</span>
-            <strong>${talla}</strong>
-          </div>
-        `;
-
-      }
+if (talla) {
+  opcionesTalla = `
+    <div class="product-size">
+      <span>Talla:</span>
+      <strong>${talla}</strong>
+    </div>
+<button
+  type="button"
+  class="size-guide-button"
+  data-size-guide
+  data-es="Guía de tallas"
+  data-en="Size Guide"
+>
+  Guía de tallas
+</button>
+  `;
+}
 
       card.innerHTML = `
 
         <div class="product-image-container">
+
+<button
+  type="button"
+  class="favorite-button"
+  data-favorite-id="${producto.id}"
+  aria-label="Agregar a favoritos"
+  aria-pressed="false"
+>
+  ♡
+</button>
 
           ${
             imagen
@@ -597,6 +740,25 @@ const cancelCheckoutButton =
 
           <h3>${nombre}</h3>
 
+<div class="product-reviews-summary" data-reviews-id="${producto.id}">
+  <span class="reviews-stars">☆☆☆☆☆</span>
+  <small>Sin reseñas</small>
+</div>
+<div class="product-reviews">
+  <button
+    type="button"
+    class="show-review-form"
+    data-review-product="${producto.id}"
+  >
+    Escribir reseña
+  </button>
+
+  <div
+    class="review-form-container"
+    data-review-form="${producto.id}"
+    hidden
+  ></div>
+</div>
           ${
             categoria
               ? `
@@ -676,8 +838,143 @@ const cancelCheckoutButton =
 
       });
 
-  }
+productsContainer
+      .querySelectorAll(".show-review-form")
+      .forEach(button => {
+        button.addEventListener("click", () => {
+          const productoId = button.dataset.reviewProduct;
 
+          const contenedor = productsContainer.querySelector(
+            '[data-review-form="' + productoId + '"]'
+          );
+
+          if (!contenedor) return;
+
+          if (!contenedor.hidden) {
+            contenedor.hidden = true;
+            return;
+          }
+
+          contenedor.innerHTML = `
+            <form class="product-review-form">
+              <label>Tu calificación</label>
+
+              <div class="review-rating">
+  <label>Tu calificación</label>
+
+  <div class="review-stars-selector" role="group" aria-label="Selecciona tu calificación">
+    <button type="button" class="review-star" data-rating="1" aria-label="1 estrella">☆</button>
+    <button type="button" class="review-star" data-rating="2" aria-label="2 estrellas">☆</button>
+    <button type="button" class="review-star" data-rating="3" aria-label="3 estrellas">☆</button>
+    <button type="button" class="review-star" data-rating="4" aria-label="4 estrellas">☆</button>
+    <button type="button" class="review-star" data-rating="5" aria-label="5 estrellas">☆</button>
+  </div>
+
+  <input type="hidden" name="calificacion" value="">
+
+  <small class="rating-hint">Toca una estrella</small>
+</div>
+
+              <label>Tu comentario</label>
+
+              <textarea
+                name="comentario"
+                maxlength="500"
+                placeholder="Cuéntanos tu experiencia (opcional)"
+              ></textarea>
+
+              <button type="submit">Publicar reseña</button>
+
+              <p class="review-message" aria-live="polite"></p>
+            </form>
+          `;
+const formulario = contenedor.querySelector(
+            ".product-review-form"
+          );
+const selectorEstrellas = formulario.querySelector(
+  ".review-stars-selector"
+);
+
+const campoCalificacion = formulario.elements.calificacion;
+const textoCalificacion = formulario.querySelector(".rating-hint");
+
+selectorEstrellas.addEventListener("click", event => {
+  const botonEstrella = event.target.closest(".review-star");
+
+  if (!botonEstrella) return;
+
+  const calificacion = Number(botonEstrella.dataset.rating);
+
+  campoCalificacion.value = String(calificacion);
+
+  selectorEstrellas.querySelectorAll(".review-star").forEach(estrella => {
+    const activa = Number(estrella.dataset.rating) <= calificacion;
+
+    estrella.textContent = activa ? "★" : "☆";
+    estrella.classList.toggle("selected", activa);
+    estrella.setAttribute("aria-pressed", String(activa));
+  });
+
+  textoCalificacion.textContent =
+    calificacion + (calificacion === 1
+      ? " estrella seleccionada"
+      : " estrellas seleccionadas");
+});
+          formulario.addEventListener("submit", async event => {
+            event.preventDefault();
+
+            const mensaje = formulario.querySelector(
+              ".review-message"
+            );
+
+            const botonEnviar = formulario.querySelector(
+              'button[type="submit"]'
+            );
+
+            botonEnviar.disabled = true;
+            mensaje.textContent = "Publicando reseña...";
+
+            try {
+              const respuesta = await fetch("/api/resenas", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  productoId: productoId,
+                  calificacion: formulario.elements.calificacion.value,
+                  comentario: formulario.elements.comentario.value
+                })
+              });
+
+              const resultado = await respuesta.json();
+
+              if (!respuesta.ok) {
+                throw new Error(
+                  resultado.error || "No se pudo publicar la reseña."
+                );
+              }
+
+              mensaje.textContent = resultado.mensaje;
+
+              await cargarResenasProductos();
+              mostrarProductos(productos);
+              actualizarEstrellasProductos();
+
+            } catch (error) {
+              mensaje.textContent = error.message;
+            } finally {
+              if (botonEnviar.isConnected) {
+                botonEnviar.disabled = false;
+              }
+            }
+          });
+          contenedor.hidden = false;
+        });
+      });
+
+    actualizarBotonesFavoritos();
+  }
 
   /* =====================================================
      AGREGAR AL CARRITO
@@ -3879,6 +4176,34 @@ function mostrarEstadoPedido(pedido) {
     '</div>';
 }
 
+/* =====================================================
+   NOVAGUET — ABRIR Y CERRAR GUÍA DE TALLAS
+===================================================== */
+
+const sizeGuideOverlay = document.getElementById("sizeGuideOverlay");
+const closeSizeGuide = document.getElementById("closeSizeGuide");
+
+if (sizeGuideOverlay) {
+  document.addEventListener("click", function (event) {
+    if (event.target.closest("[data-size-guide]")) {
+      sizeGuideOverlay.classList.add("is-open");
+    }
+
+    if (
+      event.target === sizeGuideOverlay ||
+      event.target.closest("#closeSizeGuide")
+    ) {
+      sizeGuideOverlay.classList.remove("is-open");
+    }
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      sizeGuideOverlay.classList.remove("is-open");
+    }
+  });
+}
+
   /* =====================================================
      INICIALIZAR
   ===================================================== */
@@ -3892,3 +4217,153 @@ function mostrarEstadoPedido(pedido) {
   cargarProductos();
 
 });
+
+/* NOVAGUET: abrir y cerrar menú lateral */
+(() => {
+  const botonMenu = document.getElementById("menuHamburger");
+  const botonCerrar = document.getElementById("closeSideMenu");
+  const menuLateral = document.getElementById("sideMenu");
+  const fondoMenu = document.getElementById("menuOverlay");
+  const botonNosotros = document.getElementById("sideNosotrosButton");
+
+  if (!botonMenu || !menuLateral || !fondoMenu) return;
+
+  function abrirMenu() {
+    menuLateral.classList.add("is-open");
+    fondoMenu.classList.add("is-visible");
+    menuLateral.setAttribute("aria-hidden", "false");
+    botonMenu.setAttribute("aria-expanded", "true");
+  }
+
+  function cerrarMenu() {
+    menuLateral.classList.remove("is-open");
+    fondoMenu.classList.remove("is-visible");
+    menuLateral.setAttribute("aria-hidden", "true");
+    botonMenu.setAttribute("aria-expanded", "false");
+  }
+
+  botonMenu.addEventListener("click", abrirMenu);
+  fondoMenu.addEventListener("click", cerrarMenu);
+if (botonNosotros) {
+  botonNosotros.addEventListener("click", (event) => {
+    event.preventDefault();
+    cerrarMenu();
+
+    const nosotros = document.getElementById("nosotrosCloud");
+
+    if (nosotros) {
+      nosotros.classList.add("show");
+      nosotros.style.position = "fixed";
+      nosotros.style.top = "80px";
+      nosotros.style.left = "50%";
+      nosotros.style.transform = "translateX(-50%)";
+      nosotros.style.width = "min(330px, calc(100vw - 30px))";
+      nosotros.style.zIndex = "10001";
+    }
+  });
+}
+  if (botonCerrar) {
+    botonCerrar.addEventListener("click", cerrarMenu);
+  }
+
+ menuLateral.querySelectorAll("a").forEach((enlace) => {
+  enlace.addEventListener("click", (event) => {
+    const destino = enlace.getAttribute("href");
+    cerrarMenu();
+    if (destino === "#contacto") {
+      event.preventDefault();
+      const footer = document.getElementById("contacto");
+      if (footer) {
+        setTimeout(() => {
+          footer.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        }, 100);
+      }
+    }
+  });
+});
+})();
+
+/* NOVAGUET: mostrar productos favoritos */
+
+(() => {
+  const enlaceFavoritos = document.querySelector(
+    '.side-menu-links a[href="#favoritos"]'
+  );
+
+  const seccionProductos = document.getElementById("productos");
+  const seccionFavoritos = document.getElementById("favoritos");
+  const contenedorProductos = document.getElementById("productsContainer");
+  const contenedorFavoritos = document.getElementById("favoritosContainer");
+  const botonVolver = document.getElementById("volverProductos");
+
+  if (
+    !enlaceFavoritos ||
+    !seccionProductos ||
+    !seccionFavoritos ||
+    !contenedorProductos ||
+    !contenedorFavoritos ||
+    !botonVolver
+  ) return;
+
+  enlaceFavoritos.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const favoritos = JSON.parse(
+      localStorage.getItem("novaguet_favoritos") || "[]"
+    ).map(String);
+
+    contenedorFavoritos.innerHTML = "";
+
+    const productosFavoritos = Array.from(
+      contenedorProductos.querySelectorAll(".product-card")
+    ).filter((tarjeta) => {
+      const boton = tarjeta.querySelector(".favorite-button");
+      return boton && favoritos.includes(
+        String(boton.dataset.favoriteId)
+      );
+    });
+
+    if (productosFavoritos.length === 0) {
+      contenedorFavoritos.innerHTML =
+        "<p style='text-align:center;'>Todavía no tienes productos favoritos. Marca ♥️ en los productos que te gusten.</p>";
+    } else {
+      productosFavoritos.forEach((tarjeta) => {
+        const copia = tarjeta.cloneNode(true);
+        contenedorFavoritos.appendChild(copia);
+
+        const botonCarrito = copia.querySelector(".add-to-cart");
+
+        if (botonCarrito && !botonCarrito.disabled) {
+          botonCarrito.addEventListener("click", () => {
+            agregarAlCarrito(botonCarrito.dataset.id);
+          });
+        }
+      });
+
+      if (typeof actualizarBotonesFavoritos === "function") {
+        actualizarBotonesFavoritos();
+      }
+    }
+
+    seccionProductos.hidden = true;
+    seccionFavoritos.hidden = false;
+
+    const separador = document.querySelector(".separador");
+    if (separador) separador.hidden = true;
+
+    seccionFavoritos.scrollIntoView({ behavior: "smooth" });
+  });
+
+  botonVolver.addEventListener("click", () => {
+    seccionFavoritos.hidden = true;
+    seccionProductos.hidden = false;
+
+    const separador = document.querySelector(".separador");
+    if (separador) separador.hidden = false;
+
+    seccionProductos.scrollIntoView({ behavior: "smooth" });
+  });
+})();
