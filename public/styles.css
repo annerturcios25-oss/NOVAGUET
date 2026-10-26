@@ -4041,3 +4041,9 @@ footer small {
   opacity: 1 !important;
   visibility: visible !important;
 }
+/* NOVAGUET — Menú hamburguesa solo en móviles */
+@media (min-width: 769px) {
+  #menuHamburger {
+    display: none !important;
+  }
+}
