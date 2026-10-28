@@ -595,7 +595,6 @@ async function cargarResenasProductos() {
 /* =====================================================
    ACTUALIZAR ESTRELLAS DE PRODUCTOS
 ===================================================== */
-
 function actualizarEstrellasProductos() {
   document.querySelectorAll("[data-reviews-id]").forEach(elemento => {
     const productoId = elemento.dataset.reviewsId;
@@ -612,7 +611,8 @@ function actualizarEstrellasProductos() {
       : 0;
 
     const estrellas = elemento.querySelector(".reviews-stars");
-    const texto = elemento.querySelector("small");
+    const promedioElemento = elemento.querySelector(".reviews-average");
+    const enlace = elemento.querySelector(".show-product-reviews");
 
     if (estrellas) {
       estrellas.textContent =
@@ -620,14 +620,16 @@ function actualizarEstrellasProductos() {
         "☆".repeat(5 - Math.round(promedio));
     }
 
-    if (texto) {
-      texto.textContent = resenas.length
-        ? promedio.toFixed(1) + " (" + resenas.length + " reseñas)"
-        : "Sin reseñas";
+    if (promedioElemento) {
+      promedioElemento.textContent = promedio.toFixed(1);
+    }
+
+    if (enlace) {
+      enlace.textContent = "(" + resenas.length + ")";
+      enlace.setAttribute("aria-label", "Ver " + resenas.length + " reseñas");
     }
   });
 }
-
   /* =====================================================
      MOSTRAR PRODUCTOS
   ===================================================== */
@@ -685,27 +687,29 @@ function actualizarEstrellasProductos() {
       const agotado =
         Number.isFinite(stock) &&
         stock <= 0;
-
-      let opcionesTalla = "";
+let opcionesTalla = "";
 
 if (talla) {
+  const tallasDisponibles = talla
+    .split(",")
+    .map(t => t.trim())
+    .filter(Boolean);
+
   opcionesTalla = `
     <div class="product-size">
-      <span>Talla:</span>
-      <strong>${talla}</strong>
+      <label for="talla-${producto.id}">Talla</label>
+      <select
+        id="talla-${producto.id}"
+        class="product-size-select"
+        data-product-size="${producto.id}"
+      >
+        ${tallasDisponibles.map(t => `
+          <option value="${t}">${t}</option>
+        `).join("")}
+      </select>
     </div>
-<button
-  type="button"
-  class="size-guide-button"
-  data-size-guide
-  data-es="Guía de tallas"
-  data-en="Size Guide"
->
-  Guía de tallas
-</button>
   `;
 }
-
       card.innerHTML = `
 
         <div class="product-image-container">
@@ -735,29 +739,28 @@ if (talla) {
           }
 
         </div>
-
         <div class="product-info">
 
           <h3>${nombre}</h3>
-
-<div class="product-reviews-summary" data-reviews-id="${producto.id}">
+<div
+  class="product-reviews-summary"
+  data-reviews-id="${producto.id}"
+>
+  <span class="reviews-average">0.0</span>
   <span class="reviews-stars">☆☆☆☆☆</span>
-  <small>Sin reseñas</small>
+  <a
+    href="#"
+    class="show-product-reviews"
+    data-show-reviews="${producto.id}"
+  >(0)</a>
 </div>
-<div class="product-reviews">
-  <button
-    type="button"
-    class="show-review-form"
-    data-review-product="${producto.id}"
-  >
-    Escribir reseña
-  </button>
 
-  <div
-    class="review-form-container"
-    data-review-form="${producto.id}"
-    hidden
-  ></div>
+<div
+  class="product-reviews"
+  data-product-reviews="${producto.id}"
+  hidden
+>
+  <div class="product-reviews-list"></div>
 </div>
           ${
             categoria
@@ -784,21 +787,19 @@ if (talla) {
           <div class="product-price">
             ${formatoPrecio(precio)}
           </div>
-
-         ${
+${
   Number.isFinite(stock)
-    ? `
-      <div class="product-stock">
-        ${
-          agotado
-            ? "Agotado"
-            : "Disponible: " + stock
-        }
-      </div>
-    `
-    : ""
+    ? '<div class="product-stock ' +
+        (agotado ? 'stock-out' : stock <= 2 ? 'stock-low' : '') +
+        '">' +
+        (agotado
+          ? 'Agotado'
+          : stock <= 2
+            ? 'Últimas ' + stock + ' ' + (stock === 1 ? 'unidad' : 'unidades')
+            : 'Disponible') +
+        '</div>'
+    : ''
 }
-
           <button
             type="button"
             class="add-to-cart"

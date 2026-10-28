@@ -525,38 +525,41 @@ footer#contacto .footer-item p {
   font-size: 24px;
   letter-spacing: 2px;
 }
-
 .product-list {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
   position: relative;
   z-index: 2;
+  align-items: start;
 }
-
 .product-card {
   background: #fff;
-  border-radius: 12px;
-  padding: 15px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  padding: 10px;
+  text-align: left;
+  box-shadow: none;
   overflow: hidden;
   position: relative;
   z-index: 3;
   color: #111;
+  transition: border-color 0.2s ease;
 }
 
+.product-card:hover {
+  border-color: #c8c8c8;
+}
 .product-image {
   width: 100%;
-  height: 280px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 10px;
+  height: 220px;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 4px;
 }
 
 .product-image img {
@@ -565,18 +568,21 @@ footer#contacto .footer-item p {
   object-fit: contain;
   display: block;
 }
-
 .product-card h3 {
   color: #111;
-  margin: 15px 0 8px;
-  font-size: 18px;
+  margin: 4px 0 2px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: left;
 }
 
 .product-price {
   color: #111;
-  font-size: 20px;
-  font-weight: bold;
-  margin: 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 5px 0;
+  text-align: left;
 }
 
 .product-description {
@@ -1213,19 +1219,17 @@ footer#contacto .footer-item p {
 .cart-box.show {
   right: 0;
 }
-
 /* CONTENEDOR DE IMAGEN DEL PRODUCTO */
 .product-image-container {
   width: 100%;
-  height: 280px;
+  height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 4px;
   background: #ffffff;
 }
-
 /* IMAGEN DEL PRODUCTO */
 .product-image-container img.product-image {
   width: 100%;
@@ -4046,4 +4050,199 @@ footer small {
   #menuHamburger {
     display: none !important;
   }
+}
+/* TALLA DEL PRODUCTO */
+.product-size label {
+  color: #111111;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.product-size-select {
+  color: #111111;
+  background-color: #ffffff;
+  border: 1px solid #d5d5d5;
+  border-radius: 4px;
+  font-size: 13px;
+}
+/* FORZAR COLOR NARANJA EN AGREGAR AL CARRITO */
+.product-card .add-to-cart,
+.product-card .add-to-cart:hover,
+.product-card .add-to-cart:focus {
+  background: #FF8C00 !important;
+  background-color: #FF8C00 !important;
+  color: #FFFFFF !important;
+  border-color: #FF8C00 !important;
+}
+
+.product-card .add-to-cart:disabled {
+  background: #BDBDBD !important;
+  background-color: #BDBDBD !important;
+  border-color: #BDBDBD !important;
+}
+/* DESCRIPCIÓN DEL PRODUCTO */
+.product-card .product-description {
+  color: #222222 !important;
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 1 !important;
+}
+/* PRODUCTOS: CUADRÍCULA DESLIZABLE */
+.product-list {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  grid-auto-columns: calc(50% - 6px);
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 2px 12px;
+  align-items: start;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.product-list .product-card {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+/* TELÉFONOS */
+@media (max-width: 600px) {
+  .product-list {
+    grid-template-rows: repeat(2, auto);
+    grid-auto-columns: calc(50% - 6px);
+    gap: 10px;
+  }
+}
+
+/* COMPUTADORAS */
+@media (min-width: 1024px) {
+  .product-list {
+    grid-template-rows: repeat(2, auto);
+    grid-auto-columns: calc(16.6667% - 10px);
+    gap: 12px;
+  }
+}
+/* TARJETAS COMPACTAS EN TELÉFONOS */
+@media (max-width: 600px) {
+  .product-list .product-card {
+    padding: 7px;
+    border-radius: 5px;
+  }
+
+  .product-list .product-image-container {
+    height: 135px;
+  }
+
+  .product-list .product-image {
+    height: 135px;
+  }
+
+  .product-list .product-card h3 {
+    font-size: 12px;
+    line-height: 1.3;
+    margin: 5px 0 2px;
+  }
+
+  .product-list .product-price {
+    font-size: 15px;
+    margin: 4px 0;
+  }
+
+  .product-list .add-to-cart {
+    width: 100%;
+    padding: 8px 4px;
+    font-size: 11px;
+  }
+
+  .product-list .product-description {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+}
+
+/* TARJETAS COMPACTAS EN COMPUTADORAS */
+@media (min-width: 1024px) {
+  .product-list .product-image-container,
+  .product-list .product-image {
+    height: 150px;
+  }
+
+  .product-list .product-card {
+    padding: 8px;
+  }
+}
+/* IMÁGENES MÁS PEQUEÑAS EN MÓVILES */
+@media (max-width: 600px) {
+  .product-list .product-image-container,
+  .product-list .product-image {
+    height: 100px !important;
+  }
+}
+
+/* IMÁGENES MÁS PEQUEÑAS EN COMPUTADORA */
+@media (min-width: 601px) {
+  .product-list .product-image-container,
+  .product-list .product-image {
+    height: 120px !important;
+  }
+}
+/* DISPONIBILIDAD MINIMALISTA - NOVAGUET */
+.product-card .product-stock {
+  color: #777777;
+  font-size: 11px;
+  font-weight: 400;
+  margin: 4px 0;
+}
+
+.product-card .product-stock.stock-low {
+  color: #D97706;
+  font-weight: 500;
+}
+
+.product-card .product-stock.stock-out {
+  color: #D32F2F;
+  font-weight: 500;
+}
+/* NOVAGUET — Corazón minimalista en la tarjeta */
+.product-card {
+  position: relative;
+}
+
+.product-card .favorite-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  box-shadow: none;
+
+  color: #555;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.product-card .favorite-button.is-favorite {
+  color: #e53945;
+  background: rgba(255, 255, 255, 0.9);
 }
