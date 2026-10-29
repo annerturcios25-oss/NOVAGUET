@@ -315,37 +315,51 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const imagen = prompt(
-        "Ruta de la imagen:",
-        producto.imagen || ""
-      );
+  const selectorImagenes = document.createElement("input");
 
-      if (imagen === null) {
-        return;
-      }
+selectorImagenes.type = "file";
+selectorImagenes.accept = "image/jpeg,image/png,image/webp";
+selectorImagenes.multiple = true;
+selectorImagenes.style.display = "none";
 
-      const respuesta = await fetch(
-        "/api/productos/" + id,
-        {
-          method: "PUT",
-          credentials: "include",
+document.body.appendChild(selectorImagenes);
 
-          headers: {
-            "Content-Type": "application/json"
-          },
+const archivosImagenes = await new Promise((resolve) => {
+  selectorImagenes.addEventListener("change", () => {
+    const archivos = Array.from(selectorImagenes.files || []);
+    selectorImagenes.remove();
+    resolve(archivos);
+  }, { once: true });
 
-          body: JSON.stringify({
-            nombre: nombre,
-            precio: Number(precio),
-            categoria: categoria,
-            talla: talla,
-            stock: Number(stock),
-            descripcion: descripcion,
-            imagen: imagen
-          })
-        }
-      );
+  selectorImagenes.addEventListener("cancel", () => {
+    selectorImagenes.remove();
+    resolve([]);
+  }, { once: true });
 
+selectorImagenes.click();
+});
+
+const formData = new FormData();
+
+formData.append("nombre", nombre);
+formData.append("precio", Number(precio));
+formData.append("categoria", categoria);
+formData.append("talla", talla);
+formData.append("stock", Number(stock));
+formData.append("descripcion", descripcion);
+
+archivosImagenes.forEach((archivo) => {
+  formData.append("imagenes", archivo);
+});
+
+const respuesta = await fetch(
+  "/api/productos/" + id,
+  {
+    method: "PUT",
+    credentials: "include",
+    body: formData
+  }
+);
       if (!respuesta.ok) {
 
         const error = await respuesta.json().catch(() => ({}));

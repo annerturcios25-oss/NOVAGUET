@@ -666,6 +666,12 @@ function actualizarEstrellasProductos() {
       const imagen =
         producto.imagen || "";
 
+const imagenesProducto = Array.isArray(producto.imagenes)
+  ? producto.imagenes
+  : imagen
+    ? [imagen]
+    : [];
+
       const nombre =
         producto.nombre || "Producto";
 
@@ -724,7 +730,7 @@ if (talla) {
   ♡
 </button>
 
-          ${
+         ${
             imagen
               ? `
                 <img
@@ -734,6 +740,14 @@ if (talla) {
                   loading="lazy"
                   onerror="this.style.display='none';"
                 >
+                ${imagenesProducto.slice(1).map(foto => `
+                  <img
+                    src="${foto}"
+                    alt="${nombre}"
+                    class="product-image-extra"
+                    style="display:none;"
+                  >
+                `).join("")}
               `
               : ""
           }
@@ -790,7 +804,7 @@ if (talla) {
 ${
   Number.isFinite(stock)
     ? '<div class="product-stock ' +
-        (agotado ? 'stock-out' : stock <= 2 ? 'stock-low' : '') +
+        (agotado ? 'stock-out' : stock <= 2 ? 'stock-low' : 'stock-available') +
         '">' +
         (agotado
           ? 'Agotado'
@@ -4366,5 +4380,125 @@ if (botonNosotros) {
     if (separador) separador.hidden = false;
 
     seccionProductos.scrollIntoView({ behavior: "smooth" });
+  });
+})();
+/* NOVAGUET — Visor de imágenes de productos */
+(() => {
+  if (document.getElementById("novaguet-image-viewer")) return;
+
+  const visor = document.createElement("div");
+  visor.id = "novaguet-image-viewer";
+
+  visor.style.cssText = `
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0,0,0,.92);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  `;
+
+  visor.innerHTML = `
+    <button type="button" aria-label="Cerrar imagen"
+      data-cerrar-visor
+      style="position:absolute;top:15px;right:18px;
+      color:white;background:none;border:0;font-size:36px;
+      cursor:pointer;">&times;</button>
+
+    <button type="button" aria-label="Foto anterior"
+      data-foto-anterior
+      style="position:absolute;left:15px;top:50%;
+      transform:translateY(-50%);color:white;
+      background:rgba(0,0,0,.5);border:0;
+      font-size:34px;padding:10px;cursor:pointer;">&#10094;</button>
+
+    <img alt="Imagen ampliada del producto"
+      style="max-width:85%;max-height:85vh;object-fit:contain;">
+
+    <button type="button" aria-label="Foto siguiente"
+      data-foto-siguiente
+      style="position:absolute;right:15px;top:50%;
+      transform:translateY(-50%);color:white;
+      background:rgba(0,0,0,.5);border:0;
+      font-size:34px;padding:10px;cursor:pointer;">&#10095;</button>
+  `;
+
+  document.body.appendChild(visor);
+
+  const imagenGrande = visor.querySelector("img");
+  const botonCerrar = visor.querySelector("[data-cerrar-visor]");
+  const botonAnterior = visor.querySelector("[data-foto-anterior]");
+  const botonSiguiente = visor.querySelector("[data-foto-siguiente]");
+
+  let fotosVisor = [];
+  let indiceFotoVisor = 0;
+
+  function mostrarFotoVisor(indice) {
+    if (!fotosVisor.length) return;
+
+    indiceFotoVisor =
+      (indice + fotosVisor.length) % fotosVisor.length;
+
+    imagenGrande.src = fotosVisor[indiceFotoVisor];
+
+    botonAnterior.style.display =
+      fotosVisor.length > 1 ? "block" : "none";
+
+    botonSiguiente.style.display =
+      fotosVisor.length > 1 ? "block" : "none";
+  }
+
+  function cerrarVisor() {
+    visor.style.display = "none";
+    imagenGrande.src = "";
+  }
+
+  botonCerrar.addEventListener("click", cerrarVisor);
+
+  botonAnterior.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    mostrarFotoVisor(indiceFotoVisor - 1);
+  });
+
+  botonSiguiente.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    mostrarFotoVisor(indiceFotoVisor + 1);
+  });
+
+  visor.addEventListener("click", (evento) => {
+    if (evento.target === visor) cerrarVisor();
+  });
+
+  document.addEventListener("keydown", (evento) => {
+    if (evento.key === "Escape") cerrarVisor();
+  });
+
+  document.addEventListener("click", (evento) => {
+    const imagen = evento.target.closest(
+      ".product-card .product-image"
+    );
+
+    if (!imagen || !imagen.src) return;
+
+    evento.preventDefault();
+
+    const tarjeta = imagen.closest(".product-card");
+    if (!tarjeta) return;
+
+    fotosVisor = [imagen.src];
+
+    const imagenesExtra =
+      tarjeta.querySelectorAll(".product-image-extra");
+
+    imagenesExtra.forEach((foto) => {
+      if (foto.src && !fotosVisor.includes(foto.src)) {
+        fotosVisor.push(foto.src);
+      }
+    });
+
+    mostrarFotoVisor(0);
+    visor.style.display = "flex";
   });
 })();

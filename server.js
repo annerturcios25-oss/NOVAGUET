@@ -955,7 +955,7 @@ app.post("/api/resenas", (req, res) => {
 app.post(
   "/api/productos",
   protegerAdmin,
-  upload.single("imagen"),
+ upload.array("imagenes", 10),
   (req, res) => {
     try {
       const productos = JSON.parse(
@@ -965,13 +965,11 @@ app.post(
         )
       );
 
-      let imagenProducto = "";
+    const imagenesProducto = (req.files || []).map(
+  archivo => "/images/" + archivo.filename
+);
 
-      if (req.file) {
-        imagenProducto =
-          "/images/" +
-          req.file.filename;
-      }
+const imagenProducto = imagenesProducto[0] || "";
 
       const stockRecibido =
         Number(req.body.stock);
@@ -1002,8 +1000,8 @@ app.post(
         descripcion:
           req.body.descripcion || "",
 
-        imagen:
-          imagenProducto,
+       imagen: imagenProducto,
+imagenes: imagenesProducto,
 
         stock:
           stock
@@ -1045,11 +1043,10 @@ app.post(
    EDITAR PRODUCTO
    🔐 PROTEGIDO
 ========================================================= */
-
 app.put(
   "/api/productos/:id",
   protegerAdmin,
-  upload.single("imagen"),
+ upload.array("imagenes", 10),
   (req, res) => {
     try {
       const productos = JSON.parse(
@@ -1078,47 +1075,25 @@ app.put(
       const productoActual =
         productos[indice];
 
-      let imagenProducto =
-        productoActual.imagen || "";
+      const imagenesAnteriores =
+  Array.isArray(productoActual.imagenes)
+    ? productoActual.imagenes
+    : productoActual.imagen
+      ? [productoActual.imagen]
+      : [];
 
-      if (req.file) {
-        imagenProducto =
-          "/images/" +
-          req.file.filename;
+const imagenesNuevas = (req.files || []).map(
+  archivo => "/images/" + archivo.filename
+);
 
-        if (
-          productoActual.imagen &&
-          productoActual.imagen.startsWith(
-            "/images/"
-          )
-        ) {
-          const nombreImagenAnterior =
-            productoActual.imagen.replace(
-              "/images/",
-              ""
-            );
-
-          const rutaImagenAnterior =
-            path.join(
-              imagesFolder,
-              nombreImagenAnterior
-            );
-
-          if (
-            fs.existsSync(
-              rutaImagenAnterior
-            )
-          ) {
-            fs.unlinkSync(
-              rutaImagenAnterior
-            );
-          }
-        }
-      }
-
+const imagenesProducto = [
+  ...imagenesAnteriores,
+  ...imagenesNuevas
+];
+const imagenProducto =
+  imagenesProducto[0] || "";
       const stockRecibido =
         Number(req.body.stock);
-
       const stock =
         Number.isFinite(stockRecibido)
           ? Math.max(
@@ -1126,7 +1101,6 @@ app.put(
               stockRecibido
             )
           : 0;
-
       productos[indice] = {
         id:
           productoActual.id,
