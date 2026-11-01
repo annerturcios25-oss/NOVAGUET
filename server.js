@@ -642,25 +642,6 @@ const upload = multer({
     }
   }
 });
-
-/* =========================================================
-   ARCHIVO DE PRODUCTOS
-========================================================= */
-
-const productsFile = path.join(
-  __dirname,
-  "products.json"
-);
-
-/* =========================================================
-   ARCHIVO DE PEDIDOS
-========================================================= */
-
-const ordersFile = path.join(
-  __dirname,
-  "orders.json"
-);
-
 /* =========================================================
    ARCHIVO DE RESEÑAS
 ========================================================= */
@@ -676,42 +657,6 @@ if (!fs.existsSync(resenasFile)) {
     JSON.stringify([], null, 2)
   );
 }
-
-if (!fs.existsSync(ordersFile)) {
-  fs.writeFileSync(
-    ordersFile,
-    JSON.stringify([], null, 2)
-  );
-}
-
-/* =========================================================
-   CREAR PRODUCTOS INICIALES
-========================================================= */
-
-if (!fs.existsSync(productsFile)) {
-  const productosIniciales = [
-    {
-      id: 1,
-      nombre: "Camisa de niño PAW PATROL",
-      precio: 700,
-      categoria: "Ropa",
-      talla: "2T",
-      descripcion: "Camisa de niño PAW PATROL",
-      imagen: "/images/camisa-paw-patrol.jpeg",
-      stock: 10
-    }
-  ];
-
-  fs.writeFileSync(
-    productsFile,
-    JSON.stringify(
-      productosIniciales,
-      null,
-      2
-    )
-  );
-}
-
 /* =========================================================
    PÁGINA PRINCIPAL
 ========================================================= */
@@ -772,20 +717,29 @@ app.use(
 );
 
 /* =========================================================
-   OBTENER PRODUCTOS
+   OBTENER PRODUCTOS DESDE POSTGRESQL
 ========================================================= */
 
-app.get(
-  "/api/productos",
-  (req, res) => {
-    try {
-      const productos = JSON.parse(
-        fs.readFileSync(
-          productsFile,
-          "utf8"
-        )
-      );
+app.get("/api/productos", async (req, res) => {
+  try {
+    const resultado = await pool.query(
+      "SELECT datos FROM productos ORDER BY id"
+    );
 
+    const productos = resultado.rows.map(
+      fila => fila.datos
+    );
+
+    res.json(productos);
+
+  } catch (error) {
+    console.error("Error al cargar productos desde PostgreSQL:", error);
+
+    res.status(500).json({
+      error: "No se pudieron cargar los productos."
+    });
+  }
+});
 /* =========================================================
    OBTENER RESEÑAS
 ========================================================= */
@@ -810,9 +764,9 @@ app.get("/api/resenas", (req, res) => {
    PUBLICAR RESEÑA — SOLO CLIENTES CON COMPRA ENTREGADA
 ========================================================= */
 
-app.post("/api/resenas", (req, res) => {
+app.post("/api/resenas", async (req, res) => {
   try {
-    // 1. Verificar que el cliente haya iniciado sesión.
+    // 1. Verificar sesión del cliente.
     const sesionCliente = obtenerClienteSesion(req);
 
     if (!sesionCliente) {
@@ -821,7 +775,7 @@ app.post("/api/resenas", (req, res) => {
       });
     }
 
-    // 2. Validar los datos recibidos.
+    // 2. Validar datos.
     const productoId = String(req.body?.productoId || "").trim();
     const calificacion = Number(req.body?.calificacion);
     const comentario = String(req.body?.comentario || "").trim();
@@ -848,40 +802,40 @@ app.post("/api/resenas", (req, res) => {
       });
     }
 
-    // 3. Leer pedidos y productos existentes.
-    const pedidos = JSON.parse(
-      fs.readFileSync(ordersFile, "utf8")
+    // 3. Consultar producto en PostgreSQL.
+    const resultadoProducto = await pool.query(
+      "SELECT datos FROM productos WHERE id = $1",
+      [productoId]
     );
 
-    const productos = JSON.parse(
-      fs.readFileSync(productsFile, "utf8")
-    );
-
-    const resenas = JSON.parse(
-      fs.readFileSync(resenasFile, "utf8")
-    );
-
-    // 4. Comprobar que el producto exista.
-    const producto = productos.find(
-      p => String(p.id) === productoId
-    );
-
-    if (!producto) {
+    if (resultadoProducto.rows.length === 0) {
       return res.status(404).json({
         error: "Producto no encontrado."
       });
     }
 
-    // 5. Exigir un pedido entregado del mismo cliente
-    // que incluya el producto.
-    const pedidoEntregado = pedidos.some(pedido =>
-      String(pedido.clienteId) === String(sesionCliente.id) &&
-      pedido.estado === "Entregado" &&
-      Array.isArray(pedido.productos) &&
-      pedido.productos.some(item =>
-        String(item.id) === productoId
-      )
+    const producto = resultadoProducto.rows[0].datos;
+
+    // 4. Comprobar que el cliente tenga un pedido
+    // entregado que incluya este producto.
+    const resultadoPedidos = await pool.query(
+      `SELECT datos
+       FROM pedidos
+       WHERE datos->>'clienteId' = $1
+         AND datos->>'estado' = 'Entregado'`,
+      [String(sesionCliente.id)]
     );
+
+    const pedidoEntregado = resultadoPedidos.rows.some(fila => {
+      const pedido = fila.datos;
+
+      return (
+        Array.isArray(pedido.productos) &&
+        pedido.productos.some(item =>
+          String(item.id) === productoId
+        )
+      );
+    });
 
     if (!pedidoEntregado) {
       return res.status(403).json({
@@ -889,8 +843,12 @@ app.post("/api/resenas", (req, res) => {
       });
     }
 
-    // 6. Evitar reseñas duplicadas del mismo cliente
-    // para el mismo producto.
+    // 5. Leer reseñas existentes.
+    const resenas = JSON.parse(
+      fs.readFileSync(resenasFile, "utf8")
+    );
+
+    // 6. Evitar reseñas duplicadas.
     const yaExiste = resenas.some(resena =>
       String(resena.clienteId) === String(sesionCliente.id) &&
       String(resena.productoId) === productoId
@@ -934,19 +892,6 @@ app.post("/api/resenas", (req, res) => {
   }
 });
 
-      res.json(productos);
-
-    } catch (error) {
-      console.error(error);
-
-      res.status(500).json({
-        error:
-          "No se pudieron cargar los productos"
-      });
-    }
-  }
-);
-
 /* =========================================================
    AGREGAR PRODUCTO
    🔐 PROTEGIDO
@@ -955,90 +900,52 @@ app.post("/api/resenas", (req, res) => {
 app.post(
   "/api/productos",
   protegerAdmin,
- upload.array("imagenes", 10),
-  (req, res) => {
+  upload.array("imagenes", 10),
+  async (req, res) => {
     try {
-      const productos = JSON.parse(
-        fs.readFileSync(
-          productsFile,
-          "utf8"
-        )
+      const imagenesProducto = (req.files || []).map(
+        archivo => "/images/" + archivo.filename
       );
 
-    const imagenesProducto = (req.files || []).map(
-  archivo => "/images/" + archivo.filename
-);
+      const imagenProducto = imagenesProducto[0] || "";
 
-const imagenProducto = imagenesProducto[0] || "";
+      const stockRecibido = Number(req.body.stock);
 
-      const stockRecibido =
-        Number(req.body.stock);
-
-      const stock =
-        Number.isFinite(stockRecibido)
-          ? Math.max(
-              0,
-              stockRecibido
-            )
-          : 0;
+      const stock = Number.isFinite(stockRecibido)
+        ? Math.max(0, stockRecibido)
+        : 0;
 
       const nuevoProducto = {
         id: Date.now(),
-
-        nombre:
-          req.body.nombre || "",
-
-        precio:
-          Number(req.body.precio) || 0,
-
-        categoria:
-          req.body.categoria || "",
-
-        talla:
-          req.body.talla || "",
-
-        descripcion:
-          req.body.descripcion || "",
-
-       imagen: imagenProducto,
-imagenes: imagenesProducto,
-
-        stock:
-          stock
+        nombre: req.body.nombre || "",
+        precio: Number(req.body.precio) || 0,
+        categoria: req.body.categoria || "",
+        talla: req.body.talla || "",
+        descripcion: req.body.descripcion || "",
+        imagen: imagenProducto,
+        imagenes: imagenesProducto,
+        stock
       };
 
-      productos.push(
-        nuevoProducto
-      );
-
-      fs.writeFileSync(
-        productsFile,
-        JSON.stringify(
-          productos,
-          null,
-          2
-        )
+      await pool.query(
+        "INSERT INTO productos (id, datos) VALUES ($1, $2)",
+        [nuevoProducto.id, nuevoProducto]
       );
 
       res.json({
-        mensaje:
-          "Producto agregado correctamente",
-
-        producto:
-          nuevoProducto
+        mensaje: "Producto agregado correctamente",
+        producto: nuevoProducto
       });
 
     } catch (error) {
-      console.error(error);
+      console.error("Error al guardar producto en PostgreSQL:", error);
 
       res.status(500).json({
-        error:
-          "No se pudo agregar el producto"
+        error: "No se pudo agregar el producto"
       });
     }
   }
 );
-
 /* =========================================================
    EDITAR PRODUCTO
    🔐 PROTEGIDO
@@ -1046,551 +953,344 @@ imagenes: imagenesProducto,
 app.put(
   "/api/productos/:id",
   protegerAdmin,
- upload.array("imagenes", 10),
-  (req, res) => {
+  upload.array("imagenes", 10),
+  async (req, res) => {
     try {
-      const productos = JSON.parse(
-        fs.readFileSync(
-          productsFile,
-          "utf8"
-        )
+      const id = String(req.params.id);
+
+      const resultado = await pool.query(
+        "SELECT datos FROM productos WHERE id = $1",
+        [id]
       );
 
-      const id =
-        String(req.params.id);
-
-      const indice =
-        productos.findIndex(
-          producto =>
-            String(producto.id) === id
-        );
-
-      if (indice === -1) {
+      if (resultado.rows.length === 0) {
         return res.status(404).json({
-          error:
-            "Producto no encontrado"
+          error: "Producto no encontrado"
         });
       }
 
-      const productoActual =
-        productos[indice];
+      const productoActual = resultado.rows[0].datos;
 
       const imagenesAnteriores =
-  Array.isArray(productoActual.imagenes)
-    ? productoActual.imagenes
-    : productoActual.imagen
-      ? [productoActual.imagen]
-      : [];
+        Array.isArray(productoActual.imagenes)
+          ? productoActual.imagenes
+          : productoActual.imagen
+            ? [productoActual.imagen]
+            : [];
 
-const imagenesNuevas = (req.files || []).map(
-  archivo => "/images/" + archivo.filename
-);
+      const imagenesNuevas = (req.files || []).map(
+        archivo => "/images/" + archivo.filename
+      );
 
-const imagenesProducto = [
-  ...imagenesAnteriores,
-  ...imagenesNuevas
-];
-const imagenProducto =
-  imagenesProducto[0] || "";
-      const stockRecibido =
-        Number(req.body.stock);
-      const stock =
-        Number.isFinite(stockRecibido)
-          ? Math.max(
-              0,
-              stockRecibido
-            )
-          : 0;
-      productos[indice] = {
-        id:
-          productoActual.id,
+      const imagenesProducto = [
+        ...imagenesAnteriores,
+        ...imagenesNuevas
+      ];
 
-        nombre:
-          req.body.nombre || "",
+      const imagenProducto = imagenesProducto[0] || "";
 
-        precio:
-          Number(req.body.precio) || 0,
+      const stockRecibido = Number(req.body.stock);
 
-        categoria:
-          req.body.categoria || "",
+      const stock = Number.isFinite(stockRecibido)
+        ? Math.max(0, stockRecibido)
+        : 0;
 
-        talla:
-          req.body.talla || "",
-
-        descripcion:
-          req.body.descripcion || "",
-
-        imagen:
-          imagenProducto,
-
-        stock:
-          stock
+      const productoActualizado = {
+        id: productoActual.id,
+        nombre: req.body.nombre || "",
+        precio: Number(req.body.precio) || 0,
+        categoria: req.body.categoria || "",
+        talla: req.body.talla || "",
+        descripcion: req.body.descripcion || "",
+        imagen: imagenProducto,
+        imagenes: imagenesProducto,
+        stock
       };
 
-      fs.writeFileSync(
-        productsFile,
-        JSON.stringify(
-          productos,
-          null,
-          2
-        )
+      await pool.query(
+        "UPDATE productos SET datos = $1 WHERE id = $2",
+        [productoActualizado, id]
       );
 
       res.json({
-        mensaje:
-          "Producto actualizado correctamente",
-
-        producto:
-          productos[indice]
+        mensaje: "Producto actualizado correctamente",
+        producto: productoActualizado
       });
 
     } catch (error) {
-      console.error(error);
+      console.error("Error al actualizar producto:", error);
 
       res.status(500).json({
-        error:
-          "No se pudo actualizar el producto"
+        error: "No se pudo actualizar el producto"
       });
     }
   }
 );
-
 /* =========================================================
    ELIMINAR PRODUCTO
    🔐 PROTEGIDO
 ========================================================= */
-
 app.delete(
   "/api/productos/:id",
   protegerAdmin,
-  (req, res) => {
+  async (req, res) => {
     try {
-      const productos = JSON.parse(
-        fs.readFileSync(
-          productsFile,
-          "utf8"
-        )
+      const id = String(req.params.id);
+
+      const resultado = await pool.query(
+        "SELECT datos FROM productos WHERE id = $1",
+        [id]
       );
 
-      const id =
-        String(req.params.id);
-
-      const productoEliminar =
-        productos.find(
-          producto =>
-            String(producto.id) === id
-        );
-
-      if (!productoEliminar) {
+      if (resultado.rows.length === 0) {
         return res.status(404).json({
-          error:
-            "Producto no encontrado"
+          error: "Producto no encontrado"
         });
       }
 
-      const productosActualizados =
-        productos.filter(
-          producto =>
-            String(producto.id) !== id
-        );
+      const productoEliminar = resultado.rows[0].datos;
 
-      fs.writeFileSync(
-        productsFile,
-        JSON.stringify(
-          productosActualizados,
-          null,
-          2
-        )
+      await pool.query(
+        "DELETE FROM productos WHERE id = $1",
+        [id]
       );
 
       if (
         productoEliminar.imagen &&
-        productoEliminar.imagen.startsWith(
-          "/images/"
-        )
+        productoEliminar.imagen.startsWith("/images/")
       ) {
-        const nombreImagen =
-          productoEliminar.imagen.replace(
-            "/images/",
-            ""
-          );
+        const nombreImagen = productoEliminar.imagen.replace(
+          "/images/",
+          ""
+        );
 
-        const rutaImagen =
-          path.join(
-            imagesFolder,
-            nombreImagen
-          );
+        const rutaImagen = path.join(
+          imagesFolder,
+          nombreImagen
+        );
 
-        if (
-          fs.existsSync(
-            rutaImagen
-          )
-        ) {
-          fs.unlinkSync(
-            rutaImagen
-          );
+        if (fs.existsSync(rutaImagen)) {
+          fs.unlinkSync(rutaImagen);
         }
       }
 
       res.json({
-        mensaje:
-          "Producto eliminado correctamente",
-
-        producto:
-          productoEliminar
+        mensaje: "Producto eliminado correctamente",
+        producto: productoEliminar
       });
 
     } catch (error) {
-      console.error(error);
+      console.error("Error al eliminar producto:", error);
 
       res.status(500).json({
-        error:
-          "No se pudo eliminar el producto"
+        error: "No se pudo eliminar el producto"
       });
     }
   }
 );
-
 /* =========================================================
-   CREAR PEDIDO
+   CREAR PEDIDO DESDE POSTGRESQL
 ========================================================= */
 
-app.post( "/api/pedidos",
-  (req, res) => {
-    console.log(
-      "PEDIDO RECIBIDO EN EL SERVIDOR"
-    );
+app.post("/api/pedidos", async (req, res) => {
+  console.log("PEDIDO RECIBIDO EN EL SERVIDOR");
 
-    try {
-      const productos = JSON.parse(
-        fs.readFileSync(
-          productsFile,
-          "utf8"
-        )
-      );
+  const datos = req.body || {};
+  const sesionCliente = obtenerClienteSesion(req);
 
-      const pedidos = JSON.parse(
-        fs.readFileSync(
-          ordersFile,
-          "utf8"
-        )
-      );
-const datos = req.body || {};
-      const sesionCliente = obtenerClienteSesion(req);
-
-      if (!sesionCliente) {
-        return res.status(401).json({
-          error: "Debes registrarte o iniciar sesión para realizar un pedido."
-        });
-      }
-     
-console.log(
-  "EMAIL RECIBIDO:",
-  datos.email
-);
-
-console.log(
-  "EMAIL DENTRO DE CLIENTE:",
-  datos.cliente?.email
-);
-      const items =
-        Array.isArray(datos.productos)
-          ? datos.productos
-          : Array.isArray(datos.carrito)
-            ? datos.carrito
-            : [];
-
-      if (!items.length) {
-        return res.status(400).json({
-          error:
-            "El carrito está vacío."
-        });
-      }
-/* =====================================================
-
-   VERIFICAR PRODUCTOS Y STOCK
-
-===================================================== */
-
-for (const item of items) {
-
-  const producto =
-
-    productos.find(
-
-      p =>
-
-        String(p.id) ===
-
-        String(item.id)
-
-    );
-
-  if (!producto) {
-
-    return res.status(400).json({
-
-      error:
-
-        "Uno de los productos ya no está disponible."
-
+  if (!sesionCliente) {
+    return res.status(401).json({
+      error: "Debes registrarte o iniciar sesión para realizar un pedido."
     });
-
   }
 
-  const cantidad =
+  const items = Array.isArray(datos.productos)
+    ? datos.productos
+    : Array.isArray(datos.carrito)
+      ? datos.carrito
+      : [];
 
-    Number(
-
-      item.cantidad ||
-
-      item.quantity ||
-
-      1
-
-    );
-
-  const stock =
-
-    Number(
-
-      producto.stock || 0
-
-    );
-
-  if (
-
-    !Number.isFinite(cantidad) ||
-
-    cantidad <= 0
-
-  ) {
-
+  if (!items.length) {
     return res.status(400).json({
-
-      error:
-
-        "Cantidad de producto inválida."
-
+      error: "El carrito está vacío."
     });
-
   }
 
-  if (cantidad > stock) {
+  const cantidades = new Map();
 
-  return res.status(400).json({
+  for (const item of items) {
+    const id = String(item.id);
+    const cantidad = Number(
+      item.cantidad || item.quantity || 1
+    );
 
-    error: "No hay suficiente stock de " + producto.nombre + "."
-
-  });
-
-}
-
-}
-     
-      /* =====================================================
-         DESCONTAR STOCK
-      ===================================================== */
-
-      for (const item of items) {
-        const producto =
-          productos.find(
-            p =>
-              String(p.id) ===
-              String(item.id)
-          );
-
-        const cantidad =
-          Number(
-            item.cantidad ||
-            item.quantity ||
-            1
-          );
-
-        producto.stock =
-          Math.max(
-            0,
-            Number(producto.stock || 0) -
-            cantidad
-          );
-      }
-
-      /* =====================================================
-         CREAR PEDIDO
-      ===================================================== */
-
-      const nuevoPedido = {
-        id: Date.now(),
-clienteId: sesionCliente ? sesionCliente.id : null,
-        fecha:
-          new Date().toISOString(),
-cliente: {
-  nombre:
-    datos.cliente?.nombre || "",
-
-  telefono:
-    datos.cliente?.telefono || "",
-
-  email:
-    datos.cliente?.email || ""
-},
-
-        nombre:
-          datos.cliente?.nombre || "",
-
-        telefono:
-          datos.cliente?.telefono || "",
-
-        email:
-        datos.cliente?.email || "",
-
-        direccion:
-          datos.entrega?.direccion || "",
-
-        referencia:
-          datos.entrega?.referencia || "",
-
-        departamento:
-          datos.entrega?.departamento || "",
-
-        municipio:
-          datos.entrega?.municipio || "",
-
-        metodoEntrega:
-          datos.entrega?.metodo || "",
-
-        metodoPago:
-          datos.pago?.metodo || "",
-
-        banco:
-          datos.pago?.banco || "",
-
-        productos:
-          items,
-
-        subtotal:
-          Number(
-            datos.subtotal || 0
-          ),
-
-        descuento:
-          Number(
-            datos.descuento || 0
-          ),
-
-        total:
-          Number(
-            datos.total || 0
-          ),
-
-        codigoPromocional:
-          datos.promocion?.codigo || "",
-
-        estado:
-          "Pendiente"
-      };
-
-      /* =====================================================
-         GUARDAR PEDIDO
-      ===================================================== */
-console.log(
-  "CORREO RECIBIDO:",
-  datos.cliente?.email
-);
-      pedidos.push(
-        nuevoPedido
-      );
-
-      fs.writeFileSync(
-        ordersFile,
-        JSON.stringify(
-          pedidos,
-          null,
-          2
-        )
-      );
-
-      /* =====================================================
-         GUARDAR STOCK ACTUALIZADO
-      ===================================================== */
-
-      fs.writeFileSync(
-        productsFile,
-        JSON.stringify(
-          productos,
-          null,
-          2
-        )
-      );
-
-enviarCorreoConfirmacion(nuevoPedido).catch(function(error) {
-  console.error("Error al enviar el correo:", error.message);
-});
-
-      res.status(201).json({
-        mensaje:
-          "Pedido creado correctamente",
-
-        pedido:
-          nuevoPedido
-      });
-    } catch (error) {
-      console.error(
-        "ERROR CREANDO PEDIDO:",
-        error
-      );
-
-      res.status(500).json({
-        error:
-          "No se pudo crear el pedido"
+   if (!Number.isInteger(cantidad) || cantidad <= 0) {
+      return res.status(400).json({
+        error: "Cantidad de producto inválida."
       });
     }
-  }
-);
 
+    cantidades.set(
+      id,
+      (cantidades.get(id) || 0) + cantidad
+    );
+  }
+
+  const client = await pool.connect();
+  let transaccionIniciada = false;
+
+  try {
+    await client.query("BEGIN");
+    transaccionIniciada = true;
+
+    for (const [id, cantidad] of cantidades) {
+      const resultado = await client.query(
+        "SELECT datos FROM productos WHERE id = $1 FOR UPDATE",
+        [id]
+      );
+
+      if (resultado.rows.length === 0) {
+        await client.query("ROLLBACK");
+        transaccionIniciada = false;
+
+        return res.status(400).json({
+          error: "Uno de los productos ya no está disponible."
+        });
+      }
+
+      const producto = resultado.rows[0].datos;
+      const stock = Number(producto.stock || 0);
+
+      if (cantidad > stock) {
+        await client.query("ROLLBACK");
+        transaccionIniciada = false;
+
+        return res.status(400).json({
+          error: "No hay suficiente stock de " + producto.nombre + "."
+        });
+      }
+
+      producto.stock = Math.max(0, stock - cantidad);
+
+  await client.query(
+  "UPDATE productos SET datos = $1::jsonb WHERE id = $2",
+  [JSON.stringify(producto), id]
+);
+    }
+
+    const nuevoPedido = {
+      id: Date.now(),
+      clienteId: sesionCliente.id,
+      fecha: new Date().toISOString(),
+
+      cliente: {
+        nombre: datos.cliente?.nombre || "",
+        telefono: datos.cliente?.telefono || "",
+        email: datos.cliente?.email || ""
+      },
+
+      nombre: datos.cliente?.nombre || "",
+      telefono: datos.cliente?.telefono || "",
+      email: datos.cliente?.email || "",
+
+      direccion: datos.entrega?.direccion || "",
+      referencia: datos.entrega?.referencia || "",
+      departamento: datos.entrega?.departamento || "",
+      municipio: datos.entrega?.municipio || "",
+      metodoEntrega: datos.entrega?.metodo || "",
+
+      metodoPago: datos.pago?.metodo || "",
+      banco: datos.pago?.banco || "",
+
+      productos: items,
+
+      subtotal: Number(datos.subtotal || 0),
+      descuento: Number(datos.descuento || 0),
+      total: Number(datos.total || 0),
+
+      codigoPromocional: datos.promocion?.codigo || "",
+      estado: "Pendiente"
+    };
+
+    await client.query(
+      "INSERT INTO pedidos (id, datos) VALUES ($1, $2)",
+      [nuevoPedido.id, nuevoPedido]
+    );
+
+    await client.query("COMMIT");
+    transaccionIniciada = false;
+
+    console.log(
+      "CORREO RECIBIDO:",
+      datos.cliente?.email
+    );
+
+    enviarCorreoConfirmacion(nuevoPedido).catch(function(error) {
+      console.error("Error al enviar el correo:", error.message);
+    });
+
+    return res.status(201).json({
+      mensaje: "Pedido creado correctamente",
+      pedido: nuevoPedido
+    });
+
+  } catch (error) {
+    if (transaccionIniciada) {
+      await client.query("ROLLBACK").catch(() => {});
+    }
+
+    console.error("ERROR CREANDO PEDIDO:", error);
+
+    return res.status(500).json({
+      error: "No se pudo crear el pedido"
+    });
+
+  } finally {
+    client.release();
+  }
+});
 /* =========================================================
-   OBTENER PEDIDOS
+   OBTENER PEDIDOS DESDE POSTGRESQL
    🔐 PROTEGIDO
 ========================================================= */
 
 app.get(
   "/api/pedidos",
   protegerAdmin,
-  (req, res) => {
+  async (req, res) => {
     try {
-      const pedidos = JSON.parse(
-        fs.readFileSync(
-          ordersFile,
-          "utf8"
-        )
+      const resultado = await pool.query(
+        "SELECT datos FROM pedidos ORDER BY id DESC"
+      );
+
+      const pedidos = resultado.rows.map(
+        fila => fila.datos
       );
 
       res.json(pedidos);
 
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Error al cargar pedidos desde PostgreSQL:",
+        error
+      );
 
       res.status(500).json({
-        error:
-          "No se pudieron cargar los pedidos"
+        error: "No se pudieron cargar los pedidos"
       });
     }
   }
 );
-
 /* =========================================================
    CAMBIAR ESTADO DE PEDIDO
-   🔐 PROTEGIDO
+   🔐 PROTEGIDO - POSTGRESQL
 ========================================================= */
+
 app.patch(
   "/api/pedidos/:id/estado",
   protegerAdmin,
   async (req, res) => {
     try {
-      const pedidos = JSON.parse(
-        fs.readFileSync(ordersFile, "utf8")
-      );
-
       const id = String(req.params.id);
       const estado = String(req.body?.estado || "").trim();
 
@@ -1609,20 +1309,20 @@ app.patch(
         });
       }
 
-      const indice = pedidos.findIndex(
-        pedido => String(pedido.id) === id
+      const resultado = await pool.query(
+        "SELECT datos FROM pedidos WHERE id = $1",
+        [id]
       );
 
-      if (indice === -1) {
+      if (resultado.rows.length === 0) {
         return res.status(404).json({
           error: "Pedido no encontrado."
         });
       }
 
-      const pedido = pedidos[indice];
+      const pedido = resultado.rows[0].datos;
       const estadoAnterior = pedido.estado || "";
 
-      // No permitir confirmar una transferencia sin verificar el pago.
       const metodoPago = String(pedido.metodoPago || "")
         .trim()
         .toLowerCase();
@@ -1644,86 +1344,13 @@ app.patch(
         });
       }
 
-      /* =========================================================
-   VERIFICAR TRANSFERENCIA BANCARIA
-   PROTEGIDO PARA ADMINISTRACIÓN
-========================================================= */
-app.patch(
-  "/api/pedidos/:id/verificar-transferencia",
-  protegerAdmin,
-  async (req, res) => {
-    try {
-      const pedidos = JSON.parse(
-        fs.readFileSync(ordersFile, "utf8")
-      );
-
-      const id = String(req.params.id);
-
-      const indice = pedidos.findIndex(
-        pedido => String(pedido.id) === id
-      );
-
-      if (indice === -1) {
-        return res.status(404).json({
-          error: "Pedido no encontrado."
-        });
-      }
-
-      const pedido = pedidos[indice];
-
-      const metodoPago = String(
-        pedido.metodoPago || ""
-      ).trim().toLowerCase();
-
-      if (
-        !["transferencia", "transfer"].includes(metodoPago)
-      ) {
-        return res.status(400).json({
-          error: "Este pedido no es una transferencia bancaria."
-        });
-      }
-
-      if (pedido.estado === "Cancelado") {
-        return res.status(400).json({
-          error: "No se puede verificar un pedido cancelado."
-        });
-      }
-
-      pedido.estadoPago = "Verificado";
-      pedido.fechaVerificacionPago = new Date().toISOString();
-
-      fs.writeFileSync(
-        ordersFile,
-        JSON.stringify(pedidos, null, 2)
-      );
-
-      return res.json({
-        mensaje: "Transferencia marcada como verificada.",
-        pedido
-      });
-
-    } catch (error) {
-      console.error(
-        "Error al verificar transferencia:",
-        error
-      );
-
-      return res.status(500).json({
-        error: "No se pudo verificar la transferencia."
-      });
-    }
-  }
-);
-
-      // Guardar el nuevo estado.
       pedido.estado = estado;
 
-      fs.writeFileSync(
-        ordersFile,
-        JSON.stringify(pedidos, null, 2)
+      await pool.query(
+        "UPDATE pedidos SET datos = $1 WHERE id = $2",
+        [pedido, id]
       );
 
-      // Enviar correo solamente si el estado realmente cambió.
       if (
         estadoAnterior !== estado &&
         (pedido.cliente?.email || pedido.email)
@@ -1776,7 +1403,6 @@ app.patch(
               "</div>"
           });
         } catch (errorCorreo) {
-          // El pedido queda actualizado aunque falle el correo.
           console.error(
             "No se pudo enviar el aviso del pedido #" + id + ":",
             errorCorreo.message
@@ -1788,8 +1414,12 @@ app.patch(
         mensaje: "Estado actualizado correctamente",
         pedido
       });
+
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Error al actualizar estado del pedido:",
+        error
+      );
 
       return res.status(500).json({
         error: "No se pudo actualizar el estado del pedido"
@@ -1798,39 +1428,100 @@ app.patch(
   }
 );
 
+
+/* =========================================================
+   VERIFICAR TRANSFERENCIA BANCARIA
+   🔐 PROTEGIDO - POSTGRESQL
+========================================================= */
+
+app.patch(
+  "/api/pedidos/:id/verificar-transferencia",
+  protegerAdmin,
+  async (req, res) => {
+    try {
+      const id = String(req.params.id);
+
+      const resultado = await pool.query(
+        "SELECT datos FROM pedidos WHERE id = $1",
+        [id]
+      );
+
+      if (resultado.rows.length === 0) {
+        return res.status(404).json({
+          error: "Pedido no encontrado."
+        });
+      }
+
+      const pedido = resultado.rows[0].datos;
+
+      const metodoPago = String(
+        pedido.metodoPago || ""
+      ).trim().toLowerCase();
+
+      if (
+        !["transferencia", "transfer"].includes(metodoPago)
+      ) {
+        return res.status(400).json({
+          error: "Este pedido no es una transferencia bancaria."
+        });
+      }
+
+      if (pedido.estado === "Cancelado") {
+        return res.status(400).json({
+          error: "No se puede verificar un pedido cancelado."
+        });
+      }
+
+      pedido.estadoPago = "Verificado";
+      pedido.fechaVerificacionPago = new Date().toISOString();
+
+      await pool.query(
+        "UPDATE pedidos SET datos = $1 WHERE id = $2",
+        [pedido, id]
+      );
+
+      return res.json({
+        mensaje: "Transferencia marcada como verificada.",
+        pedido
+      });
+
+    } catch (error) {
+      console.error(
+        "Error al verificar transferencia:",
+        error
+      );
+
+      return res.status(500).json({
+        error: "No se pudo verificar la transferencia."
+      });
+    }
+  }
+);
 /* =========================================================
    CONSULTAR ESTADO DE UN PEDIDO
-   🔓 PÚBLICO
+   🔓 PÚBLICO - POSTGRESQL
 ========================================================= */
 
 app.get(
   "/api/pedidos/:id",
-  (req, res) => {
+  async (req, res) => {
     try {
-      const pedidos = JSON.parse(
-        fs.readFileSync(
-          ordersFile,
-          "utf8"
-        )
+      const id = String(req.params.id);
+
+      const resultado = await pool.query(
+        "SELECT datos FROM pedidos WHERE id = $1",
+        [id]
       );
 
-      const id =
-        String(req.params.id);
-
-      const pedido =
-        pedidos.find(
-          p =>
-            String(p.id) === id
-        );
-
-      if (!pedido) {
+      if (resultado.rows.length === 0) {
         return res.status(404).json({
-          error:
-            "Pedido no encontrado."
+          error: "Pedido no encontrado."
         });
       }
 
-      res.json({
+      const pedido = resultado.rows[0].datos;
+
+      return res.json({
         id: pedido.id,
         fecha: pedido.fecha,
         estado: pedido.estado,
@@ -1838,16 +1529,17 @@ app.get(
       });
 
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Error al consultar el pedido:",
+        error
+      );
 
-      res.status(500).json({
-        error:
-          "No se pudo consultar el pedido"
+      return res.status(500).json({
+        error: "No se pudo consultar el pedido"
       });
     }
   }
 );
-
 /* =========================================================
    MANEJO DE ERRORES
 ========================================================= */
@@ -2390,8 +2082,9 @@ app.post("/api/clientes/logout", (req, res) => {
 /* =====================================================
    CANCELAR PEDIDO DEL CLIENTE
 ===================================================== */
+app.post("/api/clientes/cancelar-pedido", async (req, res) => {
+  let client;
 
-app.post("/api/clientes/cancelar-pedido", (req, res) => {
   try {
     const sesion = obtenerClienteSesion(req);
 
@@ -2411,17 +2104,29 @@ app.post("/api/clientes/cancelar-pedido", (req, res) => {
       });
     }
 
-    const pedidos = JSON.parse(
-      fs.readFileSync(ordersFile, "utf8")
+    client = await pool.connect();
+    await client.query("BEGIN");
+
+    const resultadoPedido = await client.query(
+      `SELECT datos
+       FROM pedidos
+       WHERE id = $1
+       FOR UPDATE`,
+      [String(pedidoId)]
     );
 
-    const pedido = pedidos.find(
-      p =>
-        String(p.id) === String(pedidoId) &&
-        String(p.clienteId) === String(sesion.id)
-    );
+    if (resultadoPedido.rows.length === 0) {
+      await client.query("ROLLBACK");
+      return res.status(404).json({
+        ok: false,
+        mensaje: "No encontramos ese pedido en tu cuenta."
+      });
+    }
 
-    if (!pedido) {
+    const pedido = resultadoPedido.rows[0].datos;
+
+    if (String(pedido.clienteId) !== String(sesion.id)) {
+      await client.query("ROLLBACK");
       return res.status(404).json({
         ok: false,
         mensaje: "No encontramos ese pedido en tu cuenta."
@@ -2429,60 +2134,73 @@ app.post("/api/clientes/cancelar-pedido", (req, res) => {
     }
 
     if (pedido.estado !== "Pendiente") {
+      await client.query("ROLLBACK");
       return res.status(400).json({
         ok: false,
         mensaje: "Solo puedes cancelar pedidos pendientes."
       });
     }
 
-    const productos = JSON.parse(
-      fs.readFileSync(productsFile, "utf8")
-    );
-
     for (const item of pedido.productos || []) {
-      const producto = productos.find(
-        p => String(p.id) === String(item.id)
+      const cantidad = Number(
+        item.cantidad || item.quantity || 1
       );
 
-      if (!producto) {
+    if (!Number.isInteger(cantidad) || cantidad <= 0) {
+        throw new Error("Cantidad inválida en el pedido.");
+      }
+
+      const resultadoProducto = await client.query(
+        `SELECT datos
+         FROM productos
+         WHERE id = $1
+         FOR UPDATE`,
+        [String(item.id)]
+      );
+
+      if (resultadoProducto.rows.length === 0) {
+        await client.query("ROLLBACK");
         return res.status(409).json({
           ok: false,
           mensaje:
             "No se pudo completar la cancelación porque falta un producto del inventario. Contacta con la tienda."
         });
       }
-    }
 
-    for (const item of pedido.productos || []) {
-      const producto = productos.find(
-        p => String(p.id) === String(item.id)
-      );
-
-      const cantidad = Number(
-        item.cantidad || item.quantity || 1
-      );
+      const producto = resultadoProducto.rows[0].datos;
 
       producto.stock =
         Number(producto.stock || 0) + cantidad;
+
+      await client.query(
+        `UPDATE productos
+         SET datos = $1::jsonb
+         WHERE id = $2`,
+        [JSON.stringify(producto), String(item.id)]
+      );
     }
 
     pedido.estado = "Cancelado";
 
-    fs.writeFileSync(
-      productsFile,
-      JSON.stringify(productos, null, 2)
+    await client.query(
+      `UPDATE pedidos
+       SET datos = $1::jsonb
+       WHERE id = $2`,
+      [JSON.stringify(pedido), String(pedidoId)]
     );
 
-    fs.writeFileSync(
-      ordersFile,
-      JSON.stringify(pedidos, null, 2)
-    );
+    await client.query("COMMIT");
 
     return res.json({
       ok: true,
       mensaje: "Pedido cancelado correctamente."
     });
+
   } catch (error) {
+    if (client) {
+      await client.query("ROLLBACK").catch(() => {});
+    }
+
     console.error(
       "Error al cancelar pedido:",
       error.message
@@ -2492,13 +2210,16 @@ app.post("/api/clientes/cancelar-pedido", (req, res) => {
       ok: false,
       mensaje: "No se pudo cancelar el pedido."
     });
+
+  } finally {
+    if (client) {
+      client.release();
+    }
   }
 });
 
-
 /* MIS PEDIDOS DEL CLIENTE */
-
-app.get("/api/clientes/mis-pedidos", (req, res) => {
+app.get("/api/clientes/mis-pedidos", async (req, res) => {
   try {
     const sesion = obtenerClienteSesion(req);
 
@@ -2509,20 +2230,28 @@ app.get("/api/clientes/mis-pedidos", (req, res) => {
       });
     }
 
-    const pedidos = JSON.parse(
-      fs.readFileSync(ordersFile, "utf8")
+    const resultado = await pool.query(
+      `SELECT datos
+       FROM pedidos
+       WHERE datos->>'clienteId' = $1
+       ORDER BY id DESC`,
+      [String(sesion.id)]
     );
 
-    const misPedidos = pedidos.filter(
-      pedido => String(pedido.clienteId) === String(sesion.id)
+    const misPedidos = resultado.rows.map(
+      fila => fila.datos
     );
 
     return res.json({
       ok: true,
       pedidos: misPedidos
     });
+
   } catch (error) {
-    console.error("Error al consultar pedidos:", error.message);
+    console.error(
+      "Error al consultar pedidos:",
+      error.message
+    );
 
     return res.status(500).json({
       ok: false,
@@ -2530,7 +2259,6 @@ app.get("/api/clientes/mis-pedidos", (req, res) => {
     });
   }
 });
-
 
 /* =========================================================
    INICIAR SERVIDOR
