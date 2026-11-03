@@ -776,6 +776,20 @@ if (talla) {
 >
   <div class="product-reviews-list"></div>
 </div>
+<a
+  href="#"
+  class="show-review-form"
+  data-review-product="${producto.id}"
+  style="display:inline-block;margin:5px 0 10px;color:#00bfff;font-size:14px;text-decoration:none;font-weight:500;"
+>
+  ⭐ Escribir reseña
+</a>
+
+<div
+  class="product-review-form-container"
+  data-review-form="${producto.id}"
+  hidden
+></div>
           ${
             categoria
               ? `
@@ -856,7 +870,8 @@ ${
 productsContainer
       .querySelectorAll(".show-review-form")
       .forEach(button => {
-        button.addEventListener("click", () => {
+        button.addEventListener("click", event => {
+          event.preventDefault();
           const productoId = button.dataset.reviewProduct;
 
           const contenedor = productsContainer.querySelector(
@@ -987,7 +1002,28 @@ selectorEstrellas.addEventListener("click", event => {
           contenedor.hidden = false;
         });
       });
+      // Abrir automáticamente el formulario desde el correo.
+const productoResenaCorreo =
+  new URLSearchParams(window.location.search).get("resenar");
 
+if (productoResenaCorreo) {
+  const botonResena = productsContainer.querySelector(
+    '.show-review-form[data-review-product="' +
+    productoResenaCorreo + '"]'
+  );
+
+  if (botonResena) {
+    botonResena.click();
+  }
+  const url = new URL(window.location.href);
+url.searchParams.delete("resenar");
+
+window.history.replaceState(
+  {},
+  "",
+  url.pathname + url.search + url.hash
+);
+}
     actualizarBotonesFavoritos();
   }
 

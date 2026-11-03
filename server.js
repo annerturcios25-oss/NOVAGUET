@@ -1290,6 +1290,7 @@ app.patch(
   "/api/pedidos/:id/estado",
   protegerAdmin,
   async (req, res) => {
+   console.log("RUTA DE ESTADO EJECUTADA:", req.params.id, req.body.estado);
     try {
       const id = String(req.params.id);
       const estado = String(req.body?.estado || "").trim();
@@ -1368,6 +1369,11 @@ app.patch(
         };
 
         try {
+          console.log("RESEÑA EMAIL:", {
+  estado,
+  productos: pedido.productos,
+  esArray: Array.isArray(pedido.productos)
+});
           await transporter.sendMail({
             from: "NOVA GUET <pedidos@novaguet.com>",
             to: emailCliente,
@@ -1399,6 +1405,17 @@ app.patch(
               String(estado).replace(/[&<>"']/g, "") +
               "</strong></p>" +
               "<p>" + mensajesEstado[estado] + "</p>" +
+             (estado === "Entregado" && Array.isArray(pedido.productos)
+  ? pedido.productos.map(item =>
+      "<p style='margin:20px 0'>" +
+      "<a href='https://novaguet-online.onrender.com/?resenar=" +
+      encodeURIComponent(String(item.id)) +
+      "' style='display:inline-block;background:#00bfff;color:#000;padding:14px 24px;" +
+      "text-decoration:none;font-weight:bold;border-radius:6px'>" +
+      "⭐ Escribir reseña" +
+      "</a></p>"
+    ).join("")
+  : "") +
               "<p>Gracias por comprar en NOVA GUET.</p>" +
               "</div>"
           });
@@ -1907,7 +1924,13 @@ app.post("/api/clientes/solicitar-recuperacion", async (req, res) => {
       baseUrl +
       "/cuenta.html?restablecer=" +
       encodeURIComponent(token);
-
+console.log("RESEÑA EMAIL:", {
+  estado,
+  productos: pedido.productos,
+  esArray: Array.isArray(pedido.productos)
+});
+console.log("ESTADO ACTUAL:", estado);
+console.log("PRODUCTOS DEL PEDIDO:", pedido.productos);
     await transporter.sendMail({
       from: "NOVA GUET <pedidos@novaguet.com>",
       to: cliente.email,

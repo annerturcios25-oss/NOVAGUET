@@ -4279,3 +4279,37 @@ footer small {
 .product-stock.stock-available {
   color: #16A34A;
 }
+a.show-review-form {
+  display: inline-block !important;
+  padding: 0 !important;
+  margin: 5px 0 10px !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: #00BFFF !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+.favorite-button {
+  color: #808080 !important;
+  -webkit-text-stroke: 0.5px #808080;
+  background: transparent !important;
+  border: none !important;
+  font-size: 28px;
+}
+.product-image-container {
+  position: static !important;
+}
+
+.product-card {
+  position: relative !important;
+}
+
+.favorite-button {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  z-index: 30;
+}
