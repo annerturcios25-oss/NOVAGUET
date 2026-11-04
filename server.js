@@ -919,6 +919,7 @@ app.post(
         id: Date.now(),
         nombre: req.body.nombre || "",
         precio: Number(req.body.precio) || 0,
+        precioOriginal: Number(req.body.precioOriginal) || 0,
         categoria: req.body.categoria || "",
         talla: req.body.talla || "",
         descripcion: req.body.descripcion || "",
@@ -994,12 +995,12 @@ app.put(
       const stock = Number.isFinite(stockRecibido)
         ? Math.max(0, stockRecibido)
         : 0;
-
-      const productoActualizado = {
-        id: productoActual.id,
-        nombre: req.body.nombre || "",
-        precio: Number(req.body.precio) || 0,
-        categoria: req.body.categoria || "",
+const productoActualizado = {
+  id: productoActual.id,
+  nombre: req.body.nombre || "",
+  precio: Number(req.body.precio) || 0,
+  precioOriginal: Number(req.body.precioOriginal) || 0,
+  categoria: req.body.categoria || "",
         talla: req.body.talla || "",
         descripcion: req.body.descripcion || "",
         imagen: imagenProducto,

@@ -278,7 +278,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (precio === null) {
         return;
       }
+const precioOriginal = prompt(
+  "Precio anterior (HNL). Deja vacío si no hay descuento:",
+  producto.precioOriginal || ""
+);
 
+if (precioOriginal === null) {
+  return;
+}
       const categoria = prompt(
         "Categoría:",
         producto.categoria || ""
@@ -343,6 +350,7 @@ const formData = new FormData();
 
 formData.append("nombre", nombre);
 formData.append("precio", Number(precio));
+formData.append("precioOriginal", Number(precioOriginal) || 0);
 formData.append("categoria", categoria);
 formData.append("talla", talla);
 formData.append("stock", Number(stock));

@@ -677,7 +677,8 @@ const imagenesProducto = Array.isArray(producto.imagenes)
 
       const precio =
         Number(producto.precio) || 0;
-
+const precioOriginal =
+  Number(producto.precioOriginal) || 0;
       const categoria =
         producto.categoria || "";
 
@@ -813,8 +814,24 @@ if (talla) {
           ${opcionesTalla}
 
           <div class="product-price">
-            ${formatoPrecio(precio)}
-          </div>
+  ${
+    precioOriginal > precio
+      ? `
+        <div class="price-old">
+          ${formatoPrecio(precioOriginal)}
+        </div>
+
+        <div class="price-current">
+          ${formatoPrecio(precio)}
+
+          <span class="discount-badge">
+            -${Math.round((1 - precio / precioOriginal) * 100)}%
+          </span>
+        </div>
+      `
+      : formatoPrecio(precio)
+  }
+</div>
 ${
   Number.isFinite(stock)
     ? '<div class="product-stock ' +
@@ -1002,6 +1019,60 @@ selectorEstrellas.addEventListener("click", event => {
           contenedor.hidden = false;
         });
       });
+      /* ABRIR Y MOSTRAR RESEÑAS DEL PRODUCTO */
+productsContainer
+  .querySelectorAll(".show-product-reviews")
+  .forEach(enlace => {
+    enlace.addEventListener("click", event => {
+      event.preventDefault();
+
+      const productoId = enlace.dataset.showReviews;
+
+      const contenedor = productsContainer.querySelector(
+        '[data-product-reviews="' + productoId + '"]'
+      );
+
+      if (!contenedor) return;
+
+      if (!contenedor.hidden) {
+        contenedor.hidden = true;
+        return;
+      }
+
+      const lista = contenedor.querySelector(".product-reviews-list");
+      lista.replaceChildren();
+
+      const resenas = resenasProductos.filter(
+        resena => String(resena.productoId) === String(productoId)
+      );
+
+      if (!resenas.length) {
+        const mensaje = document.createElement("p");
+        mensaje.textContent = "Todavía no hay reseñas.";
+        lista.appendChild(mensaje);
+      } else {
+        resenas.forEach(resena => {
+          const item = document.createElement("div");
+          item.className = "product-review-item";
+
+          const nombre = document.createElement("strong");
+          nombre.textContent = resena.nombre || "Cliente";
+
+          const estrellas = document.createElement("div");
+          estrellas.textContent =
+            "★".repeat(Math.max(0, Math.min(5, Number(resena.calificacion) || 0)));
+
+          const comentario = document.createElement("p");
+          comentario.textContent = resena.comentario || "";
+
+          item.append(nombre, estrellas, comentario);
+          lista.appendChild(item);
+        });
+      }
+
+      contenedor.hidden = false;
+    });
+  });
       // Abrir automáticamente el formulario desde el correo.
 const productoResenaCorreo =
   new URLSearchParams(window.location.search).get("resenar");
