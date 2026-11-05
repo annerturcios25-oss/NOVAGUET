@@ -4365,3 +4365,33 @@ a.show-review-form {
 .product-category {
   display: none !important;
 }
+.payment-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 12px 0;
+}
+
+.payment-logos img {
+  width: 65px;
+  height: 35px;
+  object-fit: contain;
+}
+.premium-check svg {
+  width: 60px;
+  height: 60px;
+  display: block;
+  margin: auto;
+}
+.honduras-map-icon img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+  filter: brightness(0) saturate(100%)
+          invert(67%) sepia(57%)
+          saturate(648%) hue-rotate(157deg)
+          brightness(96%) contrast(91%);
+}

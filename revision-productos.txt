@@ -1,0 +1,100 @@
+﻿   AGREGAR PRODUCTO
+   ðŸ” PROTEGIDO
+========================================================= */
+
+app.post(
+  "/api/productos",
+  protegerAdmin,
+ upload.array("imagenes", 10),
+  (req, res) => {
+    try {
+      const productos = JSON.parse(
+        fs.readFileSync(
+          productsFile,
+          "utf8"
+        )
+      );
+
+    const imagenesProducto = (req.files || []).map(
+  archivo => "/images/" + archivo.filename
+);
+
+const imagenProducto = imagenesProducto[0] || "";
+
+      const stockRecibido =
+        Number(req.body.stock);
+
+      const stock =
+        Number.isFinite(stockRecibido)
+          ? Math.max(
+              0,
+              stockRecibido
+            )
+          : 0;
+
+      const nuevoProducto = {
+        id: Date.now(),
+
+        nombre:
+          req.body.nombre || "",
+
+        precio:
+          Number(req.body.precio) || 0,
+
+        categoria:
+          req.body.categoria || "",
+
+        talla:
+          req.body.talla || "",
+
+        descripcion:
+          req.body.descripcion || "",
+
+       imagen: imagenProducto,
+imagenes: imagenesProducto,
+
+        stock:
+          stock
+      };
+
+      productos.push(
+        nuevoProducto
+      );
+
+      fs.writeFileSync(
+        productsFile,
+        JSON.stringify(
+          productos,
+          null,
+          2
+        )
+      );
+
+      res.json({
+        mensaje:
+          "Producto agregado correctamente",
+
+        producto:
+          nuevoProducto
+      });
+
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        error:
+          "No se pudo agregar el producto"
+      });
+    }
+  }
+);
+
+/* =========================================================
+   EDITAR PRODUCTO
+   ðŸ” PROTEGIDO
+========================================================= */
+app.put(
+  "/api/productos/:id",
+  protegerAdmin,
+ upload.array("imagenes", 10),
+  (req, res) => {

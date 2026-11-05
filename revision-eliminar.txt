@@ -1,0 +1,100 @@
+﻿);
+
+/* =========================================================
+   ELIMINAR PRODUCTO
+   ðŸ” PROTEGIDO
+========================================================= */
+
+app.delete(
+  "/api/productos/:id",
+  protegerAdmin,
+  (req, res) => {
+    try {
+      const productos = JSON.parse(
+        fs.readFileSync(
+          productsFile,
+          "utf8"
+        )
+      );
+
+      const id =
+        String(req.params.id);
+
+      const productoEliminar =
+        productos.find(
+          producto =>
+            String(producto.id) === id
+        );
+
+      if (!productoEliminar) {
+        return res.status(404).json({
+          error:
+            "Producto no encontrado"
+        });
+      }
+
+      const productosActualizados =
+        productos.filter(
+          producto =>
+            String(producto.id) !== id
+        );
+
+      fs.writeFileSync(
+        productsFile,
+        JSON.stringify(
+          productosActualizados,
+          null,
+          2
+        )
+      );
+
+      if (
+        productoEliminar.imagen &&
+        productoEliminar.imagen.startsWith(
+          "/images/"
+        )
+      ) {
+        const nombreImagen =
+          productoEliminar.imagen.replace(
+            "/images/",
+            ""
+          );
+
+        const rutaImagen =
+          path.join(
+            imagesFolder,
+            nombreImagen
+          );
+
+        if (
+          fs.existsSync(
+            rutaImagen
+          )
+        ) {
+          fs.unlinkSync(
+            rutaImagen
+          );
+        }
+      }
+
+      res.json({
+        mensaje:
+          "Producto eliminado correctamente",
+
+        producto:
+          productoEliminar
+      });
+
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        error:
+          "No se pudo eliminar el producto"
+      });
+    }
+  }
+);
+
+/* =========================================================
+   CREAR PEDIDO

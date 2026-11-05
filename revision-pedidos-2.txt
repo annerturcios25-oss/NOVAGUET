@@ -1,0 +1,160 @@
+﻿
+      const nuevoPedido = {
+        id: Date.now(),
+clienteId: sesionCliente ? sesionCliente.id : null,
+        fecha:
+          new Date().toISOString(),
+cliente: {
+  nombre:
+    datos.cliente?.nombre || "",
+
+  telefono:
+    datos.cliente?.telefono || "",
+
+  email:
+    datos.cliente?.email || ""
+},
+
+        nombre:
+          datos.cliente?.nombre || "",
+
+        telefono:
+          datos.cliente?.telefono || "",
+
+        email:
+        datos.cliente?.email || "",
+
+        direccion:
+          datos.entrega?.direccion || "",
+
+        referencia:
+          datos.entrega?.referencia || "",
+
+        departamento:
+          datos.entrega?.departamento || "",
+
+        municipio:
+          datos.entrega?.municipio || "",
+
+        metodoEntrega:
+          datos.entrega?.metodo || "",
+
+        metodoPago:
+          datos.pago?.metodo || "",
+
+        banco:
+          datos.pago?.banco || "",
+
+        productos:
+          items,
+
+        subtotal:
+          Number(
+            datos.subtotal || 0
+          ),
+
+        descuento:
+          Number(
+            datos.descuento || 0
+          ),
+
+        total:
+          Number(
+            datos.total || 0
+          ),
+
+        codigoPromocional:
+          datos.promocion?.codigo || "",
+
+        estado:
+          "Pendiente"
+      };
+
+      /* =====================================================
+         GUARDAR PEDIDO
+      ===================================================== */
+console.log(
+  "CORREO RECIBIDO:",
+  datos.cliente?.email
+);
+      pedidos.push(
+        nuevoPedido
+      );
+
+      fs.writeFileSync(
+        ordersFile,
+        JSON.stringify(
+          pedidos,
+          null,
+          2
+        )
+      );
+
+      /* =====================================================
+         GUARDAR STOCK ACTUALIZADO
+      ===================================================== */
+
+      fs.writeFileSync(
+        productsFile,
+        JSON.stringify(
+          productos,
+          null,
+          2
+        )
+      );
+
+enviarCorreoConfirmacion(nuevoPedido).catch(function(error) {
+  console.error("Error al enviar el correo:", error.message);
+});
+
+      res.status(201).json({
+        mensaje:
+          "Pedido creado correctamente",
+
+        pedido:
+          nuevoPedido
+      });
+    } catch (error) {
+      console.error(
+        "ERROR CREANDO PEDIDO:",
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "No se pudo crear el pedido"
+      });
+    }
+  }
+);
+
+/* =========================================================
+   OBTENER PEDIDOS
+   ðŸ” PROTEGIDO
+========================================================= */
+
+app.get(
+  "/api/pedidos",
+  protegerAdmin,
+  (req, res) => {
+    try {
+      const pedidos = JSON.parse(
+        fs.readFileSync(
+          ordersFile,
+          "utf8"
+        )
+      );
+
+      res.json(pedidos);
+
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        error:
+          "No se pudieron cargar los pedidos"
+      });
+    }
+  }
+);
+

@@ -1,0 +1,100 @@
+﻿      });
+    }
+  }
+);
+
+/* =========================================================
+   CONSULTAR ESTADO DE UN PEDIDO
+   ðŸ”“ PÃšBLICO
+========================================================= */
+
+app.get(
+  "/api/pedidos/:id",
+  (req, res) => {
+    try {
+      const pedidos = JSON.parse(
+        fs.readFileSync(
+          ordersFile,
+          "utf8"
+        )
+      );
+
+      const id =
+        String(req.params.id);
+
+      const pedido =
+        pedidos.find(
+          p =>
+            String(p.id) === id
+        );
+
+      if (!pedido) {
+        return res.status(404).json({
+          error:
+            "Pedido no encontrado."
+        });
+      }
+
+      res.json({
+        id: pedido.id,
+        fecha: pedido.fecha,
+        estado: pedido.estado,
+        total: pedido.total
+      });
+
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        error:
+          "No se pudo consultar el pedido"
+      });
+    }
+  }
+);
+
+/* =========================================================
+   MANEJO DE ERRORES
+========================================================= */
+
+app.use(
+  (error, req, res, next) => {
+    console.error(error);
+
+    res.status(400).json({
+      error:
+        error.message ||
+        "OcurriÃ³ un error."
+    });
+  }
+);
+
+/* =========================
+   REGISTRO DE CLIENTES
+========================= */
+
+function generarHashContrasena(contrasena) {
+  return new Promise((resolve, reject) => {
+    const salt = crypto.randomBytes(16).toString("hex");
+
+    crypto.scrypt(contrasena, salt, 64, (error, clave) => {
+      if (error) {
+        return reject(error);
+      }
+
+      resolve(salt + ":" + clave.toString("hex"));
+    });
+  });
+}
+
+function verificarContrasena(contrasena, hashGuardado) {
+  return new Promise((resolve, reject) => {
+    const partes = String(hashGuardado || "").split(":");
+
+    if (partes.length !== 2) {
+      return resolve(false);
+    }
+
+    const [salt, hashHex] = partes;
+
+    if (!/^[a-f0-9]{32}$/i.test(salt) ||

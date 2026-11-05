@@ -1,0 +1,180 @@
+﻿  }
+);
+
+/* =========================================================
+   CREAR PEDIDO
+========================================================= */
+
+app.post( "/api/pedidos",
+  (req, res) => {
+    console.log(
+      "PEDIDO RECIBIDO EN EL SERVIDOR"
+    );
+
+    try {
+      const productos = JSON.parse(
+        fs.readFileSync(
+          productsFile,
+          "utf8"
+        )
+      );
+
+      const pedidos = JSON.parse(
+        fs.readFileSync(
+          ordersFile,
+          "utf8"
+        )
+      );
+const datos = req.body || {};
+      const sesionCliente = obtenerClienteSesion(req);
+
+      if (!sesionCliente) {
+        return res.status(401).json({
+          error: "Debes registrarte o iniciar sesiÃ³n para realizar un pedido."
+        });
+      }
+     
+console.log(
+  "EMAIL RECIBIDO:",
+  datos.email
+);
+
+console.log(
+  "EMAIL DENTRO DE CLIENTE:",
+  datos.cliente?.email
+);
+      const items =
+        Array.isArray(datos.productos)
+          ? datos.productos
+          : Array.isArray(datos.carrito)
+            ? datos.carrito
+            : [];
+
+      if (!items.length) {
+        return res.status(400).json({
+          error:
+            "El carrito estÃ¡ vacÃ­o."
+        });
+      }
+/* =====================================================
+
+   VERIFICAR PRODUCTOS Y STOCK
+
+===================================================== */
+
+for (const item of items) {
+
+  const producto =
+
+    productos.find(
+
+      p =>
+
+        String(p.id) ===
+
+        String(item.id)
+
+    );
+
+  if (!producto) {
+
+    return res.status(400).json({
+
+      error:
+
+        "Uno de los productos ya no estÃ¡ disponible."
+
+    });
+
+  }
+
+  const cantidad =
+
+    Number(
+
+      item.cantidad ||
+
+      item.quantity ||
+
+      1
+
+    );
+
+  const stock =
+
+    Number(
+
+      producto.stock || 0
+
+    );
+
+  if (
+
+    !Number.isFinite(cantidad) ||
+
+    cantidad <= 0
+
+  ) {
+
+    return res.status(400).json({
+
+      error:
+
+        "Cantidad de producto invÃ¡lida."
+
+    });
+
+  }
+
+  if (cantidad > stock) {
+
+  return res.status(400).json({
+
+    error: "No hay suficiente stock de " + producto.nombre + "."
+
+  });
+
+}
+
+}
+     
+      /* =====================================================
+         DESCONTAR STOCK
+      ===================================================== */
+
+      for (const item of items) {
+        const producto =
+          productos.find(
+            p =>
+              String(p.id) ===
+              String(item.id)
+          );
+
+        const cantidad =
+          Number(
+            item.cantidad ||
+            item.quantity ||
+            1
+          );
+
+        producto.stock =
+          Math.max(
+            0,
+            Number(producto.stock || 0) -
+            cantidad
+          );
+      }
+
+      /* =====================================================
+         CREAR PEDIDO
+      ===================================================== */
+
+      const nuevoPedido = {
+        id: Date.now(),
+clienteId: sesionCliente ? sesionCliente.id : null,
+        fecha:
+          new Date().toISOString(),
+cliente: {
+  nombre:
+    datos.cliente?.nombre || "",
+

@@ -1,46 +1,54 @@
 [
   {
-    "id": 1789193530403,
-    "nombre": "Camisa de niño PAW PATROL",
-    "precio": 699,
-    "categoria": "Ropa",
-    "talla": "4T",
-    "descripcion": "camisa diseño paw patrol",
-    "imagen": "/images/1789193530401-1789193234564-camisa-paw-patrol.jpeg",
-    "stock": 2
-  },
-  {
-    "id": 1789213258405,
-    "nombre": "Sandalias blancas de niña",
-    "precio": 500,
-    "categoria": "Calzado",
-    "talla": "5",
-    "descripcion": "Sandalias bancas de niña, con moñitos.",
-    "imagen": "/images/1789213258402-sandalias-de-ni-a.jpeg",
-    "stock": 1
-  },
-  {
-    "id": 1793235795782,
-    "nombre": "Conjunto de H&M",
-    "precio": 569,
-    "categoria": "Ropa",
-    "talla": "5T",
-    "descripcion": "Conjunto para niña, color cafe, Disponible para envío inmediato.",
-    "imagen": "/images/1793235795643-img-3973.jpeg",
-    "stock": 2
-  },
-  {
-    "id": 1793242282022,
-    "nombre": "Minecraft ",
-    "precio": 549,
-    "categoria": "Ropa",
-    "talla": "5T, 6T, 7T",
-    "descripcion": "Camisa estampada de Minecraft, disponible para entrega inmediata.",
-    "imagen": "/images/1793242281968-img-3971.jpeg",
-    "imagenes": [
-      "/images/1793242281968-img-3971.jpeg",
-      "/images/1793242281997-img-3972.jpeg"
-    ],
-    "stock": 7
-  }
+  "id": 1789193530403,
+  "nombre": "camisa de niño PAW PATROL",
+  "nombreEn": "PAW PATROL Boys Shirt",
+  "precio": 699,
+  "categoria": "Ropa",
+  "talla": "4T",
+  "descripcion": "camisa diseño paw patrol",
+  "descripcionEn": "PAW PATROL design boys shirt",
+  "imagen": "/images/1789193530401-1789193234564-camisa-paw-patrol.jpeg",
+  "stock": 2
+},
+ {
+  "id": 1789213258405,
+  "nombre": "Sandalias blancas de niña",
+  "nombreEn": "White Girls' Sandals",
+  "precio": 500,
+  "categoria": "Calzado",
+  "talla": "5",
+  "descripcion": "Sandalias blancas de niña, con moñitos.",
+  "descripcionEn": "White girls' sandals with little bows.",
+  "imagen": "/images/1789213258402-sandalias-de-ni-a.jpeg",
+  "stock": 1
+},
+ {
+  "id": 1793235795782,
+  "nombre": "Conjunto de H&M",
+  "nombreEn": "H&M Set",
+  "precio": 569,
+  "categoria": "Ropa",
+  "talla": "",
+  "descripcion": "Conjunto para niña, color café, Disponible para envío inmediato.",
+  "descripcionEn": "Girls' set in coffee color, available for immediate delivery.",
+  "imagen": "/images/1793235795643-img-3973.jpeg",
+  "stock": 2
+},
+ {
+  "id": 1793242282022,
+  "nombre": "Minecraft",
+  "nombreEn": "Minecraft T-Shirt",
+  "precio": 549,
+  "categoria": "Ropa",
+  "talla": "5T, 6T, 7T",
+  "descripcion": "Camisa estampada de Minecraft, disponible para entrega inmediata.",
+  "descripcionEn": "Minecraft printed T-shirt, available for immediate delivery.",
+  "imagen": "/images/1793242281968-img-3971.jpeg",
+  "imagenes": [
+    "/images/1793242281968-img-3971.jpeg",
+    "/images/1793242281997-img-3972.jpeg"
+  ],
+  "stock": 7
+}
 ]

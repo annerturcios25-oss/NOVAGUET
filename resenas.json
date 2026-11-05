@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": 1793752272407,
+    "clienteId": "1",
+    "productoId": 1793242282022,
+    "productoNombre": "Minecraft ",
+    "calificacion": 5,
+    "comentario": "Excelente producto",
+    "fecha": "2026-11-04T00:31:12.408Z"
+  }
+]

@@ -1,0 +1,90 @@
+﻿      tiposPermitidos.includes(
+        file.mimetype
+      )
+    ) {
+      cb(null, true);
+    } else {
+      cb(
+        new Error(
+          "Solo se permiten imÃ¡genes JPG, PNG o WEBP."
+        )
+      );
+    }
+  }
+});
+
+/* =========================================================
+   ARCHIVO DE PRODUCTOS
+========================================================= */
+
+const productsFile = path.join(
+  __dirname,
+  "products.json"
+);
+
+/* =========================================================
+   ARCHIVO DE PEDIDOS
+========================================================= */
+
+const ordersFile = path.join(
+  __dirname,
+  "orders.json"
+);
+
+/* =========================================================
+   ARCHIVO DE RESEÃ‘AS
+========================================================= */
+
+const resenasFile = path.join(
+  __dirname,
+  "resenas.json"
+);
+
+if (!fs.existsSync(resenasFile)) {
+  fs.writeFileSync(
+    resenasFile,
+    JSON.stringify([], null, 2)
+  );
+}
+
+if (!fs.existsSync(ordersFile)) {
+  fs.writeFileSync(
+    ordersFile,
+    JSON.stringify([], null, 2)
+  );
+}
+
+/* =========================================================
+   CREAR PRODUCTOS INICIALES
+========================================================= */
+
+if (!fs.existsSync(productsFile)) {
+  const productosIniciales = [
+    {
+      id: 1,
+      nombre: "Camisa de niÃ±o PAW PATROL",
+      precio: 700,
+      categoria: "Ropa",
+      talla: "2T",
+      descripcion: "Camisa de niÃ±o PAW PATROL",
+      imagen: "/images/camisa-paw-patrol.jpeg",
+      stock: 10
+    }
+  ];
+
+  fs.writeFileSync(
+    productsFile,
+    JSON.stringify(
+      productosIniciales,
+      null,
+      2
+    )
+  );
+}
+
+/* =========================================================
+   PÃGINA PRINCIPAL
+========================================================= */
+
+app.get("/", (req, res) => {
+  res.sendFile(

@@ -1,0 +1,120 @@
+﻿
+/* =========================================================
+   EDITAR PRODUCTO
+   ðŸ” PROTEGIDO
+========================================================= */
+app.put(
+  "/api/productos/:id",
+  protegerAdmin,
+ upload.array("imagenes", 10),
+  (req, res) => {
+    try {
+      const productos = JSON.parse(
+        fs.readFileSync(
+          productsFile,
+          "utf8"
+        )
+      );
+
+      const id =
+        String(req.params.id);
+
+      const indice =
+        productos.findIndex(
+          producto =>
+            String(producto.id) === id
+        );
+
+      if (indice === -1) {
+        return res.status(404).json({
+          error:
+            "Producto no encontrado"
+        });
+      }
+
+      const productoActual =
+        productos[indice];
+
+      const imagenesAnteriores =
+  Array.isArray(productoActual.imagenes)
+    ? productoActual.imagenes
+    : productoActual.imagen
+      ? [productoActual.imagen]
+      : [];
+
+const imagenesNuevas = (req.files || []).map(
+  archivo => "/images/" + archivo.filename
+);
+
+const imagenesProducto = [
+  ...imagenesAnteriores,
+  ...imagenesNuevas
+];
+const imagenProducto =
+  imagenesProducto[0] || "";
+      const stockRecibido =
+        Number(req.body.stock);
+      const stock =
+        Number.isFinite(stockRecibido)
+          ? Math.max(
+              0,
+              stockRecibido
+            )
+          : 0;
+      productos[indice] = {
+        id:
+          productoActual.id,
+
+        nombre:
+          req.body.nombre || "",
+
+        precio:
+          Number(req.body.precio) || 0,
+
+        categoria:
+          req.body.categoria || "",
+
+        talla:
+          req.body.talla || "",
+
+        descripcion:
+          req.body.descripcion || "",
+
+        imagen:
+          imagenProducto,
+
+        stock:
+          stock
+      };
+
+      fs.writeFileSync(
+        productsFile,
+        JSON.stringify(
+          productos,
+          null,
+          2
+        )
+      );
+
+      res.json({
+        mensaje:
+          "Producto actualizado correctamente",
+
+        producto:
+          productos[indice]
+      });
+
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        error:
+          "No se pudo actualizar el producto"
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ELIMINAR PRODUCTO
+   ðŸ” PROTEGIDO

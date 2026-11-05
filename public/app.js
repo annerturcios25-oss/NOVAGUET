@@ -674,20 +674,42 @@ const imagenesProducto = Array.isArray(producto.imagenes)
 
       const nombre =
         producto.nombre || "Producto";
-
+const nombreMostrar =
+  idiomaActual === "en"
+    ? (producto.nombreEn || producto.nombre)
+    : producto.nombre;
       const precio =
         Number(producto.precio) || 0;
 const precioOriginal =
   Number(producto.precioOriginal) || 0;
-      const categoria =
-        producto.categoria || "";
+      const categoriaOriginal =
+  producto.categoria || "";
 
-      const talla =
-        producto.talla || "";
+const talla =
+  producto.talla || "";
 
-      const descripcion =
-        producto.descripcion || "";
+const descripcionOriginal =
+  producto.descripcion || "";
+const descripcionMostrar =
+  idiomaActual === "en"
+    ? (producto.descripcionEn || descripcionOriginal)
+    : descripcionOriginal;
+const traducciones = {
+  "Ropa": "Clothing",
+  "Calzado": "Footwear",
+  "Accesorios": "Accessories",
+  "Hombre": "Men",
+  "Mujer": "Women",
+  "Niños": "Kids"
+};
 
+const categoria =
+  idiomaActual === "en"
+    ? traducciones[categoriaOriginal] || categoriaOriginal
+    : categoriaOriginal;
+
+const descripcion =
+  descripcionOriginal;
       const stock =
         Number(producto.stock);
 
@@ -704,7 +726,9 @@ if (talla) {
 
   opcionesTalla = `
     <div class="product-size">
-      <label for="talla-${producto.id}">Talla</label>
+      <label for="talla-${producto.id}">
+  ${idiomaActual === "en" ? "Size" : "Talla"}
+</label>
       <select
         id="talla-${producto.id}"
         class="product-size-select"
@@ -756,7 +780,7 @@ if (talla) {
         </div>
         <div class="product-info">
 
-          <h3>${nombre}</h3>
+         <h3>${nombreMostrar}</h3>
 <div
   class="product-reviews-summary"
   data-reviews-id="${producto.id}"
@@ -783,7 +807,7 @@ if (talla) {
   data-review-product="${producto.id}"
   style="display:inline-block;margin:5px 0 10px;color:#00bfff;font-size:14px;text-decoration:none;font-weight:500;"
 >
-  ⭐ Escribir reseña
+  ${idiomaActual === "en" ? "⭐ Write a review" : "⭐ Escribir reseña"}
 </a>
 
 <div
@@ -804,9 +828,9 @@ if (talla) {
           ${
             descripcion
               ? `
-                <p class="product-description">
-                  ${descripcion}
-                </p>
+               <p class="product-description">
+  ${descripcionMostrar}
+</p>
               `
               : ""
           }
@@ -838,10 +862,12 @@ ${
         (agotado ? 'stock-out' : stock <= 2 ? 'stock-low' : 'stock-available') +
         '">' +
         (agotado
-          ? 'Agotado'
+          ? (idiomaActual === "en" ? "Out of stock" : "Agotado")
           : stock <= 2
-            ? 'Últimas ' + stock + ' ' + (stock === 1 ? 'unidad' : 'unidades')
-            : 'Disponible') +
+            ? (idiomaActual === "en"
+                ? "Only " + stock + " left"
+                : "Últimas " + stock + " " + (stock === 1 ? "unidad" : "unidades"))
+            : (idiomaActual === "en" ? "Available" : "Disponible")) +
         '</div>'
     : ''
 }
@@ -851,15 +877,11 @@ ${
             data-id="${producto.id}"
             ${agotado ? "disabled" : ""}
           >
-            ${
-              agotado
-                ? "AGOTADO"
-                : "Agregar al carrito"
-            }
-          </button>
-
-        </div>
-
+           ${
+  agotado
+    ? (idiomaActual === "en" ? "SOLD OUT" : "AGOTADO")
+    : (idiomaActual === "en" ? "Add to cart" : "Agregar al carrito")
+}
       `;
 
       productsContainer.appendChild(card);
@@ -904,34 +926,34 @@ productsContainer
 
           contenedor.innerHTML = `
             <form class="product-review-form">
-              <label>Tu calificación</label>
+             <label>${idiomaActual === "en" ? "Your rating" : "Tu calificación"}</label>
 
               <div class="review-rating">
-  <label>Tu calificación</label>
+ aria-label="${idiomaActual === "en" ? "Select your rating" : "Selecciona tu calificación"}"
 
   <div class="review-stars-selector" role="group" aria-label="Selecciona tu calificación">
-    <button type="button" class="review-star" data-rating="1" aria-label="1 estrella">☆</button>
-    <button type="button" class="review-star" data-rating="2" aria-label="2 estrellas">☆</button>
-    <button type="button" class="review-star" data-rating="3" aria-label="3 estrellas">☆</button>
-    <button type="button" class="review-star" data-rating="4" aria-label="4 estrellas">☆</button>
-    <button type="button" class="review-star" data-rating="5" aria-label="5 estrellas">☆</button>
+    <button type="button" class="review-star" data-rating="1" aria-label="${idiomaActual === "en" ? "1 star" : "1 estrella"}"
+    <button type="button" class="review-star" data-rating="2" aria-label="${idiomaActual === "en" ? "2 stars" : "2 estrellas"}"
+    <button type="button" class="review-star" data-rating="3" aria-label="${idiomaActual === "en" ? "3 stars" : "3 estrellas"}"
+    <button type="button" class="review-star" data-rating="4" aria-label="${idiomaActual === "en" ? "4 stars" : "4 estrellas"}"
+    <button type="button" class="review-star" data-rating="5" aria-label="${idiomaActual === "en" ? "5 stars" : "5 estrellas"}"
   </div>
 
-  <input type="hidden" name="calificacion" value="">
+  <input type="hidden" name=${idiomaActual === "en" ? "Rating" : "Calificación"} value="">
 
-  <small class="rating-hint">Toca una estrella</small>
+  <small class="rating-hint">${idiomaActual === "en" ? "Tap a star" : "Toca una estrella"}</small>
 </div>
-
-              <label>Tu comentario</label>
+<label>${idiomaActual === "en" ? "Your comment" : "Tu comentario"}</label>
 
               <textarea
                 name="comentario"
                 maxlength="500"
-                placeholder="Cuéntanos tu experiencia (opcional)"
+               placeholder="${idiomaActual === "en" ? "Tell us about your experience (optional)" : "Cuéntanos tu experiencia (opcional)"}"
               ></textarea>
 
-              <button type="submit">Publicar reseña</button>
-
+             <button type="submit">
+  ${idiomaActual === "en" ? "Submit review" : "Publicar reseña"}
+</button>
               <p class="review-message" aria-live="polite"></p>
             </form>
           `;
@@ -963,9 +985,11 @@ selectorEstrellas.addEventListener("click", event => {
   });
 
   textoCalificacion.textContent =
-    calificacion + (calificacion === 1
-      ? " estrella seleccionada"
-      : " estrellas seleccionadas");
+   calificacion + (
+  idiomaActual === "en"
+    ? (calificacion === 1 ? " star selected" : " stars selected")
+    : (calificacion === 1 ? " estrella seleccionada" : " estrellas seleccionadas")
+);
 });
           formulario.addEventListener("submit", async event => {
             event.preventDefault();
@@ -1048,7 +1072,9 @@ productsContainer
 
       if (!resenas.length) {
         const mensaje = document.createElement("p");
-        mensaje.textContent = "Todavía no hay reseñas.";
+       mensaje.textContent = idiomaActual === "en"
+  ? "No reviews yet."
+  : "Todavía no hay reseñas.";
         lista.appendChild(mensaje);
       } else {
         resenas.forEach(resena => {
@@ -1056,8 +1082,7 @@ productsContainer
           item.className = "product-review-item";
 
           const nombre = document.createElement("strong");
-          nombre.textContent = resena.nombre || "Cliente";
-
+          nombre.textContent = resena.nombre || (idiomaActual === "en" ? "Customer" : "Cliente");
           const estrellas = document.createElement("div");
           estrellas.textContent =
             "★".repeat(Math.max(0, Math.min(5, Number(resena.calificacion) || 0)));
@@ -4044,10 +4069,10 @@ if (paymentResult) {
   /* =====================================================
      IDIOMA
   ===================================================== */
-
+let idiomaActual = "es";
   window.changeLanguage =
     function (idioma) {
-
+idiomaActual = idioma;
       document
         .querySelectorAll("[data-es]")
         .forEach(elemento => {
@@ -4068,7 +4093,11 @@ if (paymentResult) {
 
       document.documentElement.lang =
         idioma;
-
+if (typeof productos !== "undefined" && Array.isArray(productos)) {
+  mostrarProductos(productos);
+  actualizarEstrellasProductos();
+  cargarResenasProductos();
+}
     };
 
 

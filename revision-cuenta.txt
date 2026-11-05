@@ -1,0 +1,160 @@
+﻿    mensaje: "Sesion cerrada correctamente."
+  });
+});
+
+/* =====================================================
+   CANCELAR PEDIDO DEL CLIENTE
+===================================================== */
+
+app.post("/api/clientes/cancelar-pedido", (req, res) => {
+  try {
+    const sesion = obtenerClienteSesion(req);
+
+    if (!sesion) {
+      return res.status(401).json({
+        ok: false,
+        mensaje: "Inicia sesiÃ³n para cancelar un pedido."
+      });
+    }
+
+    const pedidoId = req.body?.pedidoId;
+
+    if (!pedidoId) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: "Falta el nÃºmero del pedido."
+      });
+    }
+
+    const pedidos = JSON.parse(
+      fs.readFileSync(ordersFile, "utf8")
+    );
+
+    const pedido = pedidos.find(
+      p =>
+        String(p.id) === String(pedidoId) &&
+        String(p.clienteId) === String(sesion.id)
+    );
+
+    if (!pedido) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: "No encontramos ese pedido en tu cuenta."
+      });
+    }
+
+    if (pedido.estado !== "Pendiente") {
+      return res.status(400).json({
+        ok: false,
+        mensaje: "Solo puedes cancelar pedidos pendientes."
+      });
+    }
+
+    const productos = JSON.parse(
+      fs.readFileSync(productsFile, "utf8")
+    );
+
+    for (const item of pedido.productos || []) {
+      const producto = productos.find(
+        p => String(p.id) === String(item.id)
+      );
+
+      if (!producto) {
+        return res.status(409).json({
+          ok: false,
+          mensaje:
+            "No se pudo completar la cancelaciÃ³n porque falta un producto del inventario. Contacta con la tienda."
+        });
+      }
+    }
+
+    for (const item of pedido.productos || []) {
+      const producto = productos.find(
+        p => String(p.id) === String(item.id)
+      );
+
+      const cantidad = Number(
+        item.cantidad || item.quantity || 1
+      );
+
+      producto.stock =
+        Number(producto.stock || 0) + cantidad;
+    }
+
+    pedido.estado = "Cancelado";
+
+    fs.writeFileSync(
+      productsFile,
+      JSON.stringify(productos, null, 2)
+    );
+
+    fs.writeFileSync(
+      ordersFile,
+      JSON.stringify(pedidos, null, 2)
+    );
+
+    return res.json({
+      ok: true,
+      mensaje: "Pedido cancelado correctamente."
+    });
+  } catch (error) {
+    console.error(
+      "Error al cancelar pedido:",
+      error.message
+    );
+
+    return res.status(500).json({
+      ok: false,
+      mensaje: "No se pudo cancelar el pedido."
+    });
+  }
+});
+
+
+/* MIS PEDIDOS DEL CLIENTE */
+
+app.get("/api/clientes/mis-pedidos", (req, res) => {
+  try {
+    const sesion = obtenerClienteSesion(req);
+
+    if (!sesion) {
+      return res.status(401).json({
+        ok: false,
+        mensaje: "Inicia sesiÃ³n para consultar tus pedidos."
+      });
+    }
+
+    const pedidos = JSON.parse(
+      fs.readFileSync(ordersFile, "utf8")
+    );
+
+    const misPedidos = pedidos.filter(
+      pedido => String(pedido.clienteId) === String(sesion.id)
+    );
+
+    return res.json({
+      ok: true,
+      pedidos: misPedidos
+    });
+  } catch (error) {
+    console.error("Error al consultar pedidos:", error.message);
+
+    return res.status(500).json({
+      ok: false,
+      mensaje: "No se pudieron consultar tus pedidos."
+    });
+  }
+});
+
+
+/* =========================================================
+   INICIAR SERVIDOR
+========================================================= */
+
+
+
+app.listen(PORT,() => {
+    console.log(
+      "NOVAGUET funcionando en el puerto " +
+      PORT
+    );
