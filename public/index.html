@@ -314,60 +314,12 @@
 
           >
 
-            💳 PAGAR
+            PAGAR
 
           </button>
 
         </div>
-<!-- =========================
-             RASTREAR PEDIDO
-        ========================= -->
 
-        <div class="cart-tracking">
-
-          <button
-            type="button"
-            id="trackingButton"
-            class="tracking-button"
-          >
-            📦 VER ESTADO DE MI PEDIDO
-          </button>
-
-          <div
-            id="trackingBox"
-            class="tracking-box"
-            style="display:none;"
-          >
-
-            <h3>📦 Rastrear mi pedido</h3>
-
-            <p>
-              Ingresa el número de tu pedido para consultar su estado.
-            </p>
-
-            <input
-              type="text"
-              id="trackingOrderId"
-              placeholder="Número de pedido"
-              inputmode="numeric"
-            >
-
-            <button
-              type="button"
-              id="searchTrackingButton"
-              class="tracking-search-button"
-            >
-              🔍 CONSULTAR PEDIDO
-            </button>
-
-            <div
-              id="trackingResult"
-              class="tracking-result"
-            ></div>
-
-          </div>
-
-        </div>
         <!-- =========================
 
              CHECKOUT
@@ -441,7 +393,7 @@
   >
 </div>
 <label for="customerEmail">
-  📧 Correo electrónico
+📧 Correo electrónico
 </label>
 <input
   type="email"
@@ -800,375 +752,121 @@
 </div>
 
           </div>
-
-          <!-- =========================
-
-               PASO 3
-
-          ========================= -->
-
-          <div
-
-            class="checkout-card checkout-step"
-
-            id="stepPayment"
-
-            style="display:none;"
-
-          >
-
-            <h3>
-
-              💳 FORMA DE PAGO
-
-            </h3>
-
-            <!-- TRANSFERENCIA -->
-
-            <label class="option-card">
-
-              <input
-
-                type="radio"
-
-                name="paymentMethod"
-
-                value="transfer"
-
-                id="transferPayment"
-
-              >
-
-              <span>
-
-                🏦 Transferencia bancaria
-
-              </span>
-
-            </label>
-
-            <!-- BANCOS -->
-
-            <div
-
-              id="bankBox"
-
-              class="department-box"
-
-              style="display:none;"
-
-            >
-
-              <label for="bank">
-
-                🏦 Selecciona tu banco
-
-              </label>
-
-              <select id="bank">
-
-                <option value="">
-
-                  Selecciona un banco
-
-                </option>
-
-                <option value="atlantida">
-
-                  Banco Atlántida
-
-                </option>
-
-                <option value="ficohsa">
-
-                  Ficohsa
-
-                </option>
-
-                <option value="bac">
-
-                  BAC Credomatic
-
-                </option>
-
-              </select>
-
-            </div>
-
-            <!-- DATOS CUENTA -->
-
-            <div
-
-              id="bankDetails"
-
-              class="department-box"
-
-              style="display:none;"
-
-            >
-
-              <h4>
-
-                🏦 DATOS PARA LA TRANSFERENCIA
-
-              </h4>
-
-              <p>
-
-                <strong>
-
-                  Banco:
-
-                </strong>
-
-                <span id="selectedBankName"></span>
-
-              </p>
-
-              <p>
-
-                <strong>
-
-                  Titular:
-
-                </strong>
-
-                NOVA SHOP
-
-              </p>
-
-              <p>
-
-                <strong>
-
-                  N/C:
-
-                </strong>
-
-                <span id="selectedAccountNumber"></span>
-
-              </p>
-
-              <p>
-
-                <strong>
-
-                  Tipo de cuenta:
-
-                </strong>
-
-                Ahorro
-
-              </p>
-
-            </div>
-
-            <!-- TARJETA -->
-
-            <label class="option-card">
-
-              <input
-
-                type="radio"
-
-                name="paymentMethod"
-
-                value="card"
-
-                id="cardPayment"
-
-              >
-
-              <span>
-
-                💳 Tarjeta de débito/crédito
-
-              </span>
-
-            </label>
-
-            <!-- DATOS TARJETA -->
-
-            <div
-
-              id="cardBox"
-
-              class="department-box"
-
-              style="display:none;"
-
-            >
-
-              <h4>
-
-                💳 Datos de la tarjeta
-
-              </h4>
-
-              <label for="cardName">
-
-                Nombre del titular
-
-              </label>
-
-              <input
-
-                type="text"
-
-                id="cardName"
-
-                placeholder="Nombre como aparece en la tarjeta"
-
-                autocomplete="cc-name"
-
-              >
-
-              <label for="cardNumber">
-
-                Número de tarjeta
-
-              </label>
-
-              <input
-
-                type="text"
-
-                id="cardNumber"
-
-                placeholder="0000 0000 0000 0000"
-
-                inputmode="numeric"
-
-                autocomplete="cc-number"
-
-                maxlength="19"
-
-              >
-
-              <div class="card-fields">
-
-                <div>
-
-                  <label for="cardExpiry">
-
-                    Vencimiento
-
-                  </label>
-
-                  <input
-
-                    type="text"
-
-                    id="cardExpiry"
-
-                    placeholder="MM/AA"
-
-                    inputmode="numeric"
-
-                    autocomplete="cc-exp"
-
-                    maxlength="5"
-
-                  >
-
-                </div>
-
-                <div>
-
-                  <label for="cardCVV">
-
-                    CVV
-
-                  </label>
-
-                  <input
-
-                    type="password"
-
-                    id="cardCVV"
-
-                    placeholder="CVV"
-
-                    inputmode="numeric"
-
-                    autocomplete="cc-csc"
-
-                    maxlength="4"
-
-                  >
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <!-- EFECTIVO -->
-
-            <label class="option-card">
-
-              <input
-
-                type="radio"
-
-                name="paymentMethod"
-
-                value="cash"
-
-                id="cashPayment"
-
-              >
-
-              <span>
-
-                💵 Pago en efectivo
-
-              </span>
-
-            </label>
-
-            <div
-
-              id="cashBox"
-
-              class="department-box"
-
-              style="display:none;"
-
-            >
-
-              <p>
-
-                💵 El pago se realizará en efectivo
-
-                según el método de entrega seleccionado.
-
-              </p>
-
-            </div>
-<button
-  id="backPaymentButton"
-  class="checkout-button"
-  type="button"
+<!-- =========================
+       PASO 3
+========================= -->
+
+<div
+  class="checkout-card checkout-step"
+  id="stepPayment"
+  style="display:none;"
 >
-  ATRÁS
-</button>
-            <button
 
-              id="continuePaymentButton"
+  <h3>💳 FORMA DE PAGO</h3>
 
-              class="checkout-button"
+  <!-- TRANSFERENCIA -->
+  <label class="option-card">
+    <input type="radio" name="paymentMethod"
+      value="transfer" id="transferPayment">
+    <span>🏦 Transferencia bancaria</span>
+  </label>
 
-              type="button"
+  <div id="bankBox" class="department-box" style="display:none;">
+    <label for="bank">🏦 Selecciona tu banco</label>
+    <select id="bank">
+      <option value="">Selecciona un banco</option>
+      <option value="atlantida">Banco Atlántida</option>
+      <option value="ficohsa">Ficohsa</option>
+      <option value="bac">BAC Credomatic</option>
+    </select>
+  </div>
 
-            >
+  <!-- DATOS CUENTA -->
+  <div id="bankDetails" class="department-box" style="display:none;">
+    <h4>🏦 DATOS PARA LA TRANSFERENCIA</h4>
+    <p><strong>Banco:</strong> <span id="selectedBankName"></span></p>
+    <p><strong>Titular:</strong> NOVA SHOP</p>
+    <p><strong>N/C:</strong> <span id="selectedAccountNumber"></span></p>
+    <p><strong>Tipo de cuenta:</strong> Ahorro</p>
+  </div>
 
-              CONTINUAR
+  <!-- PAYPAL -->
+  <label class="option-card">
+    <input type="radio" name="paymentMethod"
+      value="paypal" id="paypalPayment">
+    <span>🅿️ PayPal</span>
+  </label>
 
-            </button>
+  <div id="paypalContainer" class="department-box" style="display:none;">
+    <button type="button" id="paypal-visual-button"
+      class="paypal-visual-button">
+      <span class="paypal-text">Pay</span>
+      <span class="paypal-logo">Pal</span>
+    </button>
 
-          </div>
+    <div class="paypal-card-logos">
+      <img src="/images/visa.png.png" alt="Visa">
+      <img src="/images/mastercard.png.png" alt="Mastercard">
+    </div>
 
+    <p class="paypal-security-text">
+      Paga de forma segura con PayPal o tarjeta.
+    </p>
+  </div>
+
+  <!-- TARJETA -->
+  <label class="option-card">
+    <input type="radio" name="paymentMethod"
+      value="card" id="cardPayment">
+    <span>💳 Tarjeta de crédito / débito</span>
+  </label>
+
+  <div id="cardContainer" class="department-box" style="display:none;">
+    <h4>VISA · MASTERCARD</h4>
+
+    <div id="paypal-card-fields" style="margin-top:20px;">
+      <div class="paypal-card-field"
+        id="paypal-card-fields-number"></div>
+
+      <div class="paypal-card-field"
+        id="paypal-card-fields-expiry"></div>
+
+      <div class="paypal-card-field"
+        id="paypal-card-fields-cvv"></div>
+
+      <button type="button" id="paypal-card-submit"
+        class="confirm-order-button">
+        PAGAR CON TARJETA
+      </button>
+    </div>
+  </div> <!-- CIERRA cardContainer -->
+
+  <!-- EFECTIVO -->
+  <label class="option-card">
+    <input type="radio" name="paymentMethod"
+      value="cash" id="cashPayment">
+    <span>💵 Pago en efectivo</span>
+  </label>
+
+  <div id="cashBox" class="department-box" style="display:none;">
+    <p>
+      💵 El pago se realizará en efectivo
+      según el método de entrega seleccionado.
+    </p>
+  </div>
+
+  <!-- NAVEGACIÓN -->
+  <button id="backPaymentButton"
+    class="checkout-button" type="button">
+    ATRÁS
+  </button>
+
+  <button id="continuePaymentButton"
+    class="checkout-button" type="button">
+    CONTINUAR
+  </button>
+
+</div> <!-- CIERRA stepPayment -->
           <!-- =========================
 
                PASO 4
@@ -1287,6 +985,13 @@
     <a href="cuenta.html" data-es="Mi cuenta" data-en="My account">Mi cuenta</a>
     <a href="#favoritos" data-es="Mis favoritos ♥️" data-en="My favorites ♥️">Mis favoritos ♥️</a>
     <a href="#contacto" data-es="Contacto" data-en="Contact">Contacto</a>
+    <button
+  type="button"
+  id="trackingButton"
+  class="menu-item"
+>
+  📦 Ver estado de mi pedido
+</button>
   </nav>
 </aside>
   <!-- =========================
@@ -1765,7 +1470,16 @@
 </div>
 </div>
 
-  <script src="/app.js"></script>
+ <!-- PAYPAL SANDBOX -->
+
+<script
+  async
+  src="https://www.sandbox.paypal.com/web-sdk/v6/core"
+  onload="onPayPalWebSdkLoaded()">
+</script>
+<!-- NOVAGUET APP -->
+
+<script src="/app.js" defer></script>
 
 </body>
 

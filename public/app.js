@@ -32,21 +32,99 @@ document.addEventListener("DOMContentLoaded", () => {
    RASTREO DE PEDIDOS
 ===================================================== */
 
-const trackingButton =
-  document.getElementById("trackingButton");
+const trackingButton = document.getElementById("trackingButton");
+const trackingBox = document.getElementById("trackingBox");
+const trackingOrderId = document.getElementById("trackingOrderId");
+const searchTrackingButton = document.getElementById("searchTrackingButton");
+const trackingResult = document.getElementById("trackingResult");
+const closeTrackingButton = document.getElementById("closeTrackingButton");
 
-const trackingBox =
-  document.getElementById("trackingBox");
+/* ABRIR RASTREO */
 
-const trackingOrderId =
-  document.getElementById("trackingOrderId");
+if (trackingButton && trackingBox) {
+  trackingButton.addEventListener("click", (event) => {
+    event.preventDefault();
 
-const searchTrackingButton =
-  document.getElementById("searchTrackingButton");
+    // Cerrar menú hamburguesa
+    const menuHamburger = document.getElementById("menuHamburger");
 
-const trackingResult =
-  document.getElementById("trackingResult");
+    if (menuHamburger) {
+      menuHamburger.click();
+    }
 
+    // Mostrar rastreo
+    trackingBox.style.display = "block";
+
+    // Limpiar consulta anterior
+    if (trackingOrderId) {
+      trackingOrderId.value = "";
+    }
+
+    if (trackingResult) {
+      trackingResult.innerHTML = "";
+    }
+
+    // Centrar ventana de rastreo
+    trackingBox.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  });
+}
+
+/* CERRAR RASTREO */
+
+if (closeTrackingButton && trackingBox) {
+  closeTrackingButton.addEventListener("click", () => {
+    trackingBox.style.display = "none";
+  });
+}
+
+/* CONSULTAR PEDIDO */
+
+if (searchTrackingButton && trackingOrderId && trackingResult) {
+  searchTrackingButton.addEventListener("click", async () => {
+
+    const orderId = trackingOrderId.value.trim();
+
+    if (!orderId) {
+      trackingResult.innerHTML =
+        "<p style='color:#d00;'>⚠️ Ingresa tu número de pedido.</p>";
+      return;
+    }
+
+    trackingResult.innerHTML =
+      "<p>🔎 Consultando pedido...</p>";
+
+    try {
+      const response = await fetch(
+        `/api/pedidos/${encodeURIComponent(orderId)}`
+      );
+
+      const pedido = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          pedido.message || pedido.error || "Pedido no encontrado."
+        );
+      }
+
+      trackingResult.innerHTML = `
+        <div class="tracking-status">
+          <h3>📦 Pedido #${pedido.id || orderId}</h3>
+          <p><strong>Estado:</strong> ${pedido.estado || pedido.status || "En proceso"}</p>
+        </div>
+      `;
+
+    } catch (error) {
+      trackingResult.innerHTML = `
+        <p style="color:#d00;">
+          ❌ ${error.message || "No se pudo consultar el pedido."}
+        </p>
+      `;
+    }
+  });
+}
   const checkoutContainer = document.getElementById("checkoutContainer");
   const closeCheckout = document.getElementById("closeCheckout");
 
@@ -78,9 +156,11 @@ const trackingResult =
   const transferPayment =
     document.getElementById("transferPayment");
 
-  const cardPayment =
-    document.getElementById("cardPayment");
-
+const paypalPayment =
+  document.getElementById("paypalPayment");
+/* PAYPAL NOVAGUET */
+let paypalV6Instance = null;
+let paypalV6Inicializado = false;
   const cashPayment =
     document.getElementById("cashPayment");
 
@@ -122,8 +202,6 @@ const cancelCheckoutButton =
 
   const nosotrosCloud =
     document.getElementById("nosotrosCloud");
-
-
   /* =====================================================
      DATOS
   ===================================================== */
@@ -3049,301 +3127,407 @@ if (backPaymentButton) {
 
   }
 
+/* =====================================================
+   MÉTODO DE PAGO
+===================================================== */
+function obtenerMetodoPago() {
+  if (transferPayment && transferPayment.checked) {
 
-  /* =====================================================
-     MÉTODO DE PAGO
-  ===================================================== */
-
-  function obtenerMetodoPago() {
-
-    if (
-      transferPayment &&
-      transferPayment.checked
-    ) {
-
-      return "transferencia";
-
-    }
-
-    if (
-      cardPayment &&
-      cardPayment.checked
-    ) {
-
-      return "tarjeta";
-
-    }
-
-    if (
-      cashPayment &&
-      cashPayment.checked
-    ) {
-
-      return "efectivo";
-
-    }
-
-    return "";
+    return "transfer";
 
   }
 
+  if (paypalPayment && paypalPayment.checked) {
 
-  /* =====================================================
-     MOSTRAR PAGO
-  ===================================================== */
-
-  function actualizarPago() {
-
-    paymentMethod =
-      obtenerMetodoPago();
-
-    const bankBox =
-      document.getElementById(
-        "bankBox"
-      );
-
-    const cardBox =
-      document.getElementById(
-        "cardBox"
-      );
-
-    const cashBox =
-      document.getElementById(
-        "cashBox"
-      );
-
-    if (bankBox) {
-
-      bankBox.style.display =
-        paymentMethod ===
-        "transferencia"
-          ? "block"
-          : "none";
-
-    }
-
-    if (cardBox) {
-
-      cardBox.style.display =
-        paymentMethod ===
-        "tarjeta"
-          ? "block"
-          : "none";
-
-    }
-
-    if (cashBox) {
-
-      cashBox.style.display =
-        paymentMethod ===
-        "efectivo"
-          ? "block"
-          : "none";
-
-    }
-
-    if (
-      bankDetails &&
-      paymentMethod !== "transferencia"
-    ) {
-
-      bankDetails.style.display =
-        "none";
-
-    }
+    return "paypal";
 
   }
 
+  if (cardPayment && cardPayment.checked) {
 
-  if (transferPayment) {
+    return "card";
 
-    transferPayment.addEventListener(
-      "change",
-      actualizarPago
+  }
+
+  if (cashPayment && cashPayment.checked) {
+
+    return "cash";
+
+  }
+
+  return "";
+}
+/* =====================================================
+   PAYPAL NOVAGUET V6 — INICIALIZACIÓN
+===================================================== */
+
+async function renderizarBotonesPayPal() {
+  try {
+    if (paypalV6Inicializado) return;
+
+    if (!window.paypal?.createInstance) {
+      console.error("PayPal v6 no está disponible.");
+      return;
+    }
+
+    const configRespuesta = await fetch("/api/paypal/config");
+
+    if (!configRespuesta.ok) {
+      throw new Error("No se pudo obtener el Client ID.");
+    }
+
+    const config = await configRespuesta.json();
+
+    /* CONTENEDORES DE TARJETA */
+
+    const numeroContenedor =
+      document.getElementById("paypal-card-fields-number");
+
+    const vencimientoContenedor =
+      document.getElementById("paypal-card-fields-expiry");
+
+    const cvvContenedor =
+      document.getElementById("paypal-card-fields-cvv");
+
+    if (
+      !numeroContenedor ||
+      !vencimientoContenedor ||
+      !cvvContenedor
+    ) {
+      throw new Error("Faltan los contenedores de tarjeta en HTML.");
+    }
+
+    /* CREAR INSTANCIA PAYPAL */
+
+    paypalV6Instance = await window.paypal.createInstance({
+      clientId: config.clientId,
+      components: ["paypal-payments", "card-fields"],
+      pageType: "checkout"
+    });
+
+    /* CREAR CAMPOS SEGUROS */
+
+    const cardSession =
+      paypalV6Instance.createCardFieldsOneTimePaymentSession();
+
+    const numero = cardSession.createCardFieldsComponent({
+      type: "number",
+      placeholder: "Número de tarjeta"
+    });
+
+    const vencimiento = cardSession.createCardFieldsComponent({
+      type: "expiry",
+      placeholder: "MM/YY"
+    });
+
+    const cvv = cardSession.createCardFieldsComponent({
+      type: "cvv",
+      placeholder: "CVV"
+    });
+
+    numeroContenedor.appendChild(numero);
+    vencimientoContenedor.appendChild(vencimiento);
+    cvvContenedor.appendChild(cvv);
+
+    /* CONFIGURAR BOTÓN PAYPAL */
+
+    await configurarPagoPayPalV6();
+
+    paypalV6Inicializado = true;
+
+    console.log("Campos seguros PayPal cargados.");
+
+  } catch (error) {
+    console.error("Error PayPal:", error);
+  }
+}
+
+/* =====================================================
+   PAYPAL V6 — EVENTO DE CARGA
+===================================================== */
+
+window.onPayPalWebSdkLoaded = async function () {
+  console.log("PayPal v6 SDK cargado.");
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      renderizarBotonesPayPal,
+      { once: true }
     );
+  } else {
+    await renderizarBotonesPayPal();
+  }
+};
+/* =====================================================
+   PAYPAL V6 — PAGO Y CAPTURA
+===================================================== */
 
+async function crearOrdenPayPal() {
+  const totalHNL = Number(
+    document.getElementById("totalHNL")?.textContent
+      ?.replace(/[^\d.]/g, "") || 0
+  );
+
+  const respuesta = await fetch("/api/paypal/crear-orden", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      totalHNL
+    })
+  });
+
+  const datos = await respuesta.json();
+
+  if (!respuesta.ok || !datos.id) {
+    throw new Error(datos.error || "No se pudo crear la orden.");
   }
 
-  if (cardPayment) {
+  return datos.id;
+}
 
-    cardPayment.addEventListener(
-      "change",
-      actualizarPago
-    );
+async function capturarOrdenPayPal(orderId) {
+  const respuesta = await fetch("/api/paypal/capturar-orden", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      orderID: orderId
+    })
+  });
 
+  const datos = await respuesta.json();
+
+  if (!respuesta.ok) {
+    throw new Error(datos.error || "No se pudo capturar el pago.");
   }
 
-  if (cashPayment) {
+  return datos;
+}
 
-    cashPayment.addEventListener(
-      "change",
-      actualizarPago
-    );
+/* =====================================================
+   PAYPAL V6 — BOTÓN OFICIAL NOVAGUET
+===================================================== */
 
+async function configurarPagoPayPalV6() {
+  const boton = document.getElementById("paypal-v6-button");
+
+  if (!boton || !paypalV6Instance) {
+    throw new Error("No se encontró el botón PayPal o la instancia.");
   }
 
+  /* COMPROBAR DISPONIBILIDAD */
+const elegibilidad =
+  await paypalV6Instance.findEligibleMethods({
+    currencyCode: "USD"
+  });
 
-  /* =====================================================
-     CONTINUAR PAGO
-  ===================================================== */
+console.log("Elegibilidad PayPal:", elegibilidad);
 
-  if (continuePaymentButton) {
+console.log(
+  "PayPal elegible:",
+  elegibilidad.isEligible("paypal")
+);
 
-    continuePaymentButton.addEventListener(
-      "click",
-      () => {
+console.log(
+  "Botón encontrado:",
+  document.getElementById("paypal-v6-button")
+);
+  /* CREAR SESIÓN DE PAGO */
 
-        paymentMethod =
-          obtenerMetodoPago();
+  const sesion =
+    paypalV6Instance.createPayPalOneTimePaymentSession({
+      onApprove: async ({ orderId }) => {
+        try {
+          const captura = await capturarOrdenPayPal(orderId);
 
-        if (!paymentMethod) {
-
-          sonidoError();
-
-          alert(
-            "Selecciona una forma de pago."
-          );
-
-          return;
+          console.log("Orden capturada:", captura);
+          alert("¡Pago realizado correctamente!");
+        } catch (error) {
+          console.error("Error capturando pago:", error);
+          alert("El pago necesita verificación.");
         }
+      },
 
-        if (
-          paymentMethod ===
-          "transferencia"
-        ) {
+      onCancel: () => {
+        console.log("Pago cancelado.");
+      },
 
-          if (
-            !bank ||
-            !bank.value
-          ) {
-
-            sonidoError();
-
-            alert(
-              "Selecciona el banco."
-            );
-
-            return;
-
-          }
-
-        }
-
-        if (
-          paymentMethod ===
-          "tarjeta"
-        ) {
-
-          const cardName =
-            document.getElementById(
-              "cardName"
-            );
-
-          const cardNumber =
-            document.getElementById(
-              "cardNumber"
-            );
-
-          const cardExpiry =
-            document.getElementById(
-              "cardExpiry"
-            );
-
-          const cardCVV =
-            document.getElementById(
-              "cardCVV"
-            );
-
-          if (
-            !cardName ||
-            !cardName.value.trim()
-          ) {
-
-            sonidoError();
-
-            alert(
-              "Ingresa el nombre del titular de la tarjeta."
-            );
-
-            return;
-
-          }
-
-          const numeroTarjeta =
-            cardNumber
-              ? cardNumber.value.replace(/\D/g, "")
-              : "";
-
-          if (
-            numeroTarjeta.length < 13
-          ) {
-
-            sonidoError();
-
-            alert(
-              "Ingresa un número de tarjeta válido."
-            );
-
-            return;
-
-          }
-
-          if (
-            !cardExpiry ||
-            !cardExpiry.value.trim()
-          ) {
-
-            sonidoError();
-
-            alert(
-              "Ingresa la fecha de vencimiento."
-            );
-
-            return;
-
-          }
-
-          const cvv =
-            cardCVV
-              ? cardCVV.value.replace(/\D/g, "")
-              : "";
-
-          if (
-            cvv.length < 3
-          ) {
-
-            sonidoError();
-
-            alert(
-              "Ingresa el CVV."
-            );
-
-            return;
-
-          }
-
-        }
-
-        orderData.metodoPago =
-          paymentMethod;
-
-        orderData.banco =
-          paymentMethod === "transferencia" &&
-          bank
-            ? bank.value
-            : "";
-
-        mostrarResumen();
-
-        avanzarCheckout(
-          "payment",
-          "summary"
-        );
-
+      onError: (error) => {
+        console.error("Error PayPal:", error);
       }
-    );
+    });
 
+  /* MOSTRAR BOTÓN */
+
+  boton.removeAttribute("hidden");
+
+  /* EVITAR EVENTOS DUPLICADOS */
+
+  if (boton.dataset.paypalConfigurado === "true") return;
+
+  boton.dataset.paypalConfigurado = "true";
+
+  boton.addEventListener("click", async () => {
+    try {
+      await sesion.start(
+        { presentationMode: "auto" },
+        async () => ({
+          orderId: await crearOrdenPayPal()
+        })
+      );
+    } catch (error) {
+      console.error("Error iniciando PayPal:", error);
+      alert("No se pudo iniciar el pago con PayPal.");
+    }
+  });
+}
+/* BOTÓN TARJETA */
+async function pagarConTarjetaPayPalV6() {
+  try {
+    if (!paypalV6Instance) {
+      throw new Error("PayPal todavía no está inicializado.");
+    }
+
+    const orderId = await crearOrdenPayPal();
+
+    const resultado = await paypalV6Instance
+      .createCardFieldsOneTimePaymentSession()
+      .submit(orderId);
+
+    if (resultado.state !== "succeeded") {
+      throw new Error(
+        resultado.data?.message || "El pago con tarjeta no fue aprobado."
+      );
+    }
+
+    const captura = await capturarOrdenPayPal(orderId);
+
+    console.log("Pago con tarjeta capturado:", captura);
+
+    alert("Pago procesado correctamente.");
+
+  } catch (error) {
+    console.error("Error tarjeta PayPal:", error);
+    alert(error.message || "No se pudo procesar el pago.");
   }
+}
+
+/* CONECTAR BOTONES */
+document.addEventListener("DOMContentLoaded", () => {
+  const tarjeta = document.getElementById("paypal-card-submit");
+
+  if (tarjeta) {
+    tarjeta.addEventListener("click", pagarConTarjetaPayPalV6);
+  }
+});
+ /* =====================================================
+   MOSTRAR PAGO
+===================================================== */
+
+function actualizarPago() {
+  paymentMethod = obtenerMetodoPago();
+
+  const bankBox = document.getElementById("bankBox");
+  const bankDetailsBox = document.getElementById("bankDetails");
+  const paypalBox = document.getElementById("paypalContainer");
+  const cardBox = document.getElementById("cardContainer");
+  const cashBox = document.getElementById("cashBox");
+
+  if (bankBox) {
+    bankBox.style.display =
+      paymentMethod === "transfer" ? "block" : "none";
+  }
+
+  if (bankDetailsBox && paymentMethod !== "transfer") {
+    bankDetailsBox.style.display = "none";
+  }
+
+  if (paypalBox) {
+    paypalBox.style.display =
+      paymentMethod === "paypal" ? "block" : "none";
+  }
+
+  if (cardBox) {
+    cardBox.style.display =
+      paymentMethod === "card" ? "block" : "none";
+  }
+
+  if (cashBox) {
+    cashBox.style.display =
+      paymentMethod === "cash" ? "block" : "none";
+  }
+
+  if (
+    paymentMethod === "paypal" ||
+    paymentMethod === "card"
+  ) {
+    renderizarBotonesPayPal();
+  }
+}
+
+/* =====================================================
+   EVENTOS DE PAGO
+===================================================== */
+
+if (transferPayment) {
+  transferPayment.addEventListener("change", actualizarPago);
+}
+
+if (paypalPayment) {
+  paypalPayment.addEventListener("change", actualizarPago);
+}
+
+if (cardPayment) {
+  cardPayment.addEventListener("change", actualizarPago);
+}
+
+if (cashPayment) {
+  cashPayment.addEventListener("change", actualizarPago);
+}
+
+/* =====================================================
+   CONTINUAR PAGO
+===================================================== */
+
+if (continuePaymentButton) {
+
+  continuePaymentButton.addEventListener("click", () => {
+
+    paymentMethod = obtenerMetodoPago();
+
+    if (!paymentMethod) {
+      sonidoError();
+      alert("Selecciona una forma de pago.");
+      return;
+    }
+
+    if (paymentMethod === "transfer") {
+
+      if (!bank || !bank.value) {
+        sonidoError();
+        alert("Selecciona el banco.");
+        return;
+      }
+    }
+
+    orderData.metodoPago = paymentMethod;
+
+    orderData.banco =
+      paymentMethod === "transfer" && bank
+        ? bank.value
+        : "";
+
+    mostrarResumen();
+
+    avanzarCheckout("payment", "summary");
+
+  });
+
+}
 /* =====================================================
    BOTÓN ATRÁS DEL RESUMEN
 ===================================================== */
@@ -3591,17 +3775,15 @@ function avanzarCheckout(actual, siguiente) {
           Pago
         </h3>
 
-        <p>
-          ${
-            orderData.metodoPago ===
-            "transferencia"
-              ? "🏦 Transferencia bancaria"
-              : orderData.metodoPago ===
-                "tarjeta"
-                ? "💳 Tarjeta"
-                : "💵 Efectivo"
-          }
-        </p>
+<p>
+  ${
+    orderData.metodoPago === "transferencia"
+      ? "🏦 Transferencia bancaria"
+      : orderData.metodoPago === "paypal"
+        ? "💳 PayPal · Visa · Mastercard"
+        : "💵 Efectivo"
+  }
+</p>
 
     `;
 

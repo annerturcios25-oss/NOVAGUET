@@ -1,9 +1,32 @@
 require("dotenv").config();
+
 const express = require("express");
+const HNL_POR_USD = 26.8964;
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
 const crypto = require("crypto");
+const paypal = require("@paypal/paypal-server-sdk");
+
+/* =====================================================
+   PAYPAL — CONFIGURACIÓN DEL SERVIDOR
+===================================================== */
+const paypalEnvironment =
+  process.env.PAYPAL_MODE === "live"
+    ? paypal.Environment.Production
+    : paypal.Environment.Sandbox;
+
+const paypalClient = new paypal.Client({
+  clientCredentialsAuthCredentials: {
+    oAuthClientId: process.env.PAYPAL_CLIENT_ID,
+    oAuthClientSecret: process.env.PAYPAL_CLIENT_SECRET
+  },
+  environment: paypalEnvironment
+});
+/* =====================================================
+   RESEND — CONFIGURACIÓN DE CORREO
+===================================================== */
+
 const { Resend } = require("resend");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -25,6 +48,60 @@ const transporter = {
     return data;
   }
 };
+
+/* =====================================================
+   EXPRESS — INICIALIZACIÓN
+===================================================== */
+
+const app = express();
+app.get("/api/paypal/config", (req, res) => {
+  res.json({
+    clientId: process.env.PAYPAL_CLIENT_ID
+  });
+});
+/* PAYPAL V6 - CLIENT TOKEN */
+app.get("/api/paypal/client-token", async (req, res) => {
+  try {
+    const credentials = Buffer.from(
+      `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`
+    ).toString("base64");
+
+    const paypalApi =
+      process.env.PAYPAL_MODE === "live"
+        ? "https://api-m.paypal.com"
+        : "https://api-m.sandbox.paypal.com";
+
+    const respuesta = await fetch(
+      `${paypalApi}/v1/identity/generate-token`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+      console.error("PayPal token:", datos);
+      return res.status(500).json({
+        error: "No se pudo generar el Client Token."
+      });
+    }
+
+    res.json({
+      clientToken: datos.client_token
+    });
+
+  } catch (error) {
+    console.error("Error PayPal Client Token:", error);
+    res.status(500).json({
+      error: "Error interno al generar el token."
+    });
+  }
+});
 /* =====================================
    ENVIAR CORREO DE CONFIRMACIÓN
    DISEÑO PREMIUM NEGRO Y DORADO
@@ -333,15 +410,17 @@ const fechaPedido = new Date(fechaOriginal).toLocaleDateString(
   );
 }
 
-const app = express();
 const { Pool } = require("pg");
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
+
 app.use(express.json());
+
 const PORT = process.env.PORT || 3000;
+
 pool.query("SELECT NOW()")
   .then(() => console.log("✅ PostgreSQL conectado correctamente"))
   .catch((error) => {
@@ -2283,7 +2362,94 @@ app.get("/api/clientes/mis-pedidos", async (req, res) => {
     });
   }
 });
+/* =========================================================
+   PAYPAL - CREAR ORDEN
+========================================================= */
 
+app.post("/api/paypal/crear-orden", async (req, res) => {
+  try {
+    const { totalHNL } = req.body;
+
+    if (!Number.isFinite(totalHNL) || totalHNL <= 0) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: "Total inválido."
+      });
+    }
+
+    const totalUSD = (totalHNL / HNL_POR_USD).toFixed(2);
+
+    const request = new paypal.orders.OrdersCreateRequest();
+
+    request.prefer("return=representation");
+
+    request.requestBody({
+      intent: "CAPTURE",
+      purchase_units: [
+        {
+          amount: {
+            currency_code: "USD",
+            value: totalUSD
+          }
+        }
+      ]
+    });
+
+    const orden = await paypalClient.execute(request);
+
+    res.json({
+      ok: true,
+      id: orden.result.id,
+      totalUSD
+    });
+
+  } catch (error) {
+    console.error("Error creando orden PayPal:", error);
+
+    res.status(500).json({
+      ok: false,
+      mensaje: "No se pudo crear la orden de PayPal."
+    });
+  }
+});
+/* =========================================================
+   PAYPAL - CAPTURAR PAGO
+========================================================= */
+
+app.post("/api/paypal/capturar-orden", async (req, res) => {
+  try {
+    const { orderID } = req.body;
+
+    if (!orderID) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: "Falta el ID de la orden."
+      });
+    }
+
+    const request = new paypal.orders.OrdersCaptureRequest(
+      orderID
+    );
+
+    request.requestBody({});
+
+    const captura = await paypalClient.execute(request);
+
+    res.json({
+      ok: true,
+      estado: captura.result.status,
+      pago: captura.result
+    });
+
+  } catch (error) {
+    console.error("Error capturando pago PayPal:", error);
+
+    res.status(500).json({
+      ok: false,
+      mensaje: "No se pudo capturar el pago."
+    });
+  }
+});
 /* =========================================================
    INICIAR SERVIDOR
 ========================================================= */
