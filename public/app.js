@@ -3048,85 +3048,103 @@ if (backPaymentButton) {
 }
  
   /* =====================================================
-     CUENTAS BANCARIAS
-  ===================================================== */
+   CUENTAS BANCARIAS NOVAGUET
+===================================================== */
 
-  const cuentasBancarias = {
+const cuentasBancarias = {
+  atlantida: {
+    nombre: "Banco Atlántida",
+    titular: "NOVA SHOP",
+    numero: "230000000",
+    tipo: "Ahorro"
+  },
 
-    atlantida: {
+  ficohsa: {
+    nombre: "Ficohsa",
+    titular: "NOVA SHOP",
+    numero: "240000000",
+    tipo: "Ahorro"
+  },
 
-      nombre: "Banco Atlántida",
-      numero: "230000000"
+  bac: {
+    nombre: "BAC Credomatic",
+    titular: "NOVA SHOP",
+    numero: "250000000",
+    tipo: "Ahorro"
+  }
+};
 
-    },
+/* SELECCIONAR BANCO */
 
-    ficohsa: {
+function seleccionarBanco(nombreBanco) {
+  const cuenta = cuentasBancarias[nombreBanco];
 
-      nombre: "Ficohsa",
-      numero: "240000000"
-
-    },
-
-    bac: {
-
-      nombre: "BAC Credomatic",
-      numero: "250000000"
-
-    }
-
-  };
-
+  if (!cuenta) return;
 
   if (bank) {
-
-    bank.addEventListener(
-      "change",
-      () => {
-
-        const cuenta =
-          cuentasBancarias[
-            bank.value
-          ];
-
-        if (!cuenta) {
-
-          if (bankDetails) {
-
-            bankDetails.style.display =
-              "none";
-
-          }
-
-          return;
-
-        }
-
-        if (selectedBankName) {
-
-          selectedBankName.textContent =
-            cuenta.nombre;
-
-        }
-
-        if (selectedAccountNumber) {
-
-          selectedAccountNumber.textContent =
-            cuenta.numero;
-
-        }
-
-        if (bankDetails) {
-
-          bankDetails.style.display =
-            "block";
-
-        }
-
-      }
-    );
-
+    bank.value = nombreBanco;
   }
 
+  if (selectedBankName) {
+    selectedBankName.textContent = cuenta.nombre;
+  }
+
+  if (selectedAccountNumber) {
+    selectedAccountNumber.textContent = cuenta.numero;
+  }
+
+  const titular = document.getElementById("selectedAccountHolder");
+  const tipo = document.getElementById("selectedAccountType");
+
+  if (titular) titular.textContent = cuenta.titular;
+  if (tipo) tipo.textContent = cuenta.tipo;
+
+  if (bankDetails) {
+    bankDetails.style.display = "block";
+  }
+
+  document.querySelectorAll(".bank-card").forEach(card => {
+    card.classList.toggle(
+      "active",
+      card.dataset.bank === nombreBanco
+    );
+  });
+}
+
+/* SELECCIÓN DESDE SELECT */
+
+if (bank) {
+  bank.addEventListener("change", () => {
+    seleccionarBanco(bank.value);
+  });
+}
+
+/* SELECCIÓN DESDE LOGOS */
+
+document.querySelectorAll(".bank-card").forEach(card => {
+  card.addEventListener("click", () => {
+    seleccionarBanco(card.dataset.bank);
+  });
+});
+
+/* COPIAR CUENTA */
+
+const copiarCuenta = document.getElementById("copyBankAccount");
+
+if (copiarCuenta) {
+  copiarCuenta.addEventListener("click", async () => {
+    const numero = selectedAccountNumber?.textContent.trim();
+
+    if (!numero) return;
+
+    try {
+      await navigator.clipboard.writeText(numero);
+      alert("Número de cuenta copiado correctamente.");
+    } catch {
+      alert("No se pudo copiar el número de cuenta.");
+    }
+  });
+}
 /* =====================================================
    MÉTODO DE PAGO
 ===================================================== */

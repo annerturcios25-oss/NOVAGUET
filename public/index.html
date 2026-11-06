@@ -335,7 +335,6 @@
           style="display:none;"
 
         >
-
           <!-- =========================
 
                PASO 1
@@ -765,31 +764,56 @@
   <h3>💳 FORMA DE PAGO</h3>
 
   <!-- TRANSFERENCIA -->
-  <label class="option-card">
-    <input type="radio" name="paymentMethod"
-      value="transfer" id="transferPayment">
-    <span>🏦 Transferencia bancaria</span>
-  </label>
+<label class="option-card">
+  <input type="radio" name="paymentMethod"
+    value="transfer" id="transferPayment">
+  <span>🏦 Transferencia bancaria</span>
+</label>
 
-  <div id="bankBox" class="department-box" style="display:none;">
-    <label for="bank">🏦 Selecciona tu banco</label>
-    <select id="bank">
-      <option value="">Selecciona un banco</option>
-      <option value="atlantida">Banco Atlántida</option>
-      <option value="ficohsa">Ficohsa</option>
-      <option value="bac">BAC Credomatic</option>
-    </select>
+<!-- SELECCIÓN DE BANCOS -->
+<div id="bankBox" class="department-box" style="display:none;">
+
+  <label>🏦 Selecciona tu banco</label>
+
+  <div class="bank-grid">
+
+    <button type="button" class="bank-card" data-bank="atlantida">
+      <img src="images/atlantida.png.png" alt="Banco Atlántida">
+      <span>Atlántida</span>
+    </button>
+
+    <button type="button" class="bank-card" data-bank="ficohsa">
+      <img src="images/ficohsa.png.png" alt="Ficohsa">
+      <span>Ficohsa</span>
+    </button>
+
+    <button type="button" class="bank-card" data-bank="bac">
+      <img src="images/bac.png.png" alt="BAC Credomatic">
+      <span>BAC Credomatic</span>
+    </button>
+
   </div>
 
-  <!-- DATOS CUENTA -->
-  <div id="bankDetails" class="department-box" style="display:none;">
-    <h4>🏦 DATOS PARA LA TRANSFERENCIA</h4>
-    <p><strong>Banco:</strong> <span id="selectedBankName"></span></p>
-    <p><strong>Titular:</strong> NOVA SHOP</p>
-    <p><strong>N/C:</strong> <span id="selectedAccountNumber"></span></p>
-    <p><strong>Tipo de cuenta:</strong> Ahorro</p>
-  </div>
+</div>
 
+<!-- DATOS CUENTA -->
+<div id="bankDetails" class="department-box" style="display:none;">
+
+  <h4>🏦 DATOS PARA LA TRANSFERENCIA</h4>
+
+  <p><strong>Banco:</strong> <span id="selectedBankName"></span></p>
+
+  <p><strong>Titular:</strong> <span id="selectedAccountHolder">NOVA SHOP</span></p>
+
+  <p><strong>N/C:</strong> <span id="selectedAccountNumber"></span></p>
+
+  <p><strong>Tipo de cuenta:</strong> <span id="selectedAccountType">Ahorro</span></p>
+
+  <button type="button" id="copyBankAccount" class="checkout-button">
+    📋 COPIAR NÚMERO DE CUENTA
+  </button>
+
+</div>
   <!-- PAYPAL -->
   <label class="option-card">
     <input type="radio" name="paymentMethod"
