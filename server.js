@@ -7,7 +7,8 @@ const fs = require("fs");
 const multer = require("multer");
 const crypto = require("crypto");
 const paypal = require("@paypal/paypal-server-sdk");
-
+const { rateLimit } = require("express-rate-limit");
+const helmet = require("helmet");
 /* =====================================================
    PAYPAL — CONFIGURACIÓN DEL SERVIDOR
 ===================================================== */
@@ -48,20 +49,69 @@ const transporter = {
     return data;
   }
 };
-
 /* =====================================================
-   EXPRESS — INICIALIZACIÓN
+   EXPRESS — INICIALIZACIÓN Y SEGURIDAD
 ===================================================== */
 
 const app = express();
-app.get("/api/paypal/config", (req, res) => {
-  res.json({
-    clientId: process.env.PAYPAL_CLIENT_ID
-  });
+app.use(helmet());
+app.set("trust proxy", 1);
+
+/* LIMITADOR DE INICIO DE SESIÓN */
+
+const limitadorLogin = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  message: {
+    ok: false,
+    error: "Demasiados intentos. Intenta nuevamente en 15 minutos."
+  }
 });
-/* PAYPAL V6 - CLIENT TOKEN */
+
+/* LIMITADOR DE RECUPERACIÓN DE CONTRASEÑA */
+
+const limitadorRecuperacion = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 3,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: {
+    ok: false,
+    error: "Demasiadas solicitudes. Intenta nuevamente más tarde."
+  }
+});
+
+/* LIMITADOR DE REGISTRO */
+
+const limitadorRegistro = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: {
+    ok: false,
+    error: "Demasiados registros. Intenta nuevamente en una hora."
+  }
+});
+
+/* =====================================================
+   PAYPAL V6 — CLIENT TOKEN
+===================================================== */
+
 app.get("/api/paypal/client-token", async (req, res) => {
   try {
+    if (
+      !process.env.PAYPAL_CLIENT_ID ||
+      !process.env.PAYPAL_CLIENT_SECRET
+    ) {
+      return res.status(503).json({
+        error: "PayPal no está configurado correctamente."
+      });
+    }
+
     const credentials = Buffer.from(
       `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`
     ).toString("base64");
@@ -84,20 +134,27 @@ app.get("/api/paypal/client-token", async (req, res) => {
 
     const datos = await respuesta.json();
 
-    if (!respuesta.ok) {
-      console.error("PayPal token:", datos);
-      return res.status(500).json({
+    if (!respuesta.ok || !datos.client_token) {
+      console.error("Error al generar Client Token de PayPal.");
+
+      return res.status(502).json({
         error: "No se pudo generar el Client Token."
       });
     }
 
-    res.json({
+    res.setHeader("Cache-Control", "no-store");
+
+    return res.json({
       clientToken: datos.client_token
     });
 
   } catch (error) {
-    console.error("Error PayPal Client Token:", error);
-    res.status(500).json({
+    console.error(
+      "Error PayPal Client Token:",
+      error.message
+    );
+
+    return res.status(500).json({
       error: "Error interno al generar el token."
     });
   }
@@ -417,7 +474,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-app.use(express.json());
+app.use(express.json({ limit: "100kb" }));
 
 const PORT = process.env.PORT || 3000;
 
@@ -472,82 +529,31 @@ function crearTokenSesion() {
     .toString("base64url");
 
 }
-
 /* =========================
-   VALIDAR SESIÓN
+   CREAR SESIÓN
 ========================= */
 
-function sesionValida(req) {
+function crearTokenSesion() {
 
-  const cookies =
-    req.headers.cookie || "";
+  const datos =
+    "NOVAGUET:" +
+    Date.now() +
+    ":" +
+    require("crypto")
+      .randomBytes(32)
+      .toString("hex");
 
-  const coincidencia =
-    cookies.match(
-      /(?:^|;\s*)novaguet_session=([^;]+)/
-    );
+  const firma =
+    require("crypto")
+      .createHmac("sha256", SESSION_SECRET)
+      .update(datos)
+      .digest("hex");
 
-  if (!coincidencia) {
-    return false;
-  }
-
-  try {
-
-    const token =
-      decodeURIComponent(
-        coincidencia[1]
-      );
-
-    const tokenDecodificado =
-      Buffer
-        .from(token, "base64url")
-        .toString("utf8");
-
-    const separador =
-      tokenDecodificado.lastIndexOf(".");
-
-    if (separador === -1) {
-      return false;
-    }
-
-    const datos =
-      tokenDecodificado.substring(
-        0,
-        separador
-      );
-
-    const firma =
-      tokenDecodificado.substring(
-        separador + 1
-      );
-
-    const firmaEsperada =
-      require("crypto")
-        .createHmac("sha256", SESSION_SECRET)
-        .update(datos)
-        .digest("hex");
-
-    if (
-      firma.length !==
-      firmaEsperada.length
-    ) {
-      return false;
-    }
-
-    return require("crypto")
-      .timingSafeEqual(
-        Buffer.from(firma),
-        Buffer.from(firmaEsperada)
-      );
-
-  } catch (error) {
-
-    return false;
-
-  }
+  return Buffer
+    .from(datos + "." + firma)
+    .toString("base64url");
 
 }
-
 /* =========================
    PROTEGER ADMIN
 ========================= */
@@ -570,8 +576,7 @@ function protegerAdmin(req, res, next) {
    LOGIN
 ========================= */
 
-app.post("/api/login", (req, res) => {
-
+app.post("/api/login", limitadorLogin, async (req, res) => {
   const username =
     String(
       req.body?.username || ""
@@ -626,19 +631,31 @@ app.post("/api/login", (req, res) => {
   });
 
 });
-
 /* =========================
    LOGOUT
 ========================= */
 
 app.post("/api/logout", (req, res) => {
 
-  res.setHeader(
-    "Set-Cookie",
-    "novaguet_session=; Path=/; HttpOnly; Max-Age=0; SameSite=Lax"
-  );
+  const esHttps =
+    req.headers["x-forwarded-proto"] === "https" ||
+    process.env.NODE_ENV === "production";
 
-  res.json({
+  const cookie = [
+    "novaguet_session=",
+    "Path=/",
+    "HttpOnly",
+    "SameSite=Lax",
+    "Max-Age=0"
+  ];
+
+  if (esHttps) {
+    cookie.push("Secure");
+  }
+
+  res.setHeader("Set-Cookie", cookie.join("; "));
+
+  return res.json({
     ok: true
   });
 
@@ -976,8 +993,7 @@ app.post("/api/resenas", async (req, res) => {
    🔐 PROTEGIDO
 ========================================================= */
 
-app.post(
-  "/api/productos",
+app.post("/api/productos",
   protegerAdmin,
   upload.array("imagenes", 10),
   async (req, res) => {
@@ -1700,8 +1716,13 @@ function verificarContrasena(contrasena, hashGuardado) {
   });
 }
 
+/* =========================
+   VALIDAR SESIÓN CLIENTE
+========================= */
+
 function obtenerClienteSesion(req) {
   const cookies = req.headers.cookie || "";
+
   const coincidencia = cookies.match(
     /(?:^|;\s*)novaguet_cliente_session=([^;]+)/
   );
@@ -1712,7 +1733,11 @@ function obtenerClienteSesion(req) {
 
   try {
     const token = decodeURIComponent(coincidencia[1]);
-    const decodificado = Buffer.from(token, "base64url").toString("utf8");
+
+    const decodificado = Buffer
+      .from(token, "base64url")
+      .toString("utf8");
+
     const separador = decodificado.lastIndexOf(".");
 
     if (separador === -1) {
@@ -1740,26 +1765,81 @@ function obtenerClienteSesion(req) {
     const partes = datos.split(":");
 
     if (
-      partes.length !== 3 ||
+      partes.length !== 4 ||
       partes[0] !== "NOVAGUET_CLIENTE" ||
       !/^\d+$/.test(partes[1]) ||
-      Date.now() - Number(partes[1]) > 86400000
+      !/^\d+$/.test(partes[2]) ||
+      !/^\d+$/.test(partes[3])
     ) {
       return null;
     }
 
-    return { id: partes[2] };
+    const fechaCreacion = Number(partes[1]);
+    const clienteId = partes[2];
+    const sessionVersion = Number(partes[3]);
+
+    const ahora = Date.now();
+
+    const DURACION_SESION =
+      24 * 60 * 60 * 1000;
+
+    if (
+      !Number.isSafeInteger(fechaCreacion) ||
+      fechaCreacion <= 0 ||
+      fechaCreacion > ahora ||
+      ahora - fechaCreacion >= DURACION_SESION ||
+      !Number.isSafeInteger(sessionVersion) ||
+      sessionVersion < 0
+    ) {
+      return null;
+    }
+
+    return {
+      id: clienteId,
+      session_version: sessionVersion
+    };
+
   } catch (error) {
     return null;
   }
 }
+/* =========================
+   VALIDAR SESIÓN CLIENTE
+========================= */
 
-function crearTokenSesionCliente(clienteId) {
+async function validarSesionCliente(req) {
+  const sesion = obtenerClienteSesion(req);
+
+  if (!sesion) {
+    return null;
+  }
+
+  const resultado = await pool.query(
+    "SELECT session_version FROM clientes WHERE id = $1",
+    [sesion.id]
+  );
+
+  if (resultado.rows.length === 0) {
+    return null;
+  }
+
+  if (
+    Number(resultado.rows[0].session_version) !==
+    sesion.session_version
+  ) {
+    return null;
+  }
+
+  return sesion;
+}
+function crearTokenSesionCliente(clienteId, sessionVersion) {
   const datos =
     "NOVAGUET_CLIENTE:" +
     Date.now() +
     ":" +
-    String(clienteId);
+    String(clienteId) +
+    ":" +
+    String(sessionVersion);
 
   const firma = crypto
     .createHmac("sha256", SESSION_SECRET)
@@ -1771,7 +1851,7 @@ function crearTokenSesionCliente(clienteId) {
     .toString("base64url");
 }
 
-app.post("/api/clientes/login", async (req, res) => {
+app.post("/api/clientes/login", limitadorLogin, async (req, res) => {
   try {
     const email = String(req.body?.email || "").trim().toLowerCase();
     const contrasena = String(req.body?.password || "");
@@ -1783,11 +1863,10 @@ app.post("/api/clientes/login", async (req, res) => {
       });
     }
 
-    const resultado = await pool.query(
-      "SELECT id, nombre, email, password_hash FROM clientes WHERE email = $1",
-      [email]
-    );
-
+   const resultado = await pool.query(
+  "SELECT id, nombre, email, password_hash, session_version FROM clientes WHERE email = $1",
+  [email]
+);
     if (resultado.rows.length === 0) {
       return res.status(401).json({
         ok: false,
@@ -1811,15 +1890,19 @@ app.post("/api/clientes/login", async (req, res) => {
     const esHttps =
       req.headers["x-forwarded-proto"] === "https" ||
       process.env.NODE_ENV === "production";
-
-    const cookie = [
-      "novaguet_cliente_session=" +
-        encodeURIComponent(crearTokenSesionCliente(cliente.id)),
-      "Path=/",
-      "HttpOnly",
-      "SameSite=Lax",
-      "Max-Age=86400"
-    ];
+const cookie = [
+  "novaguet_cliente_session=" +
+    encodeURIComponent(
+      crearTokenSesionCliente(
+        cliente.id,
+        cliente.session_version
+      )
+    ),
+  "Path=/",
+  "HttpOnly",
+  "SameSite=Lax",
+  "Max-Age=86400"
+];
 
     if (esHttps) {
       cookie.push("Secure");
@@ -1848,7 +1931,7 @@ app.post("/api/clientes/login", async (req, res) => {
 
 app.get("/api/clientes/sesion", async (req, res) => {
   try {
-    const sesion = obtenerClienteSesion(req);
+   const sesion = await validarSesionCliente(req);
 
     if (!sesion) {
       return res.status(401).json({
@@ -1857,16 +1940,23 @@ app.get("/api/clientes/sesion", async (req, res) => {
     }
 
     const resultado = await pool.query(
-      "SELECT id, nombre, email FROM clientes WHERE id = $1",
-      [sesion.id]
-    );
+  "SELECT id, nombre, email, session_version FROM clientes WHERE id = $1",
+  [sesion.id]
+);
 
     if (resultado.rows.length === 0) {
       return res.status(401).json({
         ok: false
       });
     }
-
+if (
+  Number(resultado.rows[0].session_version) !==
+  sesion.session_version
+) {
+  return res.status(401).json({
+    ok: false
+  });
+}
     return res.json({
       ok: true,
       cliente: resultado.rows[0]
@@ -1884,7 +1974,7 @@ app.get("/api/clientes/sesion", async (req, res) => {
   }
 });
 
-app.post("/api/clientes/registro", async (req, res) => {
+app.post("/api/clientes/registro", limitadorRegistro, async (req, res) => {
   try {
     const nombre = String(req.body?.nombre || "").trim();
     const email = String(req.body?.email || "").trim().toLowerCase();
@@ -1943,7 +2033,7 @@ app.post("/api/clientes/registro", async (req, res) => {
    SOLICITAR RECUPERACIÓN DE CONTRASEÑA
 ========================================= */
 
-app.post("/api/clientes/solicitar-recuperacion", async (req, res) => {
+app.post("/api/clientes/solicitar-recuperacion", limitadorRecuperacion, async (req, res) => {
   const respuesta = {
     ok: true,
     mensaje:
@@ -2004,13 +2094,6 @@ app.post("/api/clientes/solicitar-recuperacion", async (req, res) => {
       baseUrl +
       "/cuenta.html?restablecer=" +
       encodeURIComponent(token);
-console.log("RESEÑA EMAIL:", {
-  estado,
-  productos: pedido.productos,
-  esArray: Array.isArray(pedido.productos)
-});
-console.log("ESTADO ACTUAL:", estado);
-console.log("PRODUCTOS DEL PEDIDO:", pedido.productos);
     await transporter.sendMail({
       from: "NOVA GUET <pedidos@novaguet.com>",
       to: cliente.email,
@@ -2120,11 +2203,13 @@ app.post("/api/clientes/restablecer-contrasena", async (req, res) => {
         });
       }
 
-      await conexion.query(
-        "UPDATE clientes SET password_hash = $1 WHERE id = $2",
-        [nuevoHash, clienteId]
-      );
-
+await conexion.query(
+  `UPDATE clientes
+   SET password_hash = $1,
+       session_version = session_version + 1
+   WHERE id = $2`,
+  [nuevoHash, clienteId]
+);
       await conexion.query(
         `UPDATE recuperacion_contrasenas
          SET usado = TRUE
@@ -2189,7 +2274,7 @@ app.post("/api/clientes/cancelar-pedido", async (req, res) => {
   let client;
 
   try {
-    const sesion = obtenerClienteSesion(req);
+  const sesion = await validarSesionCliente(req);
 
     if (!sesion) {
       return res.status(401).json({
@@ -2324,7 +2409,7 @@ app.post("/api/clientes/cancelar-pedido", async (req, res) => {
 /* MIS PEDIDOS DEL CLIENTE */
 app.get("/api/clientes/mis-pedidos", async (req, res) => {
   try {
-    const sesion = obtenerClienteSesion(req);
+    const sesion = await validarSesionCliente(req);
 
     if (!sesion) {
       return res.status(401).json({
